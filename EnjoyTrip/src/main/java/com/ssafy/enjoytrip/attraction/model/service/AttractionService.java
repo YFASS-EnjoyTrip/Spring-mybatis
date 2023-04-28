@@ -1,8 +1,9 @@
 package com.ssafy.enjoytrip.attraction.model.service;
 
-import org.springframework.stereotype.Service;
+import com.ssafy.enjoytrip.response.AttractionResponseDto;
+import org.springframework.http.ResponseEntity;
 
-@Service
 public interface AttractionService {
 
+    ResponseEntity<AttractionResponseDto> getLocations(String keyWord) throws Exception;
 }
