@@ -32,4 +32,13 @@ public class AttractionResponseDto {
         res.setMessage("서버에 문제가 발생했습니다");
         return res;
     }
+
+    public AttractionResponseDto successSearchLocations(List<AttractionDto> list) {
+        AttractionResponseDto res = new AttractionResponseDto();
+
+        res.setStatus(HttpStatus.OK.value());
+        res.setMessage("요청 정상적으로 수행");
+        res.setResult(list);
+        return res;
+    }
 }

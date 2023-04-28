@@ -1,14 +1,13 @@
 package com.ssafy.enjoytrip.attraction.controller;
 
+import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/locations")
@@ -27,12 +26,15 @@ public class AttractionController {
         return service.getLocations(keyWord);
     }
 
-    // TODO
+    /**
+     * 키워드, 조건 검색
+     * @return
+     */
     @GetMapping("/search")
-    public ResponseEntity<AttractionResponseDto> searchLocations(
-            @PathVariable String keyword, @PathVariable(required = false) String sido,
-            @PathVariable(required = false) String gugun, @PathVariable(required = false) int contentType)
-            throws Exception {
-        return null;
+    public ResponseEntity<AttractionResponseDto> searchLocations(@RequestParam String keyword,
+                                                                 @RequestParam(required = false) String sido,
+                                                                 @RequestParam(required = false) String gugun,
+                                                                 @RequestParam(required = false) List<Integer> contentType) throws Exception {
+        return service.searchLocations(new SearchDto(keyword, sido, gugun, contentType));
     }
 }

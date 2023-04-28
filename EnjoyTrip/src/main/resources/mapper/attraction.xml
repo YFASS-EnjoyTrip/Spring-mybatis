@@ -6,7 +6,7 @@
 
     <resultMap type="AttractionDto" id="Locations">
         <result column="content_id" property="contentId"/>
-        <result column="content_type_id" property="contentTypeId"/>
+        <result column="content_type_id" property="contentType"/>
         <result column="title" property="title"/>
         <result column="addr1" property="addr1"/>
         <result column="addr2" property="addr2"/>
@@ -25,5 +25,23 @@
         SELECT content_Id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
          WHERE title like #{keyWord}
+    </select>
+
+    <select id="searchLocations" resultMap="Locations">
+        SELECT content_Id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+          FROM attraction_info
+         WHERE title like CONCAT(#{keyword}, '%')
+        <if test="sido != null">
+            AND sido_code = #{sido}
+        </if>
+        <if test="gugun != null">
+            AND gugun_code = #{gugun}
+        </if>
+        <if test="contentType != null">
+            AND content_type_id IN
+            <foreach collection="contentType" item="type" open="(" separator="," close=")">
+                #{type}
+            </foreach>
+        </if>
     </select>
 </mapper>
