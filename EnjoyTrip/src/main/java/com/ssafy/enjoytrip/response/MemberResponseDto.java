@@ -18,7 +18,7 @@ public class MemberResponseDto {
 
 	public MemberResponseDto successLogin(MemberDto member) {
 		MemberResponseDto res = new MemberResponseDto();
-		
+
 		res.setStatus(HttpStatus.OK.value());
 		res.setMessage("로그인 정상적으로 수행");
 		res.setResult(member.getNickname());
@@ -38,6 +38,53 @@ public class MemberResponseDto {
 
 		res.setStatus(HttpStatus.OK.value());
 		res.setMessage("로그아웃 정상적으로 수행");
+		return res;
+	}
+
+	public MemberResponseDto successSignup() {
+		MemberResponseDto res = new MemberResponseDto();
+
+		res.setStatus(HttpStatus.OK.value());
+		res.setMessage("회원가입 정상적으로 수행");
+		return res;
+	}
+
+	public MemberResponseDto failSignup() {
+		MemberResponseDto res = new MemberResponseDto();
+
+		res.setStatus(HttpStatus.OK.value());
+		res.setMessage("회원 가입에 실패하였습니다.");
+		return res;
+	}
+
+	public MemberResponseDto available(String check) {
+		MemberResponseDto res = new MemberResponseDto();
+		
+		res.setStatus(HttpStatus.OK.value());
+		res.setMessage(check + " 은 사용 가능합니다.");
+		return res;
+	}
+	public MemberResponseDto unavailable(String check) {
+		MemberResponseDto res = new MemberResponseDto();
+
+		res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		res.setMessage(check + " 은 이미 존재합니다.");
+		return res;
+	}
+
+	public MemberResponseDto successSecession() {
+		MemberResponseDto res = new MemberResponseDto();
+		
+		res.setStatus(HttpStatus.OK.value());
+		res.setMessage("회원 탈퇴가 정상적으로 이루어졌습니다.");
+		return res;
+	}
+
+	public MemberResponseDto failSecession() {
+		MemberResponseDto res = new MemberResponseDto();
+
+		res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		res.setMessage("서버에 문제가 생겼습니다.");
 		return res;
 	}
 

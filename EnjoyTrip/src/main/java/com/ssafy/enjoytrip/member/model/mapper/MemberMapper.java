@@ -11,4 +11,10 @@ public interface MemberMapper {
 
 	MemberDto selectMember(MemberDto member) throws SQLException;
 
+	void insertMember(MemberDto member) throws SQLException;
+
+	MemberDto selectMemberByCheck(String check) throws SQLException;
+
+	void deleteMember(MemberDto member) throws SQLException;
+
 }

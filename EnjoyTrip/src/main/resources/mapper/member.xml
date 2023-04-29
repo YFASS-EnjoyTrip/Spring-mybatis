@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.ssafy.enjoytrip.member.model.mapper.MemberMapper">
+<mapper namespace="com.ssafy.enjoytrip.member.model.mapper.MemberMapper">
 	<select id="selectMember" parameterType="memberDto"
 		resultType="memberDto">
 		SELECT *
@@ -14,4 +13,26 @@
 		 AND
 		 	password=#{password}
 	</select>
+	<select id="selectMemberByCheck" parameterType="string"
+		resultType="memberDto">
+		SELECT *
+		FROM 
+			member
+		WHERE
+			 email=#{check}
+		 OR
+		 	nickname=#{check}
+	</select>
+	<insert id="insertMember" parameterType="memberDto">
+		INSERT INTO 
+			member(`email`, `password`, `nickname`, `gender`)
+		VALUES 
+			(#{email}, #{password}, #{nickname}, #{gender})
+	</insert>
+	<delete id="deleteMember" parameterType="memberDto">
+		DELETE FROM
+			member
+		WHERE 
+			nickname=#{nickname}
+	</delete>
 </mapper>

@@ -14,5 +14,12 @@ public interface MemberService {
 
 	ResponseEntity<MemberResponseDto> logout(HttpSession session) throws Exception;
 
+	ResponseEntity<MemberResponseDto> signup(MemberDto member);
+
+	ResponseEntity<MemberResponseDto> check(String check) throws Exception;
+
+	ResponseEntity<MemberResponseDto> secession(MemberDto member);
+
+	//ResponseEntity<MemberResponseDto> info(String nickname);
 
 }
