@@ -60,11 +60,11 @@ public class MemberController {
 	}
 	
 	/****************************** MyPage *************************************/
-//	@GetMapping("/mypage/{nickname}/info")
-//	public ResponseEntity<MemberResponseDto> info(@PathVariable String nickname) throws Exception {
-//		log.info("controller : mypage-info = {}", nickname);
-//		return memberService.info(nickname);
-//	}
+	@GetMapping("/mypage/{nickname}/info")
+	public ResponseEntity<MemberResponseDto> info(@PathVariable String nickname) throws Exception {
+		log.info("controller : mypage-info = {}", nickname);
+		return memberService.info(nickname);
+	}
 	
 	
 	

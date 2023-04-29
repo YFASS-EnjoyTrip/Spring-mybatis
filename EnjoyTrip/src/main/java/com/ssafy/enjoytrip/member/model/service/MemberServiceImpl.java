@@ -58,7 +58,6 @@ public class MemberServiceImpl implements MemberService {
 	public ResponseEntity<MemberResponseDto> check(String check) throws Exception {
 		log.info("Service check Email or Nickname = {}", check);
 		MemberDto isExist = mapper.selectMemberByCheck(check);
-		log.info("Service check Email or Nickname = {}", isExist);
 		if (isExist != null) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto.unavailable(check));
 		} else
@@ -76,5 +75,36 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
-
+	/****************************** MyPage *************************************/
+	/*
+	{
+        "nickname": "test",
+				"email": "test",
+        "bio": "내 소개~!~!!",
+				"gender": "F"
+    }
+	*/
+	
+	@Override
+	public ResponseEntity<MemberResponseDto> info(String nickname) {
+		MemberResponseDto res = new MemberResponseDto();
+		log.info("Service : mypage-info = {}", nickname);
+		try {
+			MemberDto m = mapper.selectMemberByCheck(nickname);
+			log.info("Service result : mypage-info = {}", mapper.selectMemberByCheck(nickname));
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("nickname", m.getNickname());
+			map.put("email", m.getEmail());
+			map.put("bio", m.getBio());
+			map.put("gender", m.getGender());
+			res.setStatus(HttpStatus.OK.value());
+			res.setMessage("회원정보 조회가 정상적으로 이루어졌습니다.");
+			res.setResult(res);
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setMessage("서버에 문제가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+		}
+	}
 }

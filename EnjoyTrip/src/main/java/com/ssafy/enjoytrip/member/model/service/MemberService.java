@@ -20,6 +20,6 @@ public interface MemberService {
 
 	ResponseEntity<MemberResponseDto> secession(MemberDto member);
 
-	//ResponseEntity<MemberResponseDto> info(String nickname);
+	ResponseEntity<MemberResponseDto> info(String nickname);
 
 }
