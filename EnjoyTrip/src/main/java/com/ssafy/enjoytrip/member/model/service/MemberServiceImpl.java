@@ -99,7 +99,7 @@ public class MemberServiceImpl implements MemberService {
 			map.put("gender", m.getGender());
 			res.setStatus(HttpStatus.OK.value());
 			res.setMessage("회원정보 조회가 정상적으로 이루어졌습니다.");
-			res.setResult(res);
+			res.setResult(map);
 			return ResponseEntity.status(HttpStatus.OK).body(res);
 		} catch (Exception e) {
 			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
