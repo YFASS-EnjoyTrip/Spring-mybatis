@@ -6,6 +6,7 @@ import com.ssafy.enjoytrip.attraction.model.mapper.AttractionMapper;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,18 @@ public class AttractionServiceImpl implements AttractionService{
     public ResponseEntity<AttractionResponseDto> searchLocations(SearchDto searchDto) throws Exception {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(responseDto.successSearchLocations(mapper.searchLocations(searchDto)));
+    }
+
+    @Override
+    public ResponseEntity<AttractionResponseDto> searchLocationDetail(String contentId) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(responseDto.successSearchLocationDetail(mapper.searchLocationDetail(contentId)));
+    }
+
+    @Override
+    public ResponseEntity<AttractionResponseDto> locationReviews(String contentId) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(responseDto.successLocationReviews(mapper.getLocationReviews(contentId)));
     }
 
 }

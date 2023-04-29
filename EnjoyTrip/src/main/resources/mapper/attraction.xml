@@ -21,18 +21,25 @@
         <result column="like_count" property="likeCount"/>
     </resultMap>
 
+    <resultMap id="Reviews" type="ReviewDto">
+        <result column="review_id" property="reviewId"/>
+        <result column="nickname" property="nickName"/>
+        <result column="rating" property="rate"/>
+        <result column="review_text" property="content"/>
+    </resultMap>
+
     <select id="getLocations" resultMap="Locations">
-        SELECT content_Id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
          WHERE title like #{keyWord}
     </select>
 
     <select id="searchLocations" resultMap="Locations">
-        SELECT content_Id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+        SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
          WHERE title like CONCAT(#{keyword}, '%')
         <if test="sido != null">
-            AND sido_code = #{sido}
+            AND sido_code = #{sido}r
         </if>
         <if test="gugun != null">
             AND gugun_code = #{gugun}
@@ -43,5 +50,19 @@
                 #{type}
             </foreach>
         </if>
+    </select>
+
+    <select id="searchLocationDetail" resultMap="Locations">
+        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+          FROM attraction_info
+         WHERE content_id = #{contentId}
+    </select>
+
+    <select id="getLocationReviews" resultMap="Reviews">
+        SELECT r.review_id, m.nickname, r.rating, r.review_text
+          FROM attraction_review r
+    INNER JOIN member m
+            ON r.member_id = m.member_id
+         WHERE content_id = #{contentId}
     </select>
 </mapper>
