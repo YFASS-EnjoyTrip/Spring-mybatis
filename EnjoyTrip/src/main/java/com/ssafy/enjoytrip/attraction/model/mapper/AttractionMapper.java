@@ -4,6 +4,7 @@ import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.jdbc.SQL;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,7 +16,9 @@ public interface AttractionMapper {
 
     List<AttractionDto> searchLocations(SearchDto searchDto) throws SQLException;
 
-    AttractionDto searchLocationDetail(String contentId);
+    AttractionDto searchLocationDetail(String contentId) throws SQLException;
 
-    List<ReviewDto> getLocationReviews(String contentId);
+    List<ReviewDto> getLocationReviews(String contentId) throws SQLException;
+
+    void insertLocationReview(ReviewDto review) throws SQLException;
 }

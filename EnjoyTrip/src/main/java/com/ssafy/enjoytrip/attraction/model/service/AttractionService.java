@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.model.service;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -14,4 +15,6 @@ public interface AttractionService {
     ResponseEntity<AttractionResponseDto> searchLocationDetail(String contentId) throws Exception;
 
     ResponseEntity<AttractionResponseDto> locationReviews(String contentId) throws Exception;
+
+    ResponseEntity<AttractionResponseDto> saveLocationReview(ReviewDto review) throws Exception;
 }

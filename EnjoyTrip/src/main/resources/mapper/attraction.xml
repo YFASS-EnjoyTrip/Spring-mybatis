@@ -65,4 +65,12 @@
             ON r.member_id = m.member_id
          WHERE content_id = #{contentId}
     </select>
+
+    <insert id="insertLocationReview" parameterType="ReviewDto">
+        INSERT INTO attraction_review (
+            content_id, member_id, rating, review_text
+        )    VALUES (
+            #{contentId}, #{memberId}, #{rate}, #{content}
+        )
+    </insert>
 </mapper>

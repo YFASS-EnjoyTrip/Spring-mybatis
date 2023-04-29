@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.model.service;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.mapper.AttractionMapper;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
@@ -43,6 +44,12 @@ public class AttractionServiceImpl implements AttractionService{
     public ResponseEntity<AttractionResponseDto> locationReviews(String contentId) throws Exception {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(responseDto.successLocationReviews(mapper.getLocationReviews(contentId)));
+    }
+
+    @Override
+    public ResponseEntity<AttractionResponseDto> saveLocationReview(ReviewDto review) throws Exception {
+        mapper.insertLocationReview(review);
+        return locationReviews(String.valueOf(review.getContentId()));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.controller;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
@@ -16,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 public class AttractionController {
     private final AttractionService service;
-
 
     /**
      * Default 조회, "서울" 을 기준으로 모든 여행지 조회
@@ -46,6 +46,14 @@ public class AttractionController {
     @GetMapping("/detail")
     public ResponseEntity<AttractionResponseDto> searchLocationDetail(@RequestParam String contentId) throws Exception {
         return service.searchLocationDetail(contentId);
+    }
+
+    /**
+     * 여행지 리뷰 작성
+     */
+    @PostMapping("/detail/{contentId}/reviews")
+    public ResponseEntity<AttractionResponseDto> addLocationReview(@RequestBody ReviewDto review) throws Exception {
+        return service.saveLocationReview(review);
     }
 
     /**
