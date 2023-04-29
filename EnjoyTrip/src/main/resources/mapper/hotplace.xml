@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.hotplace.model.mapper.HotplaceMapper">
+	<select id="selectAllHotplace" resultType="hotplaceDto">
+	SELECT h.id, m.nickname, h.place_title, h.created_at, h.content_img, h.like_count, h.view_count
+	FROM
+	hot_place_board h, member m
+	WHERE h.member_id = m.member_id
+	</select>
+</mapper>
