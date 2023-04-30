@@ -16,4 +16,11 @@
 	WHERE h.member_id = m.member_id
 	AND h.id=#{id}	
 	</select>
+	
+	<insert id="insertHotplace" parameterType="hotplaceDto">
+	INSERT INTO 
+	hot_place_board (member_id, place_title, place_content) 
+	VALUES 
+	(#{memberId}, #{placeTitle}, #{placeContent})
+	</insert>
 </mapper>

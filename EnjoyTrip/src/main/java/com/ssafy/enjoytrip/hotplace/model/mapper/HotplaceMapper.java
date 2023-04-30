@@ -15,4 +15,6 @@ public interface HotplaceMapper {
 
 	HotplaceDto selectDetail(String id) throws SQLException;
 
+	void insertHotplace(HotplaceDto hotplace) throws SQLException;
+
 }
