@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.response.MemberResponseDto;
+import com.ssafy.enjoytrip.response.ResponseDto;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,23 +53,24 @@ public class MemberController {
 		log.info("controller : logout = {}", (MemberDto) session.getAttribute("memberInfo"));
 		return memberService.logout(session);
 	}
-	
+
 	@DeleteMapping("/secession")
 	public ResponseEntity<MemberResponseDto> secession(@RequestBody MemberDto member) throws Exception {
 		log.info("controller : secession = {}", member);
 		return memberService.secession(member);
 	}
-	
+
 	/****************************** MyPage *************************************/
 	@GetMapping("/mypage/{nickname}/info")
-	public ResponseEntity<MemberResponseDto> info(@PathVariable String nickname) throws Exception {
+	public ResponseEntity<ResponseDto> info(@PathVariable String nickname) throws Exception {
 		log.info("controller : mypage-info = {}", nickname);
 		return memberService.info(nickname);
 	}
-	
-	
-	
-	
-	
-	
+
+	@GetMapping("/mypage/{nickname}/hotplace")
+	public ResponseEntity<ResponseDto> hotplace(@PathVariable String nickname) throws Exception {
+		log.info("controller : mypage-hotplace = {}", nickname);
+		return memberService.hotplace(nickname);
+	}
+
 }

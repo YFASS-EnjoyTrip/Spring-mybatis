@@ -3,10 +3,10 @@ package com.ssafy.enjoytrip.member.model.service;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.response.MemberResponseDto;
+import com.ssafy.enjoytrip.response.ResponseDto;
 
 public interface MemberService {
 
@@ -20,6 +20,8 @@ public interface MemberService {
 
 	ResponseEntity<MemberResponseDto> secession(MemberDto member);
 
-	ResponseEntity<MemberResponseDto> info(String nickname);
+	ResponseEntity<ResponseDto> info(String nickname);
+
+	ResponseEntity<ResponseDto> hotplace(String nickname);
 
 }

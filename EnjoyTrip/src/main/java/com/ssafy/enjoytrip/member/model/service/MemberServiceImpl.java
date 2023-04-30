@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.member.model.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -9,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.mapper.MemberMapper;
 import com.ssafy.enjoytrip.response.MemberResponseDto;
+import com.ssafy.enjoytrip.response.ResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,8 +88,8 @@ public class MemberServiceImpl implements MemberService {
 	*/
 	
 	@Override
-	public ResponseEntity<MemberResponseDto> info(String nickname) {
-		MemberResponseDto res = new MemberResponseDto();
+	public ResponseEntity<ResponseDto> info(String nickname) {
+		ResponseDto res = new ResponseDto();
 		log.info("Service : mypage-info = {}", nickname);
 		try {
 			MemberDto m = mapper.selectMemberByCheck(nickname);
@@ -99,6 +102,24 @@ public class MemberServiceImpl implements MemberService {
 			res.setStatus(HttpStatus.OK.value());
 			res.setMessage("회원정보 조회가 정상적으로 이루어졌습니다.");
 			res.setResult(map);
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setMessage("서버에 문제가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> hotplace(String nickname) {
+		ResponseDto res = new ResponseDto();
+		log.info("Service : mypage-hotplace = {}", nickname);
+		try {
+			List<HotplaceDto> list = mapper.selectHotplaceByNickname(nickname);
+			log.info("Service result : mypage-hotplace = {}", list);
+			res.setStatus(HttpStatus.OK.value());
+			res.setMessage("회원정보 조회가 정상적으로 이루어졌습니다.");
+			res.setResult(list);
 			return ResponseEntity.status(HttpStatus.OK).body(res);
 		} catch (Exception e) {
 			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
