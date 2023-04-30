@@ -85,4 +85,19 @@ public class HotplaceServiceImpl implements HotplaceService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 		}
 	}
+	@Override
+	public ResponseEntity<ResponseDto> delete(String id) {
+		ResponseDto res = new ResponseDto();
+		try {
+			log.info("service : delete = {}", id);
+			hotplaceMapper.deleteHotplace(id);
+			res.setStatus(HttpStatus.OK.value());
+			res.setMessage("핫플레이스 게시글 삭제 정상적으로 수행");
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		}catch (Exception e) {
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setMessage("서버에 문제가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+		}
+	}
 }

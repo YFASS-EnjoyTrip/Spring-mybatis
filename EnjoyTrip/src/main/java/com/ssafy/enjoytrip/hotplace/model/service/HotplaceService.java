@@ -15,4 +15,6 @@ public interface HotplaceService {
 
 	ResponseEntity<ResponseDto> edit(HotplaceDto hotplace);
 
+	ResponseEntity<ResponseDto> delete(String id);
+
 }

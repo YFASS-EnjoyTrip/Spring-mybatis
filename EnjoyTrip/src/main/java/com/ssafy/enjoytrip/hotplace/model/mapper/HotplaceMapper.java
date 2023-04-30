@@ -19,4 +19,6 @@ public interface HotplaceMapper {
 
 	void updateHotplace(HotplaceDto hotplace) throws SQLException;
 
+	void deleteHotplace(String id) throws SQLException;
+
 }

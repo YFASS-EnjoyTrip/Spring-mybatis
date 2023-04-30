@@ -38,6 +38,13 @@
 		place_content = #{placeContent},
 		content_img = #{contentImg}
 		WHERE
-		id = #{id}
+		id =
+		#{id}
 	</update>
+	<delete id="deleteHotplace" parameterType="string">
+		DELETE FROM
+		hot_place_board
+		WHERE
+		id=#{id}
+	</delete>
 </mapper>
