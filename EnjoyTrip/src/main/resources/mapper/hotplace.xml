@@ -9,4 +9,11 @@
 	hot_place_board h, member m
 	WHERE h.member_id = m.member_id
 	</select>
+	<select id="selectDetail" parameterType="string" resultType="hotplaceDto">
+	SELECT h.id, m.nickname, h.place_title, h.place_content ,h.created_at, h.content_img, h.like_count, h.view_count
+	FROM
+	hot_place_board h, member m
+	WHERE h.member_id = m.member_id
+	AND h.id=#{id}	
+	</select>
 </mapper>

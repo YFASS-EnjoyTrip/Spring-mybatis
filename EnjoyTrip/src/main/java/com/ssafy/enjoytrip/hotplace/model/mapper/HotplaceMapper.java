@@ -13,4 +13,6 @@ public interface HotplaceMapper {
 
 	List<HotplaceDto> selectAllHotplace() throws SQLException;
 
+	HotplaceDto selectDetail(String id) throws SQLException;
+
 }

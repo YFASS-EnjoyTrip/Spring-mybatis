@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.enjoytrip.member.controller.MemberController;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.mapper.MemberMapper;
 import com.ssafy.enjoytrip.response.MemberResponseDto;
