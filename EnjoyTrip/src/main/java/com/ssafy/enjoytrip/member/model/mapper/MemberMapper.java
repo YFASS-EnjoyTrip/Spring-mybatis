@@ -26,4 +26,6 @@ public interface MemberMapper {
 
 	void updateMemberBio(Map<String, String> map) throws SQLException;
 
+	void updateMemberProfileImg(Map<String, String> map) throws SQLException;
+
 }

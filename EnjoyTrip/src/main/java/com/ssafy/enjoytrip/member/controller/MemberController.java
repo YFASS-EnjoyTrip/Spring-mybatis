@@ -53,7 +53,7 @@ public class MemberController {
 	}
 
 	@GetMapping("/logout")
-	public ResponseEntity<MemberResponseDto> login(HttpSession session) throws Exception {
+	public ResponseEntity<MemberResponseDto> logout(HttpSession session) throws Exception {
 		log.info("controller : logout = {}", (MemberDto) session.getAttribute("memberInfo"));
 		return memberService.logout(session);
 	}
@@ -92,6 +92,14 @@ public class MemberController {
 		map.put("bio", bio.get("bio"));
 		log.info("controller : mypage-editBio = {}", map);
 		return memberService.editBio(map);
+	}
+	@PutMapping("/mypage/{nickname}/edit/profile-img")
+	public ResponseEntity<ResponseDto> editProfileImg(@PathVariable String nickname, @RequestBody Map<String, String> img) throws Exception {
+		Map<String, String> map = new HashMap<>();
+		map.put("nickname", nickname);
+		map.put("profileImg", img.get("profileImg"));
+		log.info("controller : mypage-editProfileImg = {}", map);
+		return memberService.editProfileImg(map);
 	}
 
 }

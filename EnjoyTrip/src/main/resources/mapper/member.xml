@@ -58,4 +58,9 @@
 		SET bio = #{bio}
 		WHERE nickname = #{nickname}
 	</update>
+	<update id="updateMemberProfileImg" parameterType="map">
+		UPDATE member
+		SET profile_img = #{profileImg}
+		WHERE nickname = #{nickname}
+	</update>
 </mapper>

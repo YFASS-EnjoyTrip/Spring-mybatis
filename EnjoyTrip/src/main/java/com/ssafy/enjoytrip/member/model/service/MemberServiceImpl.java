@@ -151,4 +151,20 @@ public class MemberServiceImpl implements MemberService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
 		}
 	}
+
+	@Override
+	public ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) {
+		ResponseDto res = new ResponseDto();
+		log.info("Service : mypage-editProfileImg = {}", map);
+		try {
+			mapper.updateMemberProfileImg(map);
+			res.setStatus(HttpStatus.OK.value());
+			res.setMessage("프로필사진 수정이 정상적으로 이루어졌습니다.");
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setMessage("서버에 문제가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+		}
+	}
 }
