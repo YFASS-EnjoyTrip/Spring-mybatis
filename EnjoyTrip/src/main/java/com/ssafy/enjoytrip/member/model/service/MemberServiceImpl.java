@@ -78,14 +78,6 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	/****************************** MyPage *************************************/
-	/*
-	{
-        "nickname": "test",
-				"email": "test",
-        "bio": "내 소개~!~!!",
-				"gender": "F"
-    }
-	*/
 	
 	@Override
 	public ResponseEntity<ResponseDto> info(String nickname) {
@@ -118,8 +110,40 @@ public class MemberServiceImpl implements MemberService {
 			List<HotplaceDto> list = mapper.selectHotplaceByNickname(nickname);
 			log.info("Service result : mypage-hotplace = {}", list);
 			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("회원정보 조회가 정상적으로 이루어졌습니다.");
+			res.setMessage("작성한 핫플레이스 조회가 정상적으로 이루어졌습니다.");
 			res.setResult(list);
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setMessage("서버에 문제가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> editPassword(Map<String, String> map) {
+		ResponseDto res = new ResponseDto();
+		log.info("Service : mypage-editPassword = {}", map);
+		try {
+			mapper.updateMemberPassword(map);
+			res.setStatus(HttpStatus.OK.value());
+			res.setMessage("비밀번호 수정이 정상적으로 이루어졌습니다.");
+			return ResponseEntity.status(HttpStatus.OK).body(res);
+		} catch (Exception e) {
+			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			res.setMessage("서버에 문제가 발생했습니다.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> editBio(Map<String, String> map) {
+		ResponseDto res = new ResponseDto();
+		log.info("Service : mypage-editBio = {}", map);
+		try {
+			mapper.updateMemberBio(map);
+			res.setStatus(HttpStatus.OK.value());
+			res.setMessage("한줄소개 수정이 정상적으로 이루어졌습니다.");
 			return ResponseEntity.status(HttpStatus.OK).body(res);
 		} catch (Exception e) {
 			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());

@@ -48,4 +48,14 @@
 		AND
 		m.nickname=#{nickname}
 	</select>
+	<update id="updateMemberPassword" parameterType="map">
+		UPDATE member
+		SET password = #{password}
+		WHERE nickname = #{nickname}
+	</update>
+	<update id="updateMemberBio" parameterType="map">
+		UPDATE member
+		SET bio = #{bio}
+		WHERE nickname = #{nickname}
+	</update>
 </mapper>

@@ -1,5 +1,7 @@
 package com.ssafy.enjoytrip.member.model.service;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.http.ResponseEntity;
@@ -23,5 +25,9 @@ public interface MemberService {
 	ResponseEntity<ResponseDto> info(String nickname);
 
 	ResponseEntity<ResponseDto> hotplace(String nickname);
+
+	ResponseEntity<ResponseDto> editPassword(Map<String, String> map);
+
+	ResponseEntity<ResponseDto> editBio(Map<String, String> map);
 
 }

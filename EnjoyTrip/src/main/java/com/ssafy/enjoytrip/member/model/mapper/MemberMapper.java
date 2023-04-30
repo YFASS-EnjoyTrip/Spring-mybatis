@@ -2,6 +2,7 @@ package com.ssafy.enjoytrip.member.model.mapper;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,5 +21,9 @@ public interface MemberMapper {
 	void deleteMember(MemberDto member) throws SQLException;
 
 	List<HotplaceDto> selectHotplaceByNickname(String nickname) throws SQLException;
+
+	void updateMemberPassword(Map<String, String> map) throws SQLException;
+
+	void updateMemberBio(Map<String, String> map) throws SQLException;
 
 }
