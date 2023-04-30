@@ -8,6 +8,7 @@ import org.apache.ibatis.jdbc.SQL;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface AttractionMapper {
@@ -21,4 +22,8 @@ public interface AttractionMapper {
     List<ReviewDto> getLocationReviews(String contentId) throws SQLException;
 
     void insertLocationReview(ReviewDto review) throws SQLException;
+
+    void insertLocationLike(Map<String, String> param) throws SQLException;
+
+    void updateLocationLike(String contentId) throws SQLException;
 }

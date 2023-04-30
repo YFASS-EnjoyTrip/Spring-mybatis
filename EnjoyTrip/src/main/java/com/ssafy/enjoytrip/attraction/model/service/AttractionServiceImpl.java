@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -50,6 +51,33 @@ public class AttractionServiceImpl implements AttractionService{
     public ResponseEntity<AttractionResponseDto> saveLocationReview(ReviewDto review) throws Exception {
         mapper.insertLocationReview(review);
         return locationReviews(String.valueOf(review.getContentId()));
+    }
+
+    @Override
+    public ResponseEntity<AttractionResponseDto> saveLocationLike(Map<String, String> param) {
+
+        try {
+            mapper.insertLocationLike(param);
+            String result = String.valueOf(param.get("id"));
+            log.info("id={}", result);
+//            Integer result = Integer.parseInt(param.get("id"));
+//            log.info("id={}", result);
+
+            if ("0".equals(result) || "null".equals(result)) {
+                throw new RuntimeException();
+            }
+
+            mapper.updateLocationLike(param.get("contentId"));
+        } catch (Exception e) {
+            log.info("error={}", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(responseDto.failResponse());
+        }
+
+        int status = HttpStatus.OK.value();
+        String message = "요청을 정상적으로 수행 했습니다.";
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(responseDto.successResponse(status, message, null));
     }
 
 }

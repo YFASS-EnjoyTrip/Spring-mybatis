@@ -1,16 +1,16 @@
 package com.ssafy.enjoytrip.attraction.controller;
 
-import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/locations")
@@ -60,7 +60,17 @@ public class AttractionController {
      * 여행지 리뷰조회
      */
     @GetMapping("/detail/{contentId}/reviews")
-    public ResponseEntity<AttractionResponseDto> locationReviews(@PathVariable("contentId") String contentId) throws Exception {
+    public ResponseEntity<AttractionResponseDto> locationReviews(@PathVariable String contentId) throws Exception {
         return service.locationReviews(contentId);
+    }
+
+    @PostMapping("/{contentId}/{memberId}/like")
+    public ResponseEntity<AttractionResponseDto> addLocationLike(@PathVariable String contentId,
+                                                                  @PathVariable String memberId) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("contentId", contentId);
+        param.put("type", "A");
+        param.put("memberId", memberId);
+        return service.saveLocationLike(param);
     }
 }

@@ -2,6 +2,7 @@ package com.ssafy.enjoytrip.response;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @Component
 @NoArgsConstructor
+@AllArgsConstructor
 public class AttractionResponseDto {
     private int status;
     private String message;
@@ -61,5 +63,18 @@ public class AttractionResponseDto {
         res.setResult(reviews);
 
         return res;
+    }
+
+    public AttractionResponseDto failResponse() {
+        AttractionResponseDto res = new AttractionResponseDto();
+
+        res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        res.setMessage("서버에서 문제가 발생하여 정상적으로 요청을 처리하지 못했습니다");
+
+        return res;
+    }
+
+    public AttractionResponseDto successResponse(int status, String message, Object result) {
+        return new AttractionResponseDto(status, message, result);
     }
 }

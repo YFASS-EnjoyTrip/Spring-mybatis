@@ -10,4 +10,5 @@ public class ReviewDto {
     private String nickName;
     private int rate;
     private String content;
+    private String createdAt;
 }

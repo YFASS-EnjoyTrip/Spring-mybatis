@@ -23,9 +23,12 @@
 
     <resultMap id="Reviews" type="ReviewDto">
         <result column="review_id" property="reviewId"/>
+        <result column="content_id" property="contentId"/>
+        <result column="member_id" property="memberId"/>
         <result column="nickname" property="nickName"/>
         <result column="rating" property="rate"/>
         <result column="review_text" property="content"/>
+        <result column="created_at" property="createdAt"/>
     </resultMap>
 
     <select id="getLocations" resultMap="Locations">
@@ -59,11 +62,12 @@
     </select>
 
     <select id="getLocationReviews" resultMap="Reviews">
-        SELECT r.review_id, m.nickname, r.rating, r.review_text
+        SELECT r.review_id, r.content_id, r.member_id, m.nickname, r.rating, r.review_text, r.created_at
           FROM attraction_review r
     INNER JOIN member m
             ON r.member_id = m.member_id
          WHERE content_id = #{contentId}
+      ORDER BY created_at DESC
     </select>
 
     <insert id="insertLocationReview" parameterType="ReviewDto">
@@ -73,4 +77,23 @@
             #{contentId}, #{memberId}, #{rate}, #{content}
         )
     </insert>
+
+    <insert id="insertLocationLike" parameterType="map" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO tb_like (member_id, type, content_id)
+             SELECT member_id, type, content_id
+               FROM (
+                    SELECT #{memberId} AS member_id, #{type} AS type, #{contentId} AS content_id) AS tmp
+          WHERE NOT EXISTS (
+                    SELECT 1
+                      FROM tb_like
+                     WHERE member_id = #{memberId} AND type = #{type} AND content_id = #{contentId}
+        )
+    </insert>
+
+    <update id="updateLocationLike" parameterType="string">
+        UPDATE attraction_info
+           SET like_count = like_count + 1
+         WHERE content_id = #{contentId}
+    </update>
+
 </mapper>

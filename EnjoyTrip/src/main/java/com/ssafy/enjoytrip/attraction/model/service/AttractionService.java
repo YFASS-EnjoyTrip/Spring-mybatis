@@ -6,6 +6,8 @@ import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public interface AttractionService {
 
     ResponseEntity<AttractionResponseDto> getLocations(String keyWord) throws Exception;
@@ -17,4 +19,6 @@ public interface AttractionService {
     ResponseEntity<AttractionResponseDto> locationReviews(String contentId) throws Exception;
 
     ResponseEntity<AttractionResponseDto> saveLocationReview(ReviewDto review) throws Exception;
+
+    ResponseEntity<AttractionResponseDto> saveLocationLike(Map<String, String> param) throws Exception;
 }
