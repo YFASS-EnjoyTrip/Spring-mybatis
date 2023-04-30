@@ -13,4 +13,6 @@ public interface HotplaceService {
 
 	ResponseEntity<ResponseDto> write(HotplaceDto hotplace);
 
+	ResponseEntity<ResponseDto> edit(HotplaceDto hotplace);
+
 }

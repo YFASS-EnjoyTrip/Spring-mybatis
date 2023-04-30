@@ -17,4 +17,6 @@ public interface HotplaceMapper {
 
 	void insertHotplace(HotplaceDto hotplace) throws SQLException;
 
+	void updateHotplace(HotplaceDto hotplace) throws SQLException;
+
 }
