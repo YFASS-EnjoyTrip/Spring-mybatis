@@ -1,16 +1,12 @@
 package com.ssafy.enjoytrip.response;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import com.ssafy.enjoytrip.member.dto.MemberDto;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Component
-@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseDto {
 	private int status;
 	private String message;

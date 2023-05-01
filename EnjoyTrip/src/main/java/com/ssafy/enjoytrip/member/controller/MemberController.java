@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.service.MemberService;
-import com.ssafy.enjoytrip.response.MemberResponseDto;
 import com.ssafy.enjoytrip.response.ResponseDto;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,32 +33,32 @@ public class MemberController {
 
 	// Email / Nickname Check
 	@GetMapping("/check/{check}")
-	public ResponseEntity<MemberResponseDto> check(@PathVariable String check) throws Exception {
+	public ResponseEntity<ResponseDto> check(@PathVariable String check) throws Exception {
 		log.info("controller : check Email or Nickname = {}", check);
 		return memberService.check(check);
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<MemberResponseDto> signup(@RequestBody MemberDto member) throws Exception {
+	public ResponseEntity<ResponseDto> signup(@RequestBody MemberDto member) throws Exception {
 		log.info("controller : signup = {}", member);
 		return memberService.signup(member);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<MemberResponseDto> login(@RequestBody MemberDto member, HttpSession session)
+	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpSession session)
 			throws Exception {
 		log.info("controller : login = {}", member);
 		return memberService.login(member, session);
 	}
 
 	@GetMapping("/logout")
-	public ResponseEntity<MemberResponseDto> logout(HttpSession session) throws Exception {
+	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
 		log.info("controller : logout = {}", (MemberDto) session.getAttribute("memberInfo"));
 		return memberService.logout(session);
 	}
 
 	@DeleteMapping("/secession")
-	public ResponseEntity<MemberResponseDto> secession(@RequestBody MemberDto member) throws Exception {
+	public ResponseEntity<ResponseDto> secession(@RequestBody MemberDto member) throws Exception {
 		log.info("controller : secession = {}", member);
 		return memberService.secession(member);
 	}

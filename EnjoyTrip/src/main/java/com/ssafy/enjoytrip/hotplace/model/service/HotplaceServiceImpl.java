@@ -25,97 +25,90 @@ public class HotplaceServiceImpl implements HotplaceService {
 
 	@Override
 	public ResponseEntity<ResponseDto> list() {
-		ResponseDto res = new ResponseDto();
+		String msg;
 		try {
 			List<HotplaceDto> list = hotplaceMapper.selectAllHotplace();
 			log.info("service : list = {}", list);
-			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("핫플레이스 목록 조회 정상적으로 수행");
-			res.setResult(list);
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			msg = "핫플레이스 목록 조회 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, list));
 		} catch (Exception e) {
-			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			res.setMessage("서버에 문제가 발생했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	@Override
 	public ResponseEntity<ResponseDto> detail(String id) {
-		ResponseDto res = new ResponseDto();
+		String msg;
 		try {
 			hotplaceMapper.updateViewCount(id);
 			HotplaceDto h = hotplaceMapper.selectDetail(id);
 			log.info("service : detail = {}", h);
-			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("핫플레이스 상세 조회 정상적으로 수행");
-			res.setResult(h);
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			msg = "핫플레이스 상세 조회 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, h));
 		} catch (Exception e) {
-			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			res.setMessage("서버에 문제가 발생했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	@Override
 	public ResponseEntity<ResponseDto> write(HotplaceDto hotplace) {
-		ResponseDto res = new ResponseDto();
+		String msg;
 		try {
 			log.info("service : write = {}", hotplace);
 			hotplaceMapper.insertHotplace(hotplace);
-			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("핫플레이스 게시글 작성 정상적으로 수행");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			msg = "핫플레이스 게시글 작성 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			res.setMessage("서버에 문제가 발생했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	@Override
 	public ResponseEntity<ResponseDto> edit(HotplaceDto hotplace) {
-		ResponseDto res = new ResponseDto();
+		String msg;
 		try {
 			log.info("service : edit = {}", hotplace);
 			hotplaceMapper.updateHotplace(hotplace);
-			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("핫플레이스 게시글 수정 정상적으로 수행");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			msg = "핫플레이스 게시글 수정 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			res.setMessage("서버에 문제가 발생했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	@Override
 	public ResponseEntity<ResponseDto> delete(String id) {
-		ResponseDto res = new ResponseDto();
+		String msg;
 		try {
 			log.info("service : delete = {}", id);
 			hotplaceMapper.deleteHotplace(id);
-			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("핫플레이스 게시글 삭제 정상적으로 수행");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			msg = "핫플레이스 게시글 삭제 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			res.setMessage("서버에 문제가 발생했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	@Override
 	public ResponseEntity<ResponseDto> like(Map<String, String> map) {
-		ResponseDto res = new ResponseDto();
-		map.put("type","H");
+		String msg;
+		map.put("type", "H");
 		try {
 			log.info("service : delete = {}", map);
 			// 1. select 수행 -> 매핑 테이블에 현재 있는지 확인
 			int isExist = likeMapper.selectLike(map);
 			log.info("service : isExist = {}", isExist);
-			
+
 			// 2-1. select 결과 != null => delete
 			if (isExist > 0) {
 				log.info("좋아요 한 이력 있음 -> 좋아요 삭제");
@@ -129,19 +122,17 @@ public class HotplaceServiceImpl implements HotplaceService {
 				likeMapper.insertLike(map);
 				map.put("check", "insert");
 			}
-			
+
 			// 3. hotplace 테이블 like_count update
 			log.info("핫플레이스 좋아요 수 업데이트");
 			hotplaceMapper.updateHotplaceLike(map);
 
-			res.setStatus(HttpStatus.OK.value());
-			res.setMessage("좋아요 수 변경 정상적으로 수행");
-			return ResponseEntity.status(HttpStatus.OK).body(res);
+			msg = "좋아요 수 변경 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			e.printStackTrace();
-			res.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-			res.setMessage("서버에 문제가 발생했습니다.");
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 }
