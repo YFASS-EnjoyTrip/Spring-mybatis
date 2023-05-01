@@ -77,10 +77,15 @@
             #{contentId}, #{memberId}, #{rate}, #{content}
         )
     </insert>
-    
-    <update id="updateLocationLike" parameterType="string">
+
+    <update id="updateLocationLike" parameterType="map">
         UPDATE attraction_info
-        SET like_count = like_count + 1
+        <if test="flag.equals('plus')">
+            SET like_count = like_count + 1
+        </if>
+        <if test="flag.equals('minus')">
+            SET like_count = like_count - 1
+        </if>
         WHERE content_id = #{contentId}
     </update>
 </mapper>

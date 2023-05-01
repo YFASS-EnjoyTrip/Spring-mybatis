@@ -9,9 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class EnjoyTripApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(EnjoyTripApplication.class, args);
-
 	}
-
 }

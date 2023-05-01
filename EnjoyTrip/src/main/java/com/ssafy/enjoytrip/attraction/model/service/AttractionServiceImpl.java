@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -55,15 +56,15 @@ public class AttractionServiceImpl implements AttractionService{
         return locationReviews(String.valueOf(review.getContentId()));
     }
 
+
+    /**
+     * 여행지에 대하여 "좋아요" 처리
+     */
     @Override
     public ResponseEntity<AttractionResponseDto> saveLocationLike(Map<String, String> param) {
 
-
         try {
-            int result = mapper.selectLocationLike(param);
-//            mapper.insertLocationLike(param);
-
-//            mapper.updateLocationLike(param.get("contentId"));
+            checkLike(param);
         } catch (Exception e) {
             log.info("error={}", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -74,6 +75,21 @@ public class AttractionServiceImpl implements AttractionService{
         String message = "요청을 정상적으로 수행 했습니다.";
         return ResponseEntity.status(HttpStatus.OK)
                 .body(responseDto.successResponse(status, message, null));
+    }
+
+    private void checkLike(Map<String, String> param) throws SQLException {
+        int result = likeMapper.selectLike(param);
+
+        log.info("result={}", result);
+        if (result == 0) {
+            likeMapper.insertLike(param);
+            param.put("flag", "plus");
+            mapper.updateLocationLike(param);
+        } else {
+            likeMapper.deleteLike(param);
+            param.put("flag", "minus");
+            mapper.updateLocationLike(param);
+        }
     }
 
 }

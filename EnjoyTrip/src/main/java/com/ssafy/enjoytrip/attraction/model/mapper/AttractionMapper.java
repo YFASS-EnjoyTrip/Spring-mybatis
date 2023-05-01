@@ -24,10 +24,6 @@ public interface AttractionMapper {
 
     void insertLocationReview(ReviewDto review) throws SQLException;
 
-    void insertLike(Map<String, String> param) throws SQLException;
-
     @Transactional
-    void updateLocationLike(String contentId) throws SQLException;
-
-    int selectLocationLike(Map<String, String> param) throws SQLException;
+    void updateLocationLike(Map<String, String> param) throws SQLException;
 }
