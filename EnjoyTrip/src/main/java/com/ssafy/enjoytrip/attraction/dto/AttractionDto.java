@@ -12,7 +12,7 @@ public class AttractionDto {
     private String zipCode;
     private String tel;
     private String image;
-    private int readCount; // 확장 대비
+    private int viewCount; // 확장 대비
     private int sidoCode;
     private int gugunCode;
     private Double lat;

@@ -5,10 +5,9 @@ import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.mapper.AttractionMapper;
 import com.ssafy.enjoytrip.global.mapper.LikeMapper;
-import com.ssafy.enjoytrip.response.AttractionResponseDto;
+import com.ssafy.enjoytrip.response.ResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,57 +23,114 @@ public class AttractionServiceImpl implements AttractionService{
 
     private final AttractionMapper mapper;
     private final LikeMapper likeMapper;
-    private final AttractionResponseDto responseDto;
 
     @Override
-    public ResponseEntity<AttractionResponseDto> getLocations(String keyWord) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseDto.successGetLocations(mapper.getLocations(keyWord)));
+    public ResponseEntity<ResponseDto> getLocations(String keyWord) {
+        String message;
+        try {
+            List<AttractionDto> result = mapper.getLocations(keyWord);
+            message = "여행지 조회 요청 성공했습니다.";
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
+
+        } catch (Exception e) {
+
+            log.info("error={}", e);
+            message = "여행지 조회 요청에 실패했습니다.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
+        }
     }
 
     @Override
-    public ResponseEntity<AttractionResponseDto> searchLocations(SearchDto searchDto) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseDto.successSearchLocations(mapper.searchLocations(searchDto)));
+    public ResponseEntity<ResponseDto> searchLocations(SearchDto searchDto)  {
+        String message;
+        try {
+            List<AttractionDto> result = mapper.searchLocations(searchDto);
+
+            message = "여행지 검색 요청 성공했습니다.";
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
+        } catch (Exception e) {
+
+            log.info("error={}", e);
+            message = "여행지 검색 요청에 실패했습니다.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
+        }
     }
 
     @Override
-    public ResponseEntity<AttractionResponseDto> searchLocationDetail(String contentId) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseDto.successSearchLocationDetail(mapper.searchLocationDetail(contentId)));
+    public ResponseEntity<ResponseDto> searchLocationDetail(String contentId) {
+        String message;
+        try {
+            AttractionDto result = mapper.searchLocationDetail(contentId);
+
+            message = "여행지 상세조회 요청 성공했습니다.";
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
+        } catch (Exception e) {
+            log.info("error={}", e);
+            message = "여행지 상세조회 요청에 실패했습니다.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
+        }
     }
 
     @Override
-    public ResponseEntity<AttractionResponseDto> locationReviews(String contentId) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(responseDto.successLocationReviews(mapper.getLocationReviews(contentId)));
+    public ResponseEntity<ResponseDto> locationReviews(String contentId) {
+        String message;
+        try {
+            List<ReviewDto> result = mapper.getLocationReviews(contentId);
+
+            message = "여행지 리뷰 조회 요청 성공했습니다.";
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
+        } catch (Exception e) {
+            log.info("error={}", e);
+            message = "여행지 리뷰 조회 요청에 실패했습니다.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
+        }
     }
 
     @Override
-    public ResponseEntity<AttractionResponseDto> saveLocationReview(ReviewDto review) throws Exception {
-        mapper.insertLocationReview(review);
-        return locationReviews(String.valueOf(review.getContentId()));
-    }
+    public ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) {
+        String message;
+        try {
+            mapper.insertLocationReview(review);
+            return locationReviews(String.valueOf(review.getContentId()));
 
+        } catch (Exception e) {
+            log.info("error={}", e);
+            message = "여행지 리뷰 작성 요청에 실패했습니다.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
+        }
+
+    }
 
     /**
      * 여행지에 대하여 "좋아요" 처리
      */
     @Override
-    public ResponseEntity<AttractionResponseDto> saveLocationLike(Map<String, String> param) {
-
+    public ResponseEntity<ResponseDto> saveLocationLike(Map<String, String> param) {
+        String message;
         try {
             checkLike(param);
         } catch (Exception e) {
             log.info("error={}", e);
+            message = "좋아요 요청에 실패했습니다.";
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(responseDto.failResponse());
+                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
         }
 
         int status = HttpStatus.OK.value();
-        String message = "요청을 정상적으로 수행 했습니다.";
+        message = "좋아요 요청을 정상적으로 수행 했습니다.";
+        ResponseDto res = new ResponseDto(status, message, null);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(responseDto.successResponse(status, message, null));
+                .body(res);
     }
 
     private void checkLike(Map<String, String> param) throws SQLException {
@@ -91,5 +147,4 @@ public class AttractionServiceImpl implements AttractionService{
             mapper.updateLocationLike(param);
         }
     }
-
 }

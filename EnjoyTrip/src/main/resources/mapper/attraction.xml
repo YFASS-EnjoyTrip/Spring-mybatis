@@ -13,7 +13,7 @@
         <result column="zipcode" property="zipCode"/>
         <result column="tel" property="tel"/>
         <result column="first_image" property="image"/>
-        <result column="readcount" property="readCount"/>
+        <result column="view_count" property="viewCount"/>
         <result column="sido_code" property="sidoCode"/>
         <result column="gugun_code" property="gugunCode"/>
         <result column="latitude" property="lat"/>
@@ -32,13 +32,13 @@
     </resultMap>
 
     <select id="getLocations" resultMap="Locations">
-        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
          WHERE title like #{keyWord}
     </select>
 
     <select id="searchLocations" resultMap="Locations">
-        SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+        SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
          WHERE title like CONCAT(#{keyword}, '%')
         <if test="sido != null">
@@ -56,7 +56,7 @@
     </select>
 
     <select id="searchLocationDetail" resultMap="Locations">
-        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, readcount, sido_code, gugun_code, latitude, longitude, like_count
+        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
          WHERE content_id = #{contentId}
     </select>

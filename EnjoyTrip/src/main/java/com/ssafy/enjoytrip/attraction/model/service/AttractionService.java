@@ -4,21 +4,22 @@ import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
+import com.ssafy.enjoytrip.response.ResponseDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
 public interface AttractionService {
 
-    ResponseEntity<AttractionResponseDto> getLocations(String keyWord) throws Exception;
+    ResponseEntity<ResponseDto> getLocations(String keyWord);
 
-    ResponseEntity<AttractionResponseDto> searchLocations(SearchDto searchDto) throws Exception;
+    ResponseEntity<ResponseDto> searchLocations(SearchDto searchDto) ;
 
-    ResponseEntity<AttractionResponseDto> searchLocationDetail(String contentId) throws Exception;
+    ResponseEntity<ResponseDto> searchLocationDetail(String contentId);
 
-    ResponseEntity<AttractionResponseDto> locationReviews(String contentId) throws Exception;
+    ResponseEntity<ResponseDto> locationReviews(String contentId) ;
 
-    ResponseEntity<AttractionResponseDto> saveLocationReview(ReviewDto review) throws Exception;
+    ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review);
 
-    ResponseEntity<AttractionResponseDto> saveLocationLike(Map<String, String> param) throws Exception;
+    ResponseEntity<ResponseDto> saveLocationLike(Map<String, String> param) ;
 }
