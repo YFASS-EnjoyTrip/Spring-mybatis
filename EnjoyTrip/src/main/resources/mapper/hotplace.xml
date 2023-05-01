@@ -41,6 +41,13 @@
 		id =
 		#{id}
 	</update>
+
+	<update id="updateViewCount">
+		UPDATE hot_place_board 
+		SET 
+		view_count = view_count+1
+		WHERE id = #{id}
+	</update>
 	<delete id="deleteHotplace" parameterType="string">
 		DELETE FROM
 		hot_place_board

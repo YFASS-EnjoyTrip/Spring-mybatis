@@ -43,6 +43,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	public ResponseEntity<ResponseDto> detail(String id) {
 		ResponseDto res = new ResponseDto();
 		try {
+			hotplaceMapper.updateViewCount(id);
 			HotplaceDto h = hotplaceMapper.selectDetail(id);
 			log.info("service : detail = {}", h);
 			res.setStatus(HttpStatus.OK.value());
