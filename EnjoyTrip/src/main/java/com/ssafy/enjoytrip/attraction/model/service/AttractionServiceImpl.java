@@ -4,6 +4,7 @@ import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.mapper.AttractionMapper;
+import com.ssafy.enjoytrip.global.mapper.LikeMapper;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class AttractionServiceImpl implements AttractionService{
 
     private final AttractionMapper mapper;
+    private final LikeMapper likeMapper;
     private final AttractionResponseDto responseDto;
 
     @Override
@@ -56,18 +58,12 @@ public class AttractionServiceImpl implements AttractionService{
     @Override
     public ResponseEntity<AttractionResponseDto> saveLocationLike(Map<String, String> param) {
 
+
         try {
-            mapper.insertLocationLike(param);
-            String result = String.valueOf(param.get("id"));
-            log.info("id={}", result);
-//            Integer result = Integer.parseInt(param.get("id"));
-//            log.info("id={}", result);
+            int result = mapper.selectLocationLike(param);
+//            mapper.insertLocationLike(param);
 
-            if ("0".equals(result) || "null".equals(result)) {
-                throw new RuntimeException();
-            }
-
-            mapper.updateLocationLike(param.get("contentId"));
+//            mapper.updateLocationLike(param.get("contentId"));
         } catch (Exception e) {
             log.info("error={}", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

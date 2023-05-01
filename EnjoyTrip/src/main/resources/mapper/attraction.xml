@@ -77,23 +77,10 @@
             #{contentId}, #{memberId}, #{rate}, #{content}
         )
     </insert>
-
-    <insert id="insertLocationLike" parameterType="map" keyProperty="id" useGeneratedKeys="true">
-        INSERT INTO tb_like (member_id, type, content_id)
-             SELECT member_id, type, content_id
-               FROM (
-                    SELECT #{memberId} AS member_id, #{type} AS type, #{contentId} AS content_id) AS tmp
-          WHERE NOT EXISTS (
-                    SELECT 1
-                      FROM tb_like
-                     WHERE member_id = #{memberId} AND type = #{type} AND content_id = #{contentId}
-        )
-    </insert>
-
+    
     <update id="updateLocationLike" parameterType="string">
         UPDATE attraction_info
-           SET like_count = like_count + 1
-         WHERE content_id = #{contentId}
+        SET like_count = like_count + 1
+        WHERE content_id = #{contentId}
     </update>
-
 </mapper>

@@ -5,6 +5,7 @@ import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.jdbc.SQL;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -23,7 +24,10 @@ public interface AttractionMapper {
 
     void insertLocationReview(ReviewDto review) throws SQLException;
 
-    void insertLocationLike(Map<String, String> param) throws SQLException;
+    void insertLike(Map<String, String> param) throws SQLException;
 
+    @Transactional
     void updateLocationLike(String contentId) throws SQLException;
+
+    int selectLocationLike(Map<String, String> param) throws SQLException;
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.attraction.model.mapper.LikeMapper">
+
+    <select id="selectLike" parameterType="map" resultType="int">
+        SELECT count(*)
+          FROM tb_like
+         WHERE membeer_id = #{memberId} AND type = #{type} AND content_id = #{contentId}
+    </select>
+
+    <insert id="insertLike" parameterType="map" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO tb_like (member_id, type, content_id
+        )    VALUES (
+                    #{memberId}, #{type}, #{content_id}
+        )
+    </insert>
+
+</mapper>
