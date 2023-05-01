@@ -1,12 +1,22 @@
 package com.ssafy.enjoytrip.hotplace.model.service;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.servlet.ServletContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.enjoytrip.global.dto.FileDto;
 import com.ssafy.enjoytrip.global.mapper.LikeMapper;
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.hotplace.model.mapper.HotplaceMapper;
@@ -22,6 +32,9 @@ public class HotplaceServiceImpl implements HotplaceService {
 
 	private final HotplaceMapper hotplaceMapper;
 	private final LikeMapper likeMapper;
+	private final String UPLOAD_PATH = "/upload";
+	@Autowired
+	private ServletContext servletContext;
 
 	@Override
 	public ResponseEntity<ResponseDto> list() {
@@ -55,10 +68,38 @@ public class HotplaceServiceImpl implements HotplaceService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> write(HotplaceDto hotplace) {
+	public ResponseEntity<ResponseDto> write(HotplaceDto hotplace, MultipartFile[] files) {
 		String msg;
+		log.info("MultipartFile.isEmpty : {}", files[0].isEmpty());
 		try {
 			log.info("service : write = {}", hotplace);
+
+			if (!files[0].isEmpty()) {
+				String realPath = servletContext.getRealPath(UPLOAD_PATH);
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = realPath + File.separator + today;
+				log.info("저장 폴더 : {}", saveFolder);
+				File folder = new File(saveFolder);
+				if (!folder.exists())
+					folder.mkdirs();
+				List<FileDto> fileInfos = new ArrayList<>();
+				for (MultipartFile mfile : files) {
+					FileDto fileDto = new FileDto();
+					String originalFileName = mfile.getOriginalFilename();
+					if (!originalFileName.isEmpty()) {
+						String saveFileName = UUID.randomUUID().toString()
+								+ originalFileName.substring(originalFileName.lastIndexOf('.'));
+						fileDto.setSaveFolder(today);
+						fileDto.setOriginalFile(originalFileName);
+						fileDto.setSaveFile(saveFileName);
+						log.info("원본 파일 이름 : {}, 실제 저장 파일 이름 : {}", mfile.getOriginalFilename(), saveFileName);
+						mfile.transferTo(new File(folder, saveFileName));
+					}
+					fileInfos.add(fileDto);
+				}
+				hotplace.setFileInfos(fileInfos);
+			}
+
 			hotplaceMapper.insertHotplace(hotplace);
 			msg = "핫플레이스 게시글 작성 정상적으로 수행";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));

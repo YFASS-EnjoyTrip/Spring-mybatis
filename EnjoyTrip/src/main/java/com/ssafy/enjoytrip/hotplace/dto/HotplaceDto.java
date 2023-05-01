@@ -1,5 +1,9 @@
 package com.ssafy.enjoytrip.hotplace.dto;
 
+import java.util.List;
+
+import com.ssafy.enjoytrip.global.dto.FileDto;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -21,4 +25,6 @@ public class HotplaceDto {
 	private String likeCount;
 	@Setter
 	private String viewCount;
+	@Setter
+	private List<FileDto> fileInfos;
 }
