@@ -130,6 +130,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 			msg = "좋아요 수 변경 정상적으로 수행";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
+			e.printStackTrace();
 			msg = "서버에 문제가 발생했습니다.";
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));

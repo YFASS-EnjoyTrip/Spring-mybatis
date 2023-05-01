@@ -61,7 +61,7 @@ public class HotplaceController {
 	public ResponseEntity<ResponseDto> like(@PathVariable String memberId, @PathVariable String id) throws Exception {
 		Map<String, String> map = new HashMap<>();
 		map.put("memberId", memberId);
-		map.put("itemId",id);
+		map.put("contentId",id);
 		log.info("controller : like = {}", map);
 		return hotplaceService.like(map);
 	}

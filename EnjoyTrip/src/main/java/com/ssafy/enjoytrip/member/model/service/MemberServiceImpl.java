@@ -162,7 +162,7 @@ public class MemberServiceImpl implements MemberService {
 		try {
 			mapper.updateMemberProfileImg(map);
 			msg="프로필사진 수정이 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
 			msg="서버에 문제가 발생했습니다.";
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
@@ -174,10 +174,11 @@ public class MemberServiceImpl implements MemberService {
 		String msg;
 		log.info("Service : mypage-like = {}", nickname);
 		try {
-			Map<String, String> map = mapper.selectLike(nickname);
-			msg="프로필사진 수정이 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, map));
+			List<Map<String, String>> map = mapper.selectLike(nickname);
+			msg="좋아요한 목록 조회가 정상적으로 이루어졌습니다.";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, map));
 		} catch (Exception e) {
+			e.printStackTrace();
 			msg="서버에 문제가 발생했습니다.";
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}

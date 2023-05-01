@@ -49,7 +49,7 @@
 		<if test="check.equals('insert')">
 			SET like_count = like_count+1
 		</if>
-		WHERE id = #{itemId}
+		WHERE id = #{contentId}
 	</update>
 	<update id="updateViewCount">
 		UPDATE hot_place_board
