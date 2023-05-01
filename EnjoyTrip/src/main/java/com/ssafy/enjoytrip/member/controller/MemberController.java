@@ -100,5 +100,11 @@ public class MemberController {
 		log.info("controller : mypage-editProfileImg = {}", map);
 		return memberService.editProfileImg(map);
 	}
+	
+	@GetMapping("/mypage/{nickname}/like")
+	public ResponseEntity<ResponseDto> like(@PathVariable String nickname) throws Exception {
+		log.info("controller : mypage-like");
+		return memberService.like(nickname);
+	} 
 
 }

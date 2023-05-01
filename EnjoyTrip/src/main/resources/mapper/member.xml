@@ -24,6 +24,10 @@
 		OR
 		nickname=#{check}
 	</select>
+	<select id="selectLike" parameterType="string"
+		resultType="HashMap">
+
+	</select>
 	<insert id="insertMember" parameterType="memberDto">
 		INSERT INTO
 		member(`email`, `password`, `nickname`, `gender`)

@@ -31,4 +31,6 @@ public interface MemberService {
 
 	ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map);
 
+	ResponseEntity<ResponseDto> like(String nickname);
+
 }

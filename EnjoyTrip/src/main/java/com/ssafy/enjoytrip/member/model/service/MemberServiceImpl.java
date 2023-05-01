@@ -168,4 +168,18 @@ public class MemberServiceImpl implements MemberService {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
+
+	@Override
+	public ResponseEntity<ResponseDto> like(String nickname) {
+		String msg;
+		log.info("Service : mypage-like = {}", nickname);
+		try {
+			Map<String, String> map = mapper.selectLike(nickname);
+			msg="프로필사진 수정이 정상적으로 이루어졌습니다.";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, map));
+		} catch (Exception e) {
+			msg="서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+		}
+	}
 }

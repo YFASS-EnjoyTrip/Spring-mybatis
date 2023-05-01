@@ -28,4 +28,6 @@ public interface MemberMapper {
 
 	void updateMemberProfileImg(Map<String, String> map) throws SQLException;
 
+	Map<String, String> selectLike(String nickname) throws SQLException;
+
 }
