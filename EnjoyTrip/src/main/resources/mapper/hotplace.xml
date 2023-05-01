@@ -41,10 +41,19 @@
 		id =
 		#{id}
 	</update>
-
+	<update id="updateHotplaceLike" parameterType="map">
+		UPDATE hot_place_board
+		<if test="check.equals('delete')">
+			SET like_count = like_count-1
+		</if>
+		<if test="check.equals('insert')">
+			SET like_count = like_count+1
+		</if>
+		WHERE id = #{itemId}
+	</update>
 	<update id="updateViewCount">
-		UPDATE hot_place_board 
-		SET 
+		UPDATE hot_place_board
+		SET
 		view_count = view_count+1
 		WHERE id = #{id}
 	</update>

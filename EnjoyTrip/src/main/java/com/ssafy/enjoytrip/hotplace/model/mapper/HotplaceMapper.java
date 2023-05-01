@@ -2,11 +2,12 @@ package com.ssafy.enjoytrip.hotplace.model.mapper;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
-import com.ssafy.enjoytrip.member.dto.MemberDto;
 
 @Mapper
 public interface HotplaceMapper {
@@ -22,5 +23,8 @@ public interface HotplaceMapper {
 	void deleteHotplace(String id) throws SQLException;
 
 	void updateViewCount(String id) throws SQLException;
+	
+	@Transactional
+	void updateHotplaceLike(Map<String, String> map) throws SQLException;
 
 }

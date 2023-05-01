@@ -1,5 +1,6 @@
 package com.ssafy.enjoytrip.hotplace.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -54,6 +55,15 @@ public class HotplaceController {
 	public ResponseEntity<ResponseDto> delete(@RequestBody Map<String, String> map) throws Exception {
 		log.info("controller : hotplace - delete = {}", map);
 		return hotplaceService.delete(map.get("id"));
+	}
+	
+	@PostMapping("/like/{memberId}/{id}")
+	public ResponseEntity<ResponseDto> like(@PathVariable String memberId, @PathVariable String id) throws Exception {
+		Map<String, String> map = new HashMap<>();
+		map.put("memberId", memberId);
+		map.put("itemId",id);
+		log.info("controller : like = {}", map);
+		return hotplaceService.like(map);
 	}
 
 }

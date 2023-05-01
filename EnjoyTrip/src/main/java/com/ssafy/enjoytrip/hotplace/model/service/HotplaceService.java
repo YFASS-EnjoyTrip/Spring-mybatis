@@ -1,5 +1,7 @@
 package com.ssafy.enjoytrip.hotplace.model.service;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
@@ -16,5 +18,7 @@ public interface HotplaceService {
 	ResponseEntity<ResponseDto> edit(HotplaceDto hotplace);
 
 	ResponseEntity<ResponseDto> delete(String id);
+
+	ResponseEntity<ResponseDto> like(Map<String, String> map);
 
 }
