@@ -5,6 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/locations")
-public class AttratcionController {
-
+public class AttractionController {
+	
 }
