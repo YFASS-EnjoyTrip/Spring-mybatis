@@ -35,7 +35,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	private final HotplaceMapper hotplaceMapper;
 	private final FileMapper fileMapper;
 	private final LikeMapper likeMapper;
-	private final String UPLOAD_PATH = "/upload";
+	private final String UPLOAD_PATH = "/upload/hotplace";
 	@Autowired
 	private ServletContext servletContext;
 

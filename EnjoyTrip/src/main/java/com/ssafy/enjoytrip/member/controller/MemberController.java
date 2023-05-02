@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.response.ResponseDto;
@@ -93,10 +96,10 @@ public class MemberController {
 		return memberService.editBio(map);
 	}
 	@PutMapping("/mypage/{nickname}/edit/profile-img")
-	public ResponseEntity<ResponseDto> editProfileImg(@PathVariable String nickname, @RequestBody Map<String, String> img) throws Exception {
-		Map<String, String> map = new HashMap<>();
+	public ResponseEntity<ResponseDto> editProfileImg(@PathVariable String nickname, @RequestPart(value = "file") MultipartFile file) throws Exception {
+		Map<String, Object> map = new HashMap<>();
 		map.put("nickname", nickname);
-		map.put("profileImg", img.get("profileImg"));
+		map.put("file", file);
 		log.info("controller : mypage-editProfileImg = {}", map);
 		return memberService.editProfileImg(map);
 	}

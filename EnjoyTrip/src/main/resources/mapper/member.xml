@@ -80,7 +80,7 @@
 	</update>
 	<update id="updateMemberProfileImg" parameterType="map">
 		UPDATE member
-		SET profile_img = #{profileImg}
+		SET profile_img = #{fileId}
 		WHERE nickname = #{nickname}
 	</update>
 </mapper>
