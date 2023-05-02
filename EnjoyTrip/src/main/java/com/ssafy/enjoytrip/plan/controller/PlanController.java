@@ -42,7 +42,7 @@ public class PlanController {
             int fileId = fileUtil.upload(file);
             if (fileId != 0) form.setImage(fileId);
 
-            planService.savePlan(form);
+            planService.updatePlan(form);
 
             Map<String, Object> result = new HashMap<>();
             result.put("planId", form.getPlanId());
@@ -104,5 +104,65 @@ public class PlanController {
         }
 
         return null;
+    }
+
+    /**
+     * 플래너 기본정보 수정
+     */
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDto> updatePlanInfo(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
+        try {
+
+            // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
+            // 했다치고
+
+            // 파일 insert 후, file_id 가져오기
+            int fileId = fileUtil.upload(file);
+            if (fileId != 0) form.setImage(fileId);
+
+            planService.updatePlan(form);
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("planId", form.getPlanId());
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), "플랜 수정 완료", result));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * 플래너 삭제
+     */
+    @DeleteMapping("/delete/{planId}")
+    public ResponseEntity<ResponseDto> removePlan(@PathVariable int planId) {
+        try {
+            planService.deletePlan(planId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .body(new ResponseDto(HttpStatus.NO_CONTENT.value(), "정상적으로 삭제 되었습니다.", null));
+    }
+
+    /**
+     * 플랜너 상세 일정 수정
+     */
+    @PutMapping("/update/day")
+    public ResponseEntity<ResponseDto> updatePlanDetail(@RequestBody Map<String, Object> form) {
+        try {
+            log.info("form={}", form.toString());
+//            planService.updatePlanDetail(form);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "일정 수정 완료", null));
     }
 }

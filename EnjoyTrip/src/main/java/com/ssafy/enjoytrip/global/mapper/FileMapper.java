@@ -16,4 +16,5 @@ public interface FileMapper {
 
 	String selectFileIdByHotplaceId(String hotplacePK) throws SQLException;
 
+    void deletePlanImage(int planId) throws SQLException;
 }

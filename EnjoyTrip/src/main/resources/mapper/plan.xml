@@ -32,6 +32,22 @@
         )
     </insert>
 
+    <update id="updatePlan" parameterType="PlanForm">
+        UPDATE travel_plan
+           SET
+               image = #{image},
+               title = #{title},
+               start_date = #{startDate},
+               end_date = #{endDate}
+         WHERE travel_plan_id = #{planId}
+    </update>
+
+    <delete id="deletePlan" parameterType="int">
+        DELETE
+          FROM travel_plan
+         WHERE travel_plan_id = #{planId}
+    </delete>
+
     <insert id="createPlanDays" parameterType="map">
         INSERT INTO travel_plan_detail (
             travel_plan_id, day, content_id, content_order
@@ -53,6 +69,19 @@
          WHERE t.travel_plan_id = #{planId}
     </select>
 
+    <delete id="deletePlanDay" parameterType="map">
+        DELETE
+          FROM travel_plan_detail
+         WHERE planId = #{plandId} and day = #{day}
+    </delete>
+
+    <insert id="insertPlanDay" parameterType="map">
+        INSERT INTO travel_plan_detail (
+            travel_plan_id, day, content_id, content_order
+        )    VALUES (
+            #{planId}, #{day}, #{items.contentId}, #{items.order}
+        )
+    </insert>
     <select id="selectPlanInfo" parameterType="int" resultType="java.util.LinkedHashMap">
         SELECT p.travel_plan_id as planId, m.nickname as nickName, p.title as title, p.view_count as viewCount, p.like_count as likeCount
           FROM travel_plan p INNER JOIN member m
