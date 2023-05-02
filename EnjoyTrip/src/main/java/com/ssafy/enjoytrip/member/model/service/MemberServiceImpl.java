@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
-//	private final ResponseDto responseDto;
 
 	@Override
 	public ResponseEntity<ResponseDto> login(MemberDto member, HttpSession session) throws Exception {
