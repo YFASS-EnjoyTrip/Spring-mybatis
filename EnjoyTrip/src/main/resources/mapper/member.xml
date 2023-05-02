@@ -24,6 +24,25 @@
 		OR
 		nickname=#{check}
 	</select>
+	<select id="selectLike" parameterType="String"
+		resultType="HashMap">
+		SELECT
+		l.type,
+		m.nickname,
+		CASE
+		WHEN l.type = 'H' THEN h.place_title
+		WHEN l.type = 'A' THEN a.title
+		WHEN l.type = 'P' THEN p.title
+		END AS title
+		FROM
+		tb_like l
+		INNER JOIN member m ON l.member_id = m.member_id
+		LEFT JOIN hot_place_board h ON l.type = 'H' AND l.item_id = h.id
+		LEFT JOIN attraction_info a ON l.type = 'A' AND l.item_id = a.content_id
+		LEFT JOIN travel_plan p ON l.type = 'P' AND l.item_id = p.travle_plan_id
+		WHERE
+		m.nickname = #{nickname}
+	</select>
 	<insert id="insertMember" parameterType="memberDto">
 		INSERT INTO
 		member(`email`, `password`, `nickname`, `gender`)
@@ -55,12 +74,13 @@
 	</update>
 	<update id="updateMemberBio" parameterType="map">
 		UPDATE member
-		SET bio = #{bio}
+		SET bio
+		= #{bio}
 		WHERE nickname = #{nickname}
 	</update>
 	<update id="updateMemberProfileImg" parameterType="map">
 		UPDATE member
-		SET profile_img = #{profileImg}
+		SET profile_img = #{fileId}
 		WHERE nickname = #{nickname}
 	</update>
 </mapper>

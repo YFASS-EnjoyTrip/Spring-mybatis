@@ -27,4 +27,6 @@ public interface HotplaceMapper {
 	@Transactional
 	void updateHotplaceLike(Map<String, String> map) throws SQLException;
 
+	void updateContentImg(Map<String, String> img) throws SQLException;
+
 }

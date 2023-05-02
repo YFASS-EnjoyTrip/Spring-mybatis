@@ -30,6 +30,10 @@
 		hot_place_board (member_id, place_title, place_content)
 		VALUES
 		(#{memberId}, #{placeTitle}, #{placeContent})
+		<selectKey resultType="String" keyProperty="id"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
 	</insert>
 	<update id="updateHotplace">
 		UPDATE hot_place_board
@@ -49,13 +53,20 @@
 		<if test="check.equals('insert')">
 			SET like_count = like_count+1
 		</if>
-		WHERE id = #{itemId}
+		WHERE id = #{contentId}
 	</update>
 	<update id="updateViewCount">
 		UPDATE hot_place_board
 		SET
 		view_count = view_count+1
 		WHERE id = #{id}
+	</update>
+	<update id="updateContentImg">
+		UPDATE hot_place_board
+		SET 
+		content_img = #{fileId}
+		WHERE 
+		(id = #{hotplaceId})
 	</update>
 	<delete id="deleteHotplace" parameterType="string">
 		DELETE FROM

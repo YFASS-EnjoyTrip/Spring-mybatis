@@ -3,23 +3,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ssafy.enjoytrip.global.mapper.LikeMapper">
+<select id="selectLike" parameterType="map" resultType="int">
+		SELECT
+		count(*)
+		FROM tb_like
+		WHERE member_id = #{memberId} AND type = #{type}
+		AND item_id = #{contentId}
+	</select>
 
-    <select id="selectLike" parameterType="map" resultType="int">
-        SELECT count(*)
-          FROM tb_like
-         WHERE member_id = #{memberId} AND type = #{type} AND item_id = #{contentId}
-    </select>
+	<insert id="insertLike" parameterType="map">
+		INSERT INTO tb_like
+		(member_id, type, item_id)
+		VALUES
+		(#{memberId}, #{type}, #{contentId})
+	</insert>
 
-    <insert id="insertLike" parameterType="map">
-        INSERT INTO tb_like (member_id, type, item_id
-        )  VALUES (
-                    #{memberId}, #{type}, #{contentId}
-        )
-    </insert>
-
-    <delete id="deleteLike" parameterType="map">
-        DELETE
-          FROM tb_like
-         WHERE member_id = #{memberId} AND type = #{type} AND item_id = #{contentId}
-    </delete>
+	<delete id="deleteLike" parameterType="map">
+		DELETE
+		FROM tb_like
+		WHERE
+		member_id = #{memberId} AND type = #{type} AND item_id = #{contentId}
+	</delete>
 </mapper>

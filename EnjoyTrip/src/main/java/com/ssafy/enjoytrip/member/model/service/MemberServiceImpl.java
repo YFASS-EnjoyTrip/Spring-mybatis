@@ -1,15 +1,25 @@
 package com.ssafy.enjoytrip.member.model.service;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.enjoytrip.global.dto.FileDto;
+import com.ssafy.enjoytrip.global.mapper.FileMapper;
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.mapper.MemberMapper;
@@ -24,7 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
-//	private final ResponseDto responseDto;
+	private final FileMapper fileMapper;
+	private final String UPLOAD_PATH = "/upload/member";
+	@Autowired
+	private ServletContext servletContext;
 
 	@Override
 	public ResponseEntity<ResponseDto> login(MemberDto member, HttpSession session) throws Exception {
@@ -34,10 +47,12 @@ public class MemberServiceImpl implements MemberService {
 		if (m != null) {
 			session.setAttribute("memberInfo", m);
 			msg = "로그인 정상적으로 수행";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, member.getNickname()));
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(HttpStatus.OK.value(), msg, member.getNickname()));
 		} else {
 			msg = "서버에 에러가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		}
 	}
 
@@ -55,11 +70,12 @@ public class MemberServiceImpl implements MemberService {
 		String msg;
 		try {
 			mapper.insertMember(member);
-			msg="회원가입 정상적으로 수행";
+			msg = "회원가입 정상적으로 수행";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			msg="서버에 에러가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 에러가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
@@ -69,11 +85,12 @@ public class MemberServiceImpl implements MemberService {
 		MemberDto isExist = mapper.selectMemberByCheck(check);
 		String msg;
 		if (isExist != null) {
-			msg=check + " 은 이미 존재합니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = check + " 은 이미 존재합니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		} else
-			msg=check + " 은 사용 가능합니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
+			msg = check + " 은 사용 가능합니다.";
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 	}
 
 	@Override
@@ -82,16 +99,17 @@ public class MemberServiceImpl implements MemberService {
 		String msg;
 		try {
 			mapper.deleteMember(member);
-			msg="회원 탈퇴가 정상적으로 이루어졌습니다.";
+			msg = "회원 탈퇴가 정상적으로 이루어졌습니다.";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			msg="서버에 문제가 생겼습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 문제가 생겼습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	/****************************** MyPage *************************************/
-	
+
 	@Override
 	public ResponseEntity<ResponseDto> info(String nickname) {
 		log.info("Service : mypage-info = {}", nickname);
@@ -107,8 +125,9 @@ public class MemberServiceImpl implements MemberService {
 			msg = "회원정보 조회가 정상적으로 이루어졌습니다.";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, map));
 		} catch (Exception e) {
-			msg="서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
@@ -119,11 +138,12 @@ public class MemberServiceImpl implements MemberService {
 		try {
 			List<HotplaceDto> list = mapper.selectHotplaceByNickname(nickname);
 			log.info("Service result : mypage-hotplace = {}", list);
-			msg="작성한 핫플레이스 조회가 정상적으로 이루어졌습니다.";
+			msg = "작성한 핫플레이스 조회가 정상적으로 이루어졌습니다.";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, list));
 		} catch (Exception e) {
-			msg="서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
@@ -133,11 +153,12 @@ public class MemberServiceImpl implements MemberService {
 		log.info("Service : mypage-editPassword = {}", map);
 		try {
 			mapper.updateMemberPassword(map);
-			msg="비밀번호 수정이 정상적으로 이루어졌습니다.";
+			msg = "비밀번호 수정이 정상적으로 이루어졌습니다.";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			msg="서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
@@ -147,25 +168,76 @@ public class MemberServiceImpl implements MemberService {
 		log.info("Service : mypage-editBio = {}", map);
 		try {
 			mapper.updateMemberBio(map);
-			msg="한줄소개 수정이 정상적으로 이루어졌습니다.";
+			msg = "한줄소개 수정이 정상적으로 이루어졌습니다.";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			msg="서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) {
+	public ResponseEntity<ResponseDto> editProfileImg(Map<String, Object> map) {
 		String msg;
 		log.info("Service : mypage-editProfileImg = {}", map);
 		try {
-			mapper.updateMemberProfileImg(map);
-			msg="프로필사진 수정이 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			log.info("service : editProfileImg = {}", map);
+			if (!((MultipartFile) map.get("file")).isEmpty()) {
+				MultipartFile mfile =  (MultipartFile) map.get("file");
+				String realPath = servletContext.getRealPath(UPLOAD_PATH);
+				String today = new SimpleDateFormat("yyMMdd").format(new Date());
+				String saveFolder = realPath + File.separator + today;
+				log.info("저장 폴더 : {}", saveFolder);
+				File folder = new File(saveFolder);
+				if (!folder.exists())
+					folder.mkdirs();
+				FileDto fileDto = new FileDto();
+				String originalFileName = mfile.getOriginalFilename();
+				if (!originalFileName.isEmpty()) {
+					String type = originalFileName.substring(originalFileName.lastIndexOf('.'));
+					String saveFileName = UUID.randomUUID().toString() + type;
+					String size = "" + mfile.getSize();
+					fileDto.setSaveFolder(today);
+					fileDto.setOriginalFile(originalFileName);
+					fileDto.setSaveFile(saveFileName);
+					fileDto.setType(type);
+					fileDto.setSize(size);
+					log.info("원본 파일 이름 : {}, 실제 저장 파일 이름 : {}, 확장자 : {}", mfile.getOriginalFilename(), saveFileName,
+							type);
+					mfile.transferTo(new File(folder, saveFileName));
+				}
+				log.info("fileDto : {}", fileDto);
+				fileMapper.insertFileInfo(fileDto);
+				Map<String, String> img = new HashMap<>();
+				img.put("nickname",map.get("nickname").toString());
+				img.put("fileId",fileDto.getFileId());
+				log.info("updateContentImg : {}", img);
+				mapper.updateMemberProfileImg(img);
+			}
+
+			msg = "프로필 사진 변경 정상적으로 수행";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
-			msg="서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+		}
+	}
+
+	@Override
+	public ResponseEntity<ResponseDto> like(String nickname) {
+		String msg;
+		log.info("Service : mypage-like = {}", nickname);
+		try {
+			List<Map<String, String>> map = mapper.selectLike(nickname);
+			msg = "좋아요한 목록 조회가 정상적으로 이루어졌습니다.";
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, map));
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg = "서버에 문제가 발생했습니다.";
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
 		}
 	}
 }

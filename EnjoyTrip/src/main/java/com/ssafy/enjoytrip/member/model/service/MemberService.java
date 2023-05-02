@@ -29,6 +29,8 @@ public interface MemberService {
 
 	ResponseEntity<ResponseDto> editBio(Map<String, String> map);
 
-	ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map);
+	ResponseEntity<ResponseDto> editProfileImg(Map<String, Object> map);
+
+	ResponseEntity<ResponseDto> like(String nickname);
 
 }

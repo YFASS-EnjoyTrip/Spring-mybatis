@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.hotplace.model.service.HotplaceService;
@@ -35,14 +38,14 @@ public class HotplaceController {
 
 	@GetMapping("/detail/{id}")
 	public ResponseEntity<ResponseDto> detail(@PathVariable String id) throws Exception {
-		log.info("controller : hotplace - list = {}", id);
+		log.info("controller : hotplace - detail = {}", id);
 		return hotplaceService.detail(id);
 	}
 
 	@PostMapping("/write")
-	public ResponseEntity<ResponseDto> write(@RequestBody HotplaceDto hotplace) throws Exception {
-		log.info("controller : hotplace - list = {}", hotplace);
-		return hotplaceService.write(hotplace);
+	public ResponseEntity<ResponseDto> write(@RequestPart(value = "hotplace") HotplaceDto hotplace, @RequestPart(value = "file") MultipartFile[] files) throws Exception {
+		log.info("controller : hotplace - write = {}", hotplace);
+		return hotplaceService.write(hotplace, files);
 	}
 
 	@PutMapping("/edit")
@@ -61,7 +64,7 @@ public class HotplaceController {
 	public ResponseEntity<ResponseDto> like(@PathVariable String memberId, @PathVariable String id) throws Exception {
 		Map<String, String> map = new HashMap<>();
 		map.put("memberId", memberId);
-		map.put("itemId",id);
+		map.put("contentId",id);
 		log.info("controller : like = {}", map);
 		return hotplaceService.like(map);
 	}
