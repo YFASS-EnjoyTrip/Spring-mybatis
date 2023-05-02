@@ -1,16 +1,15 @@
 package com.ssafy.enjoytrip.plan.dto;
 
-import lombok.Getter;
+import lombok.Data;
 
-import java.util.List;
-
-@Getter
-public class PlanDto {
+@Data
+public class PlanForm {
     private int planId;
     private int memberId;
-    private String image;
     private String title;
+    private int image;
     private String startDate;
     private String endDate;
-    private List<DayDto> planDetail;
+    private int viewCount;
+    private int likeCount;
 }
