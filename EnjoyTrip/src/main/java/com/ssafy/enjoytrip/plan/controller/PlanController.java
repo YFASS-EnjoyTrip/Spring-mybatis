@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -26,6 +28,9 @@ public class PlanController {
     private final PlanService planService;
     private final FileUtil fileUtil;
 
+    /**
+     * 여행 플래너 생성 
+     */
     @PostMapping("/write")
     public ResponseEntity<ResponseDto> addPlan(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
         try {
@@ -52,13 +57,52 @@ public class PlanController {
         return null;
     }
 
-    @PostMapping("/write/day")
-    public ResponseEntity<ResponseDto> addPlanDays(@RequestBody DayForm form) {
-        for (DayDto item : form.getItems()) {
-            log.info("item={}", item.getContentId());
+    @GetMapping("/list")
+    public ResponseEntity<ResponseDto> getPlans() {
+        // JWT 토큰 받았다 치고 회원ID 1로 테스트
+        int memberId = 1;
+        try {
+            List<PlanForm> result = planService.findPlans(memberId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return null;
     }
 
+    /**
+     * 여행 상세 일정 생성
+     */
+    @PostMapping("/write/day")
+    public ResponseEntity<ResponseDto> addPlanDays(@RequestBody DayForm form) {
+        try {
+            planService.savePlanDays(form);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto(HttpStatus.CREATED.value(), "여행 일정이 정상적으로 처리 되었습니다", null));
+    }
+
+    /**
+     * 여행 상세 일정 조회
+     */
+    @GetMapping("/list/{planId}")
+    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) {
+        //회원권한 검사 했다 치고
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            result.put("planInfo", planService.findPlanInfo(planId));
+            result.put("dayInfo", planService.findPlanDetail(planId));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

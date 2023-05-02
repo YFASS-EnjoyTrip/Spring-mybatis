@@ -4,6 +4,26 @@
 
 <mapper namespace="com.ssafy.enjoytrip.plan.model.mapper.PlanMapper">
 
+    <resultMap id="planMap" type="PlanForm">
+        <result column="travel_plan_id" property="planId"/>
+        <result column="member_id" property="memberId"/>
+        <result column="image" property="image"/>
+        <result column="title" property="title"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+    </resultMap>
+
+    <resultMap id="planDetailMap" type="java.util.LinkedHashMap">
+        <result column="content_id" property="contentId"/>
+        <result column="content_type_id" property="type"/>
+        <result column="title" property="title"/>
+        <result column="first_image" property="image"/>
+        <result column="latitude" property="lat"/>
+        <result column="longitude" property="lng"/>
+    </resultMap>
+
     <insert id="createPlan" parameterType="PlanForm" keyProperty="planId" useGeneratedKeys="true">
         INSERT INTO travel_plan (
                     member_id, title, image, start_date, end_date
@@ -12,4 +32,31 @@
         )
     </insert>
 
+    <insert id="createPlanDays" parameterType="map">
+        INSERT INTO travel_plan_detail (
+            travel_plan_id, day, content_id, content_order
+        )    VALUES (
+            #{planId}, #{item.day}, #{item.contentId}, #{item.order}
+        )
+    </insert>
+
+    <select id="selectAllPlans" parameterType="int" resultMap="planMap">
+        SELECT *
+          FROM travel_plan
+         WHERE member_id = #{memberId}
+    </select>
+
+    <select id="selectPlanDetail" parameterType="int" resultMap="planDetailMap">
+        SELECT a.content_id, a.content_type_id, a.first_image, a.title, a.latitude, a.longitude
+          FROM travel_plan_detail t INNER JOIN attraction_info a
+            ON t.content_id = a.content_id
+         WHERE t.travel_plan_id = #{planId}
+    </select>
+
+    <select id="selectPlanInfo" parameterType="int" resultType="java.util.LinkedHashMap">
+        SELECT p.travel_plan_id as planId, m.nickname as nickName, p.title as title, p.view_count as viewCount, p.like_count as likeCount
+          FROM travel_plan p INNER JOIN member m
+            ON p.member_id = m.member_id
+         WHERE p.travel_plan_id = #{planId}
+    </select>
 </mapper>
