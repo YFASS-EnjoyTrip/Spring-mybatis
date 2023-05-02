@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.enjoytrip.global.dto.FileDto;
+import com.ssafy.enjoytrip.global.mapper.FileMapper;
 import com.ssafy.enjoytrip.global.mapper.LikeMapper;
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.hotplace.model.mapper.HotplaceMapper;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class HotplaceServiceImpl implements HotplaceService {
 
 	private final HotplaceMapper hotplaceMapper;
+	private final FileMapper fileMapper;
 	private final LikeMapper likeMapper;
 	private final String UPLOAD_PATH = "/upload";
 	@Autowired
@@ -73,7 +76,8 @@ public class HotplaceServiceImpl implements HotplaceService {
 		log.info("MultipartFile.isEmpty : {}", files[0].isEmpty());
 		try {
 			log.info("service : write = {}", hotplace);
-
+			hotplaceMapper.insertHotplace(hotplace);
+			String hotplacePK = hotplace.getId();
 			if (!files[0].isEmpty()) {
 				String realPath = servletContext.getRealPath(UPLOAD_PATH);
 				String today = new SimpleDateFormat("yyMMdd").format(new Date());
@@ -87,23 +91,43 @@ public class HotplaceServiceImpl implements HotplaceService {
 					FileDto fileDto = new FileDto();
 					String originalFileName = mfile.getOriginalFilename();
 					if (!originalFileName.isEmpty()) {
-						String saveFileName = UUID.randomUUID().toString()
-								+ originalFileName.substring(originalFileName.lastIndexOf('.'));
+						String type = originalFileName.substring(originalFileName.lastIndexOf('.'));
+						String saveFileName = UUID.randomUUID().toString() + type;
+						String size = "" + mfile.getSize();
 						fileDto.setSaveFolder(today);
 						fileDto.setOriginalFile(originalFileName);
 						fileDto.setSaveFile(saveFileName);
-						log.info("원본 파일 이름 : {}, 실제 저장 파일 이름 : {}", mfile.getOriginalFilename(), saveFileName);
+						fileDto.setType(type);
+						fileDto.setSize(size);
+						log.info("원본 파일 이름 : {}, 실제 저장 파일 이름 : {}, 확장자 : {}", mfile.getOriginalFilename(), saveFileName,
+								type);
 						mfile.transferTo(new File(folder, saveFileName));
 					}
 					fileInfos.add(fileDto);
+					log.info("fileDto : {}", fileDto);
+					fileMapper.insertFileInfo(fileDto);
+					Map<String, Object> map = new HashMap<>();
+					map.put("hotplaceId",hotplacePK);
+					map.put("fileId",fileDto.getFileId());
+					log.info("HotplaceFileMap : {}", map);
+					fileMapper.insertHotplaceFileMap(map);
 				}
-				hotplace.setFileInfos(fileInfos);
+				// 입력된 파일 중 첫번째값 썸네일로 사용하기 위해 select해서 가져오기
+				log.info("selectFileIdByHotplaceId : {}", hotplacePK);
+				String fileId = fileMapper.selectFileIdByHotplaceId(hotplacePK);
+				// 가져온 fileId를 hotplace테이블의 사진 컬럼에 넣기
+				Map<String, String> img = new HashMap<String, String>();
+				img.put("fileId",fileId);
+				img.put("hotplaceId",hotplacePK);
+				log.info("updateContentImg : {}", img);
+				hotplaceMapper.updateContentImg(img);
 			}
 
-			hotplaceMapper.insertHotplace(hotplace);
+			
 			msg = "핫플레이스 게시글 작성 정상적으로 수행";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 		} catch (Exception e) {
+			e.printStackTrace();
 			msg = "서버에 문제가 발생했습니다.";
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
