@@ -7,7 +7,7 @@ public class PlanForm {
     private int planId;
     private int memberId;
     private String title;
-    private int image;
+    private String image;
     private String startDate;
     private String endDate;
     private int viewCount;

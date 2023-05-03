@@ -1,11 +1,9 @@
 package com.ssafy.enjoytrip.plan.controller;
 
-import com.ssafy.enjoytrip.global.util.FileUtil;
-import com.ssafy.enjoytrip.plan.dto.DayDto;
+import com.ssafy.enjoytrip.global.service.FileService;
 import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
 import com.ssafy.enjoytrip.plan.model.service.PlanService;
-import com.ssafy.enjoytrip.plan.model.service.PlanServiceImpl;
 import com.ssafy.enjoytrip.response.ResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +24,7 @@ import java.util.Map;
 public class PlanController {
 
     private final PlanService planService;
-    private final FileUtil fileUtil;
+    private final FileService fileService;
 
     /**
      * 여행 플래너 생성 
@@ -38,11 +36,10 @@ public class PlanController {
             // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
             // 했다치고
 
-            // 파일 insert 후, file_id 가져오기
-            int fileId = fileUtil.upload(file);
-            if (fileId != 0) form.setImage(fileId);
-
-            planService.updatePlan(form);
+            String imageUrl = fileService.uploadFile(file);
+            log.info(imageUrl);
+            form.setImage(imageUrl);
+            planService.savePlan(form);
 
             Map<String, Object> result = new HashMap<>();
             result.put("planId", form.getPlanId());
@@ -106,6 +103,7 @@ public class PlanController {
         return null;
     }
 
+    //TODO
     /**
      * 플래너 기본정보 수정
      */
@@ -117,8 +115,6 @@ public class PlanController {
             // 했다치고
 
             // 파일 insert 후, file_id 가져오기
-            int fileId = fileUtil.upload(file);
-            if (fileId != 0) form.setImage(fileId);
 
             planService.updatePlan(form);
 
