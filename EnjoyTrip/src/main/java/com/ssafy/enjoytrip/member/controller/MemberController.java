@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 
 import com.ssafy.enjoytrip.global.service.FileService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.response.ResponseDto;
@@ -38,21 +38,27 @@ public class MemberController {
 	@GetMapping("/check/{check}")
 	public ResponseEntity<ResponseDto> check(@PathVariable String check) throws Exception {
 		log.info("controller : check Email or Nickname = {}", check);
-		return memberService.check(check);
+		memberService.check(check);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "사용 가능 합니다", null));
 	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseDto> signup(@RequestBody MemberDto member) throws Exception {
 		log.info("controller : signup = {}", member);
-		return memberService.signup(member);
+		memberService.signup(member);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ResponseDto(HttpStatus.CREATED.value(), "회원가입 성공", null));
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpSession session)
-			throws Exception {
+	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
 		log.info("controller : login = {}", member);
-		return memberService.login(member, session);
+		memberService.login(member);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "로그인 성공", member));
 	}
+
 
 	@GetMapping("/logout")
 	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
@@ -96,7 +102,6 @@ public class MemberController {
 		return memberService.editBio(map);
 	}
 
-	//TODO
 	@PutMapping("/mypage/{nickname}/edit/profile-img")
 	public ResponseEntity<ResponseDto> editProfileImg(@PathVariable String nickname, @RequestPart(value = "file") MultipartFile file) throws Exception {
 		Map<String, String> map = new HashMap<>();

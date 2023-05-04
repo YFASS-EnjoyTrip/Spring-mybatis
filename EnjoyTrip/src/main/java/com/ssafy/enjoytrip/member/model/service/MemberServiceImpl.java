@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,26 +36,26 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
-	private final FileMapper fileMapper;
-	private final String UPLOAD_PATH = "/upload/member";
-	@Autowired
-	private ServletContext servletContext;
 
+
+	// TODO JWT 로직 추가 예정
 	@Override
-	public ResponseEntity<ResponseDto> login(MemberDto member, HttpSession session) throws Exception {
-		MemberDto m = mapper.selectMember(member);
-		String msg;
-		log.info("Service : login = {}", m);
-		if (m != null) {
-			session.setAttribute("memberInfo", m);
-			msg = "로그인 정상적으로 수행";
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseDto(HttpStatus.OK.value(), msg, member.getNickname()));
-		} else {
-			msg = "서버에 에러가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.OK.value(), msg, null));
+	public MemberDto login(MemberDto member) throws Exception {
+
+		MemberDto m = mapper.findMemberByEmail(member.getEmail());
+
+		if (m == null || !member.getPassword().equals(m.getPassword())) {
+			throw new BadCredentialsException("이메일, 비밀번호를 확인 해주세요.");
 		}
+
+		// JWT 토큰 로직이 들어올 자리
+
+		member.setNickname(m.getNickname());
+		member.setProfileImg(m.getProfileImg());
+		member.setBio(m.getBio());
+		member.setPassword("");
+
+		return member;
 	}
 
 	@Override
@@ -65,33 +66,26 @@ public class MemberServiceImpl implements MemberService {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 	}
 
+	//TODO 비밀번호 암호화 필요 with Spring Security
 	@Override
-	public ResponseEntity<ResponseDto> signup(MemberDto member) {
+	public void signup(MemberDto member) throws Exception {
+
+		// 비밀번호 암호화 로직 구현 필요
 		log.info("Service : signup = {}", member);
-		String msg;
-		try {
-			mapper.insertMember(member);
-			msg = "회원가입 정상적으로 수행";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
-		} catch (Exception e) {
-			msg = "서버에 에러가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
+		if (mapper.selectMemberByCheck(member.getEmail()) != null) {
+			throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
 		}
+
+		mapper.insertMember(member);
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> check(String check) throws Exception {
+	public void check(String check) throws Exception {
 		log.info("Service check Email or Nickname = {}", check);
 		MemberDto isExist = mapper.selectMemberByCheck(check);
-		String msg;
 		if (isExist != null) {
-			msg = check + " 은 이미 존재합니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		} else
-			msg = check + " 은 사용 가능합니다.";
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
+			throw new IllegalArgumentException("이미 존재 하는 이메일 입니다");
+		}
 	}
 
 	@Override

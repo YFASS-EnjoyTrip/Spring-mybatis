@@ -12,13 +12,13 @@ import com.ssafy.enjoytrip.response.ResponseDto;
 
 public interface MemberService {
 
-	ResponseEntity<ResponseDto> login(MemberDto member, HttpSession session) throws Exception;
+	MemberDto login(MemberDto member) throws Exception;
 
 	ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception;
 
-	ResponseEntity<ResponseDto> signup(MemberDto member);
+	void signup(MemberDto member) throws Exception;
 
-	ResponseEntity<ResponseDto> check(String check) throws Exception;
+	void check(String check) throws Exception;
 
 	ResponseEntity<ResponseDto> secession(MemberDto member);
 

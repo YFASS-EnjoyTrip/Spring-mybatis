@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
+import org.apache.ibatis.jdbc.SQL;
 
 @Mapper
 public interface MemberMapper {
@@ -30,4 +31,5 @@ public interface MemberMapper {
 
 	List<Map<String, String>> selectLike(String nickname) throws SQLException;
 
+	MemberDto findMemberByEmail(String email) throws SQLException;
 }
