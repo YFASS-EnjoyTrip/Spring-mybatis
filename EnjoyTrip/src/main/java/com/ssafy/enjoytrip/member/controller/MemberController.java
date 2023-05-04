@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.ssafy.enjoytrip.global.service.FileService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,12 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @RequestMapping("/member")
+@AllArgsConstructor
 public class MemberController {
 	private final MemberService memberService;
-
-	public MemberController(MemberService memberService) {
-		this.memberService = memberService;
-	}
+	private final FileService fileService;
 
 	// Email / Nickname Check
 	@GetMapping("/check/{check}")
@@ -95,11 +95,15 @@ public class MemberController {
 		log.info("controller : mypage-editBio = {}", map);
 		return memberService.editBio(map);
 	}
+
+	//TODO
 	@PutMapping("/mypage/{nickname}/edit/profile-img")
 	public ResponseEntity<ResponseDto> editProfileImg(@PathVariable String nickname, @RequestPart(value = "file") MultipartFile file) throws Exception {
-		Map<String, Object> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 		map.put("nickname", nickname);
-		map.put("file", file);
+
+		String imageUrl = fileService.uploadFile(file);
+		map.put("image", imageUrl);
 		log.info("controller : mypage-editProfileImg = {}", map);
 		return memberService.editProfileImg(map);
 	}

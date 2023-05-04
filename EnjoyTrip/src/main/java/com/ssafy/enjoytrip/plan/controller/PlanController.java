@@ -35,7 +35,6 @@ public class PlanController {
 
             // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
             // 했다치고
-
             String imageUrl = fileService.uploadFile(file);
             log.info(imageUrl);
             form.setImage(imageUrl);

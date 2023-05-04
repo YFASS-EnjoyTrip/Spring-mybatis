@@ -1,5 +1,6 @@
 package com.ssafy.enjoytrip.member.model.service;
 
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -29,7 +30,7 @@ public interface MemberService {
 
 	ResponseEntity<ResponseDto> editBio(Map<String, String> map);
 
-	ResponseEntity<ResponseDto> editProfileImg(Map<String, Object> map);
+	ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) throws SQLException;
 
 	ResponseEntity<ResponseDto> like(String nickname);
 

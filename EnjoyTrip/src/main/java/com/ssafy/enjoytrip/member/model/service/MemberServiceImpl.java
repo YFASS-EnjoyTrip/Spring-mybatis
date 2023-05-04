@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.member.model.service;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,6 +123,8 @@ public class MemberServiceImpl implements MemberService {
 			map.put("email", m.getEmail());
 			map.put("bio", m.getBio());
 			map.put("gender", m.getGender());
+			map.put("profileImage", m.getProfileImg());
+
 			msg = "회원정보 조회가 정상적으로 이루어졌습니다.";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, map));
 		} catch (Exception e) {
@@ -178,51 +181,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> editProfileImg(Map<String, Object> map) {
+	public ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) throws SQLException {
 		String msg;
+		mapper.updateMemberProfileImg(map);
 		log.info("Service : mypage-editProfileImg = {}", map);
-		try {
-			log.info("service : editProfileImg = {}", map);
-			if (!((MultipartFile) map.get("file")).isEmpty()) {
-				MultipartFile mfile =  (MultipartFile) map.get("file");
-				String realPath = servletContext.getRealPath(UPLOAD_PATH);
-				String today = new SimpleDateFormat("yyMMdd").format(new Date());
-				String saveFolder = realPath + File.separator + today;
-				log.info("저장 폴더 : {}", saveFolder);
-				File folder = new File(saveFolder);
-				if (!folder.exists())
-					folder.mkdirs();
-				FileDto fileDto = new FileDto();
-				String originalFileName = mfile.getOriginalFilename();
-				if (!originalFileName.isEmpty()) {
-					String type = originalFileName.substring(originalFileName.lastIndexOf('.'));
-					String saveFileName = UUID.randomUUID().toString() + type;
-					String size = "" + mfile.getSize();
-					fileDto.setSaveFolder(today);
-					fileDto.setOriginalFile(originalFileName);
-					fileDto.setSaveFile(saveFileName);
-					fileDto.setType(type);
-					fileDto.setSize(size);
-					log.info("원본 파일 이름 : {}, 실제 저장 파일 이름 : {}, 확장자 : {}", mfile.getOriginalFilename(), saveFileName,
-							type);
-					mfile.transferTo(new File(folder, saveFileName));
-				}
-				log.info("fileDto : {}", fileDto);
-				fileMapper.insertFileInfo(fileDto);
-				Map<String, String> img = new HashMap<>();
-				img.put("nickname",map.get("nickname").toString());
-				img.put("fileId",fileDto.getFileId());
-				log.info("updateContentImg : {}", img);
-				mapper.updateMemberProfileImg(img);
-			}
-
-			msg = "프로필 사진 변경 정상적으로 수행";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
-		} catch (Exception e) {
-			msg = "서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+		msg = "프로필 사진 변경 정상적으로 수행";
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 	}
 
 	@Override

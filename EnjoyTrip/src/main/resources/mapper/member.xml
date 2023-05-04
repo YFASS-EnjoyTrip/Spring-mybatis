@@ -7,22 +7,16 @@
 	<select id="selectMember" parameterType="memberDto"
 		resultType="memberDto">
 		SELECT *
-		FROM
-		member
-		WHERE
-		email=#{email}
-		AND
-		password=#{password}
+		  FROM member
+		 WHERE email=#{email}
+		   AND password=#{password}
 	</select>
 	<select id="selectMemberByCheck" parameterType="string"
 		resultType="memberDto">
 		SELECT *
-		FROM
-		member
-		WHERE
-		email=#{check}
-		OR
-		nickname=#{check}
+		  FROM member
+		 WHERE email=#{check}
+		    OR nickname=#{check}
 	</select>
 	<select id="selectLike" parameterType="String"
 		resultType="HashMap">
@@ -80,7 +74,7 @@
 	</update>
 	<update id="updateMemberProfileImg" parameterType="map">
 		UPDATE member
-		SET profile_img = #{fileId}
+		SET profile_img = #{image}
 		WHERE nickname = #{nickname}
 	</update>
 </mapper>

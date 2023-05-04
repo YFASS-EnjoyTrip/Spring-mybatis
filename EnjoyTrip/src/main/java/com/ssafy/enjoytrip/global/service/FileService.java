@@ -22,6 +22,8 @@ public class FileService {
     private String bucketName;
 
     public String uploadFile(MultipartFile file) {
+        if(file.isEmpty()) return "";
+
         String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
         try {
