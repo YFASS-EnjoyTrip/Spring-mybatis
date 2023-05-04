@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
-
+	private final PasswordEncoder encoder;
 
 	// TODO JWT 로직 추가 예정
 	@Override
@@ -44,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
 
 		MemberDto m = mapper.findMemberByEmail(member.getEmail());
 
-		if (m == null || !member.getPassword().equals(m.getPassword())) {
+		if (m == null || !encoder.matches(member.getPassword(), m.getPassword())) {
 			throw new BadCredentialsException("이메일, 비밀번호를 확인 해주세요.");
 		}
 
@@ -58,6 +60,8 @@ public class MemberServiceImpl implements MemberService {
 		return member;
 	}
 
+
+	// TODO JWT 도입 시, 수정
 	@Override
 	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
 		log.info("Service : logout = {}", (MemberDto) session.getAttribute("memberInfo"));
@@ -66,16 +70,15 @@ public class MemberServiceImpl implements MemberService {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 	}
 
-	//TODO 비밀번호 암호화 필요 with Spring Security
 	@Override
 	public void signup(MemberDto member) throws Exception {
 
-		// 비밀번호 암호화 로직 구현 필요
 		log.info("Service : signup = {}", member);
 		if (mapper.selectMemberByCheck(member.getEmail()) != null) {
 			throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
 		}
 
+		member.setPassword(encoder.encode(member.getPassword()));
 		mapper.insertMember(member);
 	}
 
@@ -89,18 +92,9 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> secession(MemberDto member) {
+	public void secession(MemberDto member) throws Exception {
 		log.info("Service : secession = {}", member);
-		String msg;
-		try {
-			mapper.deleteMember(member);
-			msg = "회원 탈퇴가 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
-		} catch (Exception e) {
-			msg = "서버에 문제가 생겼습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+		mapper.deleteMember(member);
 	}
 
 	/****************************** MyPage *************************************/

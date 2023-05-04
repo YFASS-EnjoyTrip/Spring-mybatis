@@ -40,10 +40,9 @@
 		)
 	</insert>
 	<delete id="deleteMember" parameterType="memberDto">
-		DELETE FROM
-		member
-		WHERE
-		nickname=#{nickname}
+		DELETE
+		  FROM member
+		 WHERE email = #{email}
 	</delete>
 	<select id="selectHotplaceByNickname" parameterType="string"
 		resultType="hotplaceDto">

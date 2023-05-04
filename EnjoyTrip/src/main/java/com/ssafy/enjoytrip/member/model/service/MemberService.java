@@ -20,7 +20,7 @@ public interface MemberService {
 
 	void check(String check) throws Exception;
 
-	ResponseEntity<ResponseDto> secession(MemberDto member);
+	void secession(MemberDto member) throws Exception;
 
 	ResponseEntity<ResponseDto> info(String nickname);
 

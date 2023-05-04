@@ -37,7 +37,6 @@ public class MemberController {
 	// Email / Nickname Check
 	@GetMapping("/check/{check}")
 	public ResponseEntity<ResponseDto> check(@PathVariable String check) throws Exception {
-		log.info("controller : check Email or Nickname = {}", check);
 		memberService.check(check);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto(HttpStatus.OK.value(), "사용 가능 합니다", null));
@@ -45,7 +44,6 @@ public class MemberController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseDto> signup(@RequestBody MemberDto member) throws Exception {
-		log.info("controller : signup = {}", member);
 		memberService.signup(member);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ResponseDto(HttpStatus.CREATED.value(), "회원가입 성공", null));
@@ -53,7 +51,6 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
-		log.info("controller : login = {}", member);
 		memberService.login(member);
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto(HttpStatus.OK.value(), "로그인 성공", member));
@@ -62,17 +59,20 @@ public class MemberController {
 
 	@GetMapping("/logout")
 	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
-		log.info("controller : logout = {}", (MemberDto) session.getAttribute("memberInfo"));
 		return memberService.logout(session);
 	}
 
 	@DeleteMapping("/secession")
 	public ResponseEntity<ResponseDto> secession(@RequestBody MemberDto member) throws Exception {
 		log.info("controller : secession = {}", member);
-		return memberService.secession(member);
+
+		memberService.secession(member);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT)
+				.body(new ResponseDto(HttpStatus.NO_CONTENT.value(), "회원탈퇴 성공", null));
 	}
 
 	/****************************** MyPage *************************************/
+
 	@GetMapping("/mypage/{nickname}/info")
 	public ResponseEntity<ResponseDto> info(@PathVariable String nickname) throws Exception {
 		log.info("controller : mypage-info = {}", nickname);
