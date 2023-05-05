@@ -51,9 +51,9 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
-		memberService.login(member);
+		Map<String, String> result = memberService.login(member);
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseDto(HttpStatus.OK.value(), "로그인 성공", member));
+				.body(new ResponseDto(HttpStatus.OK.value(), "로그인 성공", result));
 	}
 
 
@@ -64,8 +64,6 @@ public class MemberController {
 
 	@DeleteMapping("/secession")
 	public ResponseEntity<ResponseDto> secession(@RequestBody MemberDto member) throws Exception {
-		log.info("controller : secession = {}", member);
-
 		memberService.secession(member);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT)
 				.body(new ResponseDto(HttpStatus.NO_CONTENT.value(), "회원탈퇴 성공", null));

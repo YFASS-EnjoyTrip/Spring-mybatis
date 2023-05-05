@@ -17,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,9 +43,19 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberMapper mapper;
 	private final PasswordEncoder encoder;
 
+	// JWT 토큰을 위한 로직
+	public UserDetails findMemberByEmail(String email) throws Exception {
+		MemberDto member = mapper.findMemberByEmail(email);
+		if (member == null) {
+			throw new UsernameNotFoundException("User Not Found");
+		}
+
+		return new User(member.getEmail(), member.getPassword(), null);
+	}
+
 	// TODO JWT 로직 추가 예정
 	@Override
-	public MemberDto login(MemberDto member) throws Exception {
+	public Map<String, String> login(MemberDto member) throws Exception {
 
 		MemberDto m = mapper.findMemberByEmail(member.getEmail());
 
@@ -52,12 +65,13 @@ public class MemberServiceImpl implements MemberService {
 
 		// JWT 토큰 로직이 들어올 자리
 
-		member.setNickname(m.getNickname());
-		member.setProfileImg(m.getProfileImg());
-		member.setBio(m.getBio());
-		member.setPassword("");
+		Map<String, String> result = new HashMap<>();
+		result.put("nickName", m.getNickname());
+		result.put("profileImg", m.getProfileImg());
+		result.put("bio", m.getBio());
+		result.put("gender", m.getGender());
 
-		return member;
+		return result;
 	}
 
 
