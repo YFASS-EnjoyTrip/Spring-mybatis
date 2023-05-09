@@ -1,32 +1,26 @@
 package com.ssafy.enjoytrip.member.model.service;
 
-import java.io.File;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ssafy.enjoytrip.global.util.JwtToken;
+import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.enjoytrip.global.dto.FileDto;
-import com.ssafy.enjoytrip.global.mapper.FileMapper;
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.mapper.MemberMapper;
@@ -42,34 +36,31 @@ public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
 	private final PasswordEncoder encoder;
-
-	// JWT 토큰을 위한 로직
-	public UserDetails findMemberByEmail(String email) throws Exception {
-		MemberDto member = mapper.findMemberByEmail(email);
-		if (member == null) {
-			throw new UsernameNotFoundException("User Not Found");
-		}
-
-		return new User(member.getEmail(), member.getPassword(), null);
-	}
+	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final JwtTokenProvider jwtTokenProvider;
 
 	// TODO JWT 로직 추가 예정
 	@Override
-	public Map<String, String> login(MemberDto member) throws Exception {
+	public Map<String, Object> login(MemberDto member) throws Exception {
 
 		MemberDto m = mapper.findMemberByEmail(member.getEmail());
-
 		if (m == null || !encoder.matches(member.getPassword(), m.getPassword())) {
 			throw new BadCredentialsException("이메일, 비밀번호를 확인 해주세요.");
 		}
-
 		// JWT 토큰 로직이 들어올 자리
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(new SimpleGrantedAuthority("USER_ROLE"));
 
-		Map<String, String> result = new HashMap<>();
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), authorities);
+		log.info("authentication={}", token);
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
+		log.info("authentication={}", authentication);
+
+		Map<String, Object> result = new HashMap<>();
+
+		result.put("token", jwtTokenProvider.generateToken(authentication));
 		result.put("nickName", m.getNickname());
 		result.put("profileImg", m.getProfileImg());
-		result.put("bio", m.getBio());
-		result.put("gender", m.getGender());
 
 		return result;
 	}

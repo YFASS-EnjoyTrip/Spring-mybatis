@@ -13,9 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface MemberService {
 
-	UserDetails findMemberByEmail(String email) throws Exception;
-
-	Map<String, String> login(MemberDto member) throws Exception;
+	Map<String, Object> login(MemberDto member) throws Exception;
 
 	ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception;
 

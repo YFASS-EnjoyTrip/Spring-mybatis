@@ -3,10 +3,13 @@ package com.ssafy.enjoytrip.member.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import com.ssafy.enjoytrip.global.service.FileService;
+import com.ssafy.enjoytrip.global.util.JwtToken;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,8 +54,26 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
-		Map<String, String> result = memberService.login(member);
-		return ResponseEntity.status(HttpStatus.OK)
+		System.out.println("login Controller 접근");
+		Map<String, Object> result = memberService.login(member);
+
+		JwtToken jwtToken = (JwtToken) result.get("token");
+		log.info("token={}", jwtToken.toString());
+		// AccessToken Header
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer " + jwtToken.getAccessToken());
+
+		// RefreshToken Cookie
+		Cookie refreshTokenCookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setMaxAge(60 * 60 * 24); // 1일 만료
+		refreshTokenCookie.setPath("/"); // Set the cookie path
+
+		headers.add("Set-Cookie", refreshTokenCookie.toString());
+		result.remove("token");
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.headers(headers)
 				.body(new ResponseDto(HttpStatus.OK.value(), "로그인 성공", result));
 	}
 
