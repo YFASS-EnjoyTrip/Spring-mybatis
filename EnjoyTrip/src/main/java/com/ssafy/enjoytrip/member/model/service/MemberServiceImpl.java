@@ -44,17 +44,14 @@ public class MemberServiceImpl implements MemberService {
 	public Map<String, Object> login(MemberDto member) throws Exception {
 
 		MemberDto m = mapper.findMemberByEmail(member.getEmail());
+		log.info("role={}", m.getRole());
 		if (m == null || !encoder.matches(member.getPassword(), m.getPassword())) {
 			throw new BadCredentialsException("이메일, 비밀번호를 확인 해주세요.");
 		}
-		// JWT 토큰 로직이 들어올 자리
-		List<GrantedAuthority> authorities = new ArrayList<>();
-		authorities.add(new SimpleGrantedAuthority("USER_ROLE"));
 
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword(), authorities);
-		log.info("authentication={}", token);
+		// JWT 토큰 로직이 들어올 자리
+		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword());
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
-		log.info("authentication={}", authentication);
 
 		Map<String, Object> result = new HashMap<>();
 

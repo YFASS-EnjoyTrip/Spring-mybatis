@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.ssafy.enjoytrip.global.service.FileService;
@@ -53,12 +54,10 @@ public class MemberController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
-		System.out.println("login Controller 접근");
+	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpServletResponse response) throws Exception {
 		Map<String, Object> result = memberService.login(member);
-
 		JwtToken jwtToken = (JwtToken) result.get("token");
-		log.info("token={}", jwtToken.toString());
+
 		// AccessToken Header
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Authorization", "Bearer " + jwtToken.getAccessToken());
@@ -68,9 +67,10 @@ public class MemberController {
 		refreshTokenCookie.setHttpOnly(true);
 		refreshTokenCookie.setMaxAge(60 * 60 * 24); // 1일 만료
 		refreshTokenCookie.setPath("/"); // Set the cookie path
+		response.addCookie(refreshTokenCookie);
 
-		headers.add("Set-Cookie", refreshTokenCookie.toString());
 		result.remove("token");
+
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.headers(headers)
