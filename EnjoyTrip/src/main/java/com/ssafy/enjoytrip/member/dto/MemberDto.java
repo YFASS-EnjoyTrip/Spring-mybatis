@@ -22,6 +22,4 @@ public class MemberDto {
 	private String joinDate;
 	@Setter
 	private String updateDate;
-
-	private String role;
 }

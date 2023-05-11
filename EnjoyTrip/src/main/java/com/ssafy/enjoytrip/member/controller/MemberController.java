@@ -55,19 +55,19 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpServletResponse response) throws Exception {
-		Map<String, Object> result = memberService.login(member);
-		JwtToken jwtToken = (JwtToken) result.get("token");
+		Map<String, String> result = memberService.login(member);
+		String jwtToken = result.get("token");
 
 		// AccessToken Header
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + jwtToken.getAccessToken());
+		headers.set("Authorization", "Bearer " + jwtToken);
 
 		// RefreshToken Cookie
-		Cookie refreshTokenCookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
-		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setMaxAge(60 * 60 * 24); // 1일 만료
-		refreshTokenCookie.setPath("/"); // Set the cookie path
-		response.addCookie(refreshTokenCookie);
+//		Cookie refreshTokenCookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+//		refreshTokenCookie.setHttpOnly(true);
+//		refreshTokenCookie.setMaxAge(60 * 60 * 24); // 1일 만료
+//		refreshTokenCookie.setPath("/"); // Set the cookie path
+//		response.addCookie(refreshTokenCookie);
 
 		result.remove("token");
 

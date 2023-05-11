@@ -5,20 +5,10 @@ import java.util.*;
 
 import javax.servlet.http.HttpSession;
 
-import com.ssafy.enjoytrip.global.util.JwtToken;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
@@ -35,33 +25,28 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
-	private final PasswordEncoder encoder;
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
 	private final JwtTokenProvider jwtTokenProvider;
 
 	// TODO JWT 로직 추가 예정
 	@Override
-	public Map<String, Object> login(MemberDto member) throws Exception {
+	public Map<String, String> login(MemberDto member) throws Exception {
 
 		MemberDto m = mapper.findMemberByEmail(member.getEmail());
-		log.info("role={}", m.getRole());
-		if (m == null || !encoder.matches(member.getPassword(), m.getPassword())) {
-			throw new BadCredentialsException("이메일, 비밀번호를 확인 해주세요.");
+		if (m == null || !BCrypt.checkpw(member.getPassword(), m.getPassword())) {
+			throw new IllegalArgumentException("이메일, 비밀번호를 확인 해주세요.");
 		}
 
 		// JWT 토큰 로직이 들어올 자리
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(member.getEmail(), member.getPassword());
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
+		String token = jwtTokenProvider.generateToken(m.getEmail());
+		log.info("token={}", token);
+		Map<String, String> result = new HashMap<>();
 
-		Map<String, Object> result = new HashMap<>();
-
-		result.put("token", jwtTokenProvider.generateToken(authentication));
+		result.put("token", token);
 		result.put("nickName", m.getNickname());
 		result.put("profileImg", m.getProfileImg());
 
 		return result;
 	}
-
 
 	// TODO JWT 도입 시, 수정
 	@Override
@@ -80,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
 			throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
 		}
 
-		member.setPassword(encoder.encode(member.getPassword()));
+		member.setPassword(BCrypt.hashpw(member.getPassword(), BCrypt.gensalt()));
 		mapper.insertMember(member);
 	}
 
