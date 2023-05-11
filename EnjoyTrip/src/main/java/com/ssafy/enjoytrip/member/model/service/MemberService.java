@@ -1,10 +1,13 @@
 package com.ssafy.enjoytrip.member.model.service;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
 import org.springframework.http.ResponseEntity;
 
 import com.ssafy.enjoytrip.member.dto.MemberDto;
@@ -22,9 +25,9 @@ public interface MemberService {
 
 	void secession(MemberDto member) throws Exception;
 
-	ResponseEntity<ResponseDto> info(String nickname);
+	MemberInfoDto info(String email) throws Exception;
 
-	ResponseEntity<ResponseDto> hotplace(String nickname);
+	List<HotPlaceDto> getHotPlace(String email) throws Exception;
 
 	ResponseEntity<ResponseDto> editPassword(Map<String, String> map);
 

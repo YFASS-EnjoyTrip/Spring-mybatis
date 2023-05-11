@@ -6,12 +6,13 @@ import java.util.*;
 import javax.servlet.http.HttpSession;
 
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
 import com.ssafy.enjoytrip.member.model.mapper.MemberMapper;
 import com.ssafy.enjoytrip.response.ResponseDto;
@@ -30,7 +31,6 @@ public class MemberServiceImpl implements MemberService {
 	// TODO JWT 로직 추가 예정
 	@Override
 	public Map<String, String> login(MemberDto member) throws Exception {
-
 		MemberDto m = mapper.findMemberByEmail(member.getEmail());
 		if (m == null || !BCrypt.checkpw(member.getPassword(), m.getPassword())) {
 			throw new IllegalArgumentException("이메일, 비밀번호를 확인 해주세요.");
@@ -51,7 +51,6 @@ public class MemberServiceImpl implements MemberService {
 	// TODO JWT 도입 시, 수정
 	@Override
 	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
-		log.info("Service : logout = {}", (MemberDto) session.getAttribute("memberInfo"));
 		String msg = "로그아웃 정상적으로 수행";
 		session.invalidate();
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
@@ -59,8 +58,6 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public void signup(MemberDto member) throws Exception {
-
-		log.info("Service : signup = {}", member);
 		if (mapper.selectMemberByCheck(member.getEmail()) != null) {
 			throw new IllegalArgumentException("중복된 이메일이 존재합니다.");
 		}
@@ -71,58 +68,28 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public void check(String check) throws Exception {
-		log.info("Service check Email or Nickname = {}", check);
-		MemberDto isExist = mapper.selectMemberByCheck(check);
-		if (isExist != null) {
+		MemberInfoDto member = mapper.selectMemberByCheck(check);
+		if (member != null) {
 			throw new IllegalArgumentException("이미 존재 하는 이메일 입니다");
 		}
 	}
 
 	@Override
 	public void secession(MemberDto member) throws Exception {
-		log.info("Service : secession = {}", member);
 		mapper.deleteMember(member);
 	}
 
 	/****************************** MyPage *************************************/
 
 	@Override
-	public ResponseEntity<ResponseDto> info(String nickname) {
-		log.info("Service : mypage-info = {}", nickname);
-		String msg;
-		try {
-			MemberDto m = mapper.selectMemberByCheck(nickname);
-			log.info("Service result : mypage-info = {}", mapper.selectMemberByCheck(nickname));
-			Map<String, String> map = new HashMap<String, String>();
-			map.put("nickname", m.getNickname());
-			map.put("email", m.getEmail());
-			map.put("bio", m.getBio());
-			map.put("gender", m.getGender());
-			map.put("profileImage", m.getProfileImg());
-
-			msg = "회원정보 조회가 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, map));
-		} catch (Exception e) {
-			msg = "서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+	public MemberInfoDto info(String email) throws Exception {
+		return mapper.selectMemberByCheck(email);
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> hotplace(String nickname) {
-		String msg;
-		log.info("Service : mypage-hotplace = {}", nickname);
-		try {
-			List<HotplaceDto> list = mapper.selectHotplaceByNickname(nickname);
-			log.info("Service result : mypage-hotplace = {}", list);
-			msg = "작성한 핫플레이스 조회가 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, list));
-		} catch (Exception e) {
-			msg = "서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+	public List<HotPlaceDto> getHotPlace(String email) throws Exception {
+		return mapper.selectHotPlaceByEmail(email);
+
 	}
 
 	@Override

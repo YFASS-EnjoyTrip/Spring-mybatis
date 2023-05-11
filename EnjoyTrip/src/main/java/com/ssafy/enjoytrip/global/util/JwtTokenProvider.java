@@ -21,7 +21,8 @@ public class JwtTokenProvider {
     private final long validTime= 3600 * 1000; // 토큰 유효시간 (1시간)
     public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject("user")
+                .claim("email", email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + validTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
@@ -29,16 +30,20 @@ public class JwtTokenProvider {
     }
 
     public MemberDto authenticate(String token) throws Exception {
-        Jws<Claims> claims = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token.replace("Bearer ", ""));
-
-        String email = claims.getBody().getSubject();
+        String email = getEmail(token);
         MemberDto member = mapper.findMemberByEmail(email);
         if (member == null) {
             throw new Exception("USER NOT FOUND");
         }
 
         return member;
+    }
+
+    public String getEmail(String token) throws Exception {
+        Jws<Claims> claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token.replace("Bearer ", ""));
+
+        return claims.getBody().get("email", String.class);
     }
 }

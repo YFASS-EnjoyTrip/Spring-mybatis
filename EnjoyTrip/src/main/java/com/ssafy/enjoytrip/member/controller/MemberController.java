@@ -1,15 +1,19 @@
 package com.ssafy.enjoytrip.member.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.ssafy.enjoytrip.global.service.FileService;
-import com.ssafy.enjoytrip.global.util.JwtToken;
+import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +37,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @Slf4j
 @RequestMapping("/member")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberController {
 	private final MemberService memberService;
 	private final FileService fileService;
+	private final JwtTokenProvider jwtService;
+	private String AUTH_HEADER = "Authorization";
 
 	// Email / Nickname Check
 	@GetMapping("/check/{check}")
@@ -54,20 +60,13 @@ public class MemberController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpServletResponse response) throws Exception {
+	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
 		Map<String, String> result = memberService.login(member);
 		String jwtToken = result.get("token");
 
 		// AccessToken Header
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization", "Bearer " + jwtToken);
-
-		// RefreshToken Cookie
-//		Cookie refreshTokenCookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
-//		refreshTokenCookie.setHttpOnly(true);
-//		refreshTokenCookie.setMaxAge(60 * 60 * 24); // 1일 만료
-//		refreshTokenCookie.setPath("/"); // Set the cookie path
-//		response.addCookie(refreshTokenCookie);
+		headers.set(AUTH_HEADER, "Bearer " + jwtToken);
 
 		result.remove("token");
 
@@ -92,18 +91,23 @@ public class MemberController {
 
 	/****************************** MyPage *************************************/
 
-	@GetMapping("/mypage/{nickname}/info")
-	public ResponseEntity<ResponseDto> info(@PathVariable String nickname) throws Exception {
-		log.info("controller : mypage-info = {}", nickname);
-		return memberService.info(nickname);
+	@GetMapping("/mypage/info")
+	public ResponseEntity<ResponseDto> info(HttpServletRequest request) throws Exception {
+		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+		MemberInfoDto info = memberService.info(email);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "회원정보 조회 성공", info));
 	}
 
-	@GetMapping("/mypage/{nickname}/hotplace")
-	public ResponseEntity<ResponseDto> hotplace(@PathVariable String nickname) throws Exception {
-		log.info("controller : mypage-hotplace = {}", nickname);
-		return memberService.hotplace(nickname);
+	@GetMapping("/mypage/hotplace")
+	public ResponseEntity<ResponseDto> hotPlace(HttpServletRequest request) throws Exception {
+		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+		List<HotPlaceDto> result = memberService.getHotPlace(email);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "게시물 조회 성공", result));
 	}
-	
+
 	@PutMapping("/mypage/{nickname}/edit/password")
 	public ResponseEntity<ResponseDto> editPassword(@PathVariable String nickname, @RequestBody Map<String, String> pwd) throws Exception {
 		Map<String, String> map = new HashMap<>();
@@ -112,6 +116,7 @@ public class MemberController {
 		log.info("controller : mypage-editPassword password = {}", map);
 		return memberService.editPassword(map);
 	}
+
 	@PutMapping("/mypage/{nickname}/edit/bio")
 	public ResponseEntity<ResponseDto> editBio(@PathVariable String nickname, @RequestBody Map<String, String> bio) throws Exception {
 		Map<String, String> map = new HashMap<>();
@@ -131,11 +136,11 @@ public class MemberController {
 		log.info("controller : mypage-editProfileImg = {}", map);
 		return memberService.editProfileImg(map);
 	}
-	
+
 	@GetMapping("/mypage/{nickname}/like")
 	public ResponseEntity<ResponseDto> like(@PathVariable String nickname) throws Exception {
 		log.info("controller : mypage-like");
 		return memberService.like(nickname);
-	} 
+	}
 
 }

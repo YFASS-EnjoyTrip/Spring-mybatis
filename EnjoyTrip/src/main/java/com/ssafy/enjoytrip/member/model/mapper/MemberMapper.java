@@ -4,11 +4,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
 import org.apache.ibatis.annotations.Mapper;
 
-import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
-import org.apache.ibatis.jdbc.SQL;
 
 @Mapper
 public interface MemberMapper {
@@ -17,11 +17,11 @@ public interface MemberMapper {
 
 	void insertMember(MemberDto member) throws SQLException;
 
-	MemberDto selectMemberByCheck(String check) throws SQLException;
+	MemberInfoDto selectMemberByCheck(String check) throws SQLException;
 
 	void deleteMember(MemberDto member) throws SQLException;
 
-	List<HotplaceDto> selectHotplaceByNickname(String nickname) throws SQLException;
+	List<HotPlaceDto> selectHotPlaceByEmail(String nickname) throws SQLException;
 
 	void updateMemberPassword(Map<String, String> map) throws SQLException;
 
