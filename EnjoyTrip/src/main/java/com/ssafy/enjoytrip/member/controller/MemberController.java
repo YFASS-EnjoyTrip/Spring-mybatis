@@ -108,13 +108,17 @@ public class MemberController {
 				.body(new ResponseDto(HttpStatus.OK.value(), "게시물 조회 성공", result));
 	}
 
-	@PutMapping("/mypage/{nickname}/edit/password")
-	public ResponseEntity<ResponseDto> editPassword(@PathVariable String nickname, @RequestBody Map<String, String> pwd) throws Exception {
+	@PutMapping("/mypage/edit/password")
+	public ResponseEntity<ResponseDto> editPassword(@RequestBody Map<String, String> param, HttpServletRequest request) throws Exception {
+		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+
 		Map<String, String> map = new HashMap<>();
-		map.put("nickname", nickname);
-		map.put("password", pwd.get("password"));
-		log.info("controller : mypage-editPassword password = {}", map);
-		return memberService.editPassword(map);
+		map.put("email", email);
+		map.put("password", param.get("password"));
+
+		memberService.editPassword(map);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "비밀번호가 성공적으로 변경 되었습니다.", null));
 	}
 
 	@PutMapping("/mypage/{nickname}/edit/bio")

@@ -29,7 +29,7 @@ public interface MemberService {
 
 	List<HotPlaceDto> getHotPlace(String email) throws Exception;
 
-	ResponseEntity<ResponseDto> editPassword(Map<String, String> map);
+	void editPassword(Map<String, String> map) throws Exception;
 
 	ResponseEntity<ResponseDto> editBio(Map<String, String> map);
 

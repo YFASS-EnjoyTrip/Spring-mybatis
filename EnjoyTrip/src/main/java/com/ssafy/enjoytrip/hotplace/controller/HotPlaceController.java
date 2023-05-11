@@ -3,6 +3,8 @@ package com.ssafy.enjoytrip.hotplace.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ssafy.enjoytrip.global.service.FileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,16 +21,15 @@ import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.hotplace.model.service.HotplaceService;
 import com.ssafy.enjoytrip.response.ResponseDto;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/hotplace")
-public class HotplaceController {
+public class HotPlaceController {
 	private final HotplaceService hotplaceService;
-
+	private final FileService fileService;
 	@GetMapping("/list")
 	public ResponseEntity<ResponseDto> list() throws Exception {
 		log.info("controller : hotplace - list");
@@ -42,9 +43,9 @@ public class HotplaceController {
 	}
 
 	@PostMapping("/write")
-	public ResponseEntity<ResponseDto> write(@RequestPart(value = "hotplace") HotPlaceDto hotplace, @RequestPart(value = "file") MultipartFile[] files) throws Exception {
-		log.info("controller : hotplace - write = {}", hotplace);
-		return hotplaceService.write(hotplace, files);
+	public ResponseEntity<ResponseDto> write(@RequestPart(value = "hotplace") HotPlaceDto hotPlace, @RequestPart(value = "file") MultipartFile[] files) throws Exception {
+		log.info("controller : hotplace - write = {}", hotPlace);
+		return hotplaceService.write(hotPlace, files);
 	}
 
 	@PutMapping("/edit")

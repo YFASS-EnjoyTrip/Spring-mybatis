@@ -93,18 +93,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> editPassword(Map<String, String> map) {
-		String msg;
-		log.info("Service : mypage-editPassword = {}", map);
-		try {
-			mapper.updateMemberPassword(map);
-			msg = "비밀번호 수정이 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
-		} catch (Exception e) {
-			msg = "서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+	public void editPassword(Map<String, String> param) throws Exception {
+		mapper.updateMemberPassword(param);
 	}
 
 	@Override
