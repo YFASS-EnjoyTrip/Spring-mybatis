@@ -16,6 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/locations")
 @AllArgsConstructor
+@CrossOrigin
 public class AttractionController {
     private final AttractionService service;
 
@@ -35,9 +36,9 @@ public class AttractionController {
      */
     @GetMapping("/search")
     public ResponseEntity<ResponseDto> searchLocations(@RequestParam String keyword,
-                                                                 @RequestParam(required = false) String sido,
-                                                                 @RequestParam(required = false) String gugun,
-                                                                 @RequestParam(required = false) List<Integer> contentType) throws Exception {
+                                                       @RequestParam(required = false) String sido,
+                                                       @RequestParam(required = false) String gugun,
+                                                       @RequestParam(required = false) List<Integer> contentType) throws Exception {
         return service.searchLocations(new SearchDto(keyword, sido, gugun, contentType));
     }
 

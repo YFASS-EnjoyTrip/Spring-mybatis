@@ -24,13 +24,13 @@
         <result column="longitude" property="lng"/>
     </resultMap>
 
-    <insert id="createPlan" parameterType="PlanForm" keyProperty="planId" useGeneratedKeys="true">
-        INSERT INTO travel_plan (
-                    member_id, title, image, start_date, end_date
-        )    VALUES (
-                    #{memberId}, #{title}, #{image}, #{startDate}, #{endDate}
-        )
-    </insert>
+<!--    <insert id="createPlan" parameterType="PlanForm" keyProperty="planId" useGeneratedKeys="true">-->
+<!--        INSERT INTO travel_plan (-->
+<!--                    member_id, title, image, start_date, end_date-->
+<!--        )    VALUES (-->
+<!--                    #{memberId}, #{title}, #{image}, #{startDate}, #{endDate}-->
+<!--        )-->
+<!--    </insert>-->
 
     <update id="updatePlan" parameterType="PlanForm">
         UPDATE travel_plan

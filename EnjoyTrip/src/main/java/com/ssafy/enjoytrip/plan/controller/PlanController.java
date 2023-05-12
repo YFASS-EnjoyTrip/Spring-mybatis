@@ -1,17 +1,20 @@
 package com.ssafy.enjoytrip.plan.controller;
 
 import com.ssafy.enjoytrip.global.service.FileService;
+import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
 import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
 import com.ssafy.enjoytrip.plan.model.service.PlanService;
 import com.ssafy.enjoytrip.response.ResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,38 +23,54 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/planner")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PlanController {
 
     private final PlanService planService;
+    private final JwtTokenProvider jwtService;
     private final FileService fileService;
 
+    private String AUTH_HEADER = "Authorization";
     /**
-     * 여행 플래너 생성 
+     * 여행 플래너 랜덤 생성
      */
-    @PostMapping("/write")
-    public ResponseEntity<ResponseDto> addPlan(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
-        try {
+    @PostMapping("/create")
+    public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, String> param, HttpServletRequest request) throws Exception {
+        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+        param.put("email", email);
 
-            // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
-            // 했다치고
-            String imageUrl = fileService.uploadFile(file);
-            log.info(imageUrl);
-            form.setImage(imageUrl);
-            planService.savePlan(form);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("planId", form.getPlanId());
-
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 완료", result));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        planService.createPlan(param);
 
         return null;
     }
+
+    /**
+     * 여행 플래너 생성
+     * 23.05.12 요구사항 변경으로 폐쇄
+     */
+//    @PostMapping("/write")
+//    public ResponseEntity<ResponseDto> addPlan(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
+//        try {
+//
+//            // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
+//            // 했다치고
+//            String imageUrl = fileService.uploadFile(file);
+//            log.info(imageUrl);
+//            form.setImage(imageUrl);
+//            planService.savePlan(form);
+//
+//            Map<String, Object> result = new HashMap<>();
+//            result.put("planId", form.getPlanId());
+//
+//            return ResponseEntity.status(HttpStatus.CREATED)
+//                    .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 완료", result));
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans() {

@@ -58,13 +58,13 @@
 	</update>
 	<update id="updateMemberBio" parameterType="map">
 		UPDATE member
-		SET bio
-		= #{bio}
-		WHERE nickname = #{nickname}
+		   SET bio = #{bio}
+		 WHERE email = #{email}
 	</update>
+
 	<update id="updateMemberProfileImg" parameterType="map">
 		UPDATE member
-		SET profile_img = #{image}
-		WHERE nickname = #{nickname}
+		   SET profile_img = #{image}
+		 WHERE email = #{email}
 	</update>
 </mapper>

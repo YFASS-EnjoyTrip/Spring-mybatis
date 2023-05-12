@@ -121,30 +121,42 @@ public class MemberController {
 				.body(new ResponseDto(HttpStatus.OK.value(), "비밀번호가 성공적으로 변경 되었습니다.", null));
 	}
 
-	@PutMapping("/mypage/{nickname}/edit/bio")
-	public ResponseEntity<ResponseDto> editBio(@PathVariable String nickname, @RequestBody Map<String, String> bio) throws Exception {
+	@PutMapping("/mypage/edit/bio")
+	public ResponseEntity<ResponseDto> editBio(@RequestBody Map<String, String> bio, HttpServletRequest request) throws Exception {
+		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+
 		Map<String, String> map = new HashMap<>();
-		map.put("nickname", nickname);
+		map.put("email", email);
 		map.put("bio", bio.get("bio"));
-		log.info("controller : mypage-editBio = {}", map);
-		return memberService.editBio(map);
+
+		memberService.editBio(map);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "자기소개가 정상적으로 변경 되었습니다.", null));
 	}
 
-	@PutMapping("/mypage/{nickname}/edit/profile-img")
-	public ResponseEntity<ResponseDto> editProfileImg(@PathVariable String nickname, @RequestPart(value = "file") MultipartFile file) throws Exception {
+	@PutMapping("/mypage/edit/profile-img")
+	public ResponseEntity<ResponseDto> editProfileImg(@RequestPart(value = "file") MultipartFile file, HttpServletRequest request) throws Exception {
+		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+
 		Map<String, String> map = new HashMap<>();
-		map.put("nickname", nickname);
-
 		String imageUrl = fileService.uploadFile(file);
-		map.put("image", imageUrl);
-		log.info("controller : mypage-editProfileImg = {}", map);
-		return memberService.editProfileImg(map);
-	}
 
-	@GetMapping("/mypage/{nickname}/like")
-	public ResponseEntity<ResponseDto> like(@PathVariable String nickname) throws Exception {
-		log.info("controller : mypage-like");
-		return memberService.like(nickname);
+		map.put("image", imageUrl);
+		map.put("email", email);
+
+		memberService.editProfileImg(map);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "프로필 사진이 정상적으로 변경 되었습니다", null));
+	}
+	@GetMapping("/mypage/like")
+	public ResponseEntity<ResponseDto> like(HttpServletRequest request) throws Exception {
+		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+		memberService.like(email);
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(HttpStatus.OK.value(), "정상적으로 불러왔습니다", null));
 	}
 
 }

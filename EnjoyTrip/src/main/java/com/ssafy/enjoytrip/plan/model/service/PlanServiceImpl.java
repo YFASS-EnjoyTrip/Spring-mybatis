@@ -6,17 +6,21 @@ import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
 import com.ssafy.enjoytrip.plan.model.mapper.PlanMapper;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Transactional
 public class PlanServiceImpl implements PlanService {
 
     private final PlanMapper planMapper;
@@ -27,7 +31,7 @@ public class PlanServiceImpl implements PlanService {
      */
     @Override
     public void savePlan(PlanForm form) throws Exception {
-        planMapper.createPlan(form);
+//        planMapper.createPlan(form);
     }
 
     @Override
@@ -64,16 +68,42 @@ public class PlanServiceImpl implements PlanService {
 
     // TODO DELETE 시 file_info 테이블의 image도 삭제해야합니다
     @Override
-    @Transactional
     public void deletePlan(int planId) throws Exception {
         planMapper.deletePlan(planId);
 //        fileMapper.deletePlanImage(planId);
     }
 
     @Override
-    @Transactional
     public void updatePlanDetail(Map<String, Object> form) throws Exception {
         planMapper.deletePlanDay(form);
         planMapper.insertPlanDay(form);
+    }
+
+    /**
+     *
+     * 1개의 아이템
+     * - 이름
+     * - 컨텐츠 타입
+     * - 상세설명
+     * - 좋아요, 별점
+     * - 댓글
+     */
+    @Override
+    public List<DayForm> createPlan(Map<String, String> param) throws Exception {
+        LocalDate startDate = LocalDate.parse(param.get("startDate"));
+        LocalDate endDate = LocalDate.parse(param.get("endDate"));
+
+        String days = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate));
+        param.put("days", days);
+
+        // 1. days 만큼 관광지2, 밥2, 숙소1 뽑기, 마지막 날은 밥2, 관광지2
+        // 서브쿼리로 짜봅ㅂ시다
+
+        // 2. List<DayForm> 배치 해주기
+
+        // 3. 화면에 출력 전, DB PUSH 후 return 해주기
+
+//        planMapper.createPlan(param);
+        return null;
     }
 }

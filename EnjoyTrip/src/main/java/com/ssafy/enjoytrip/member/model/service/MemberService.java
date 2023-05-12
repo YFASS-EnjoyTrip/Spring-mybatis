@@ -31,10 +31,10 @@ public interface MemberService {
 
 	void editPassword(Map<String, String> map) throws Exception;
 
-	ResponseEntity<ResponseDto> editBio(Map<String, String> map);
+	void editBio(Map<String, String> map) throws Exception;
 
-	ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) throws SQLException;
+	void editProfileImg(Map<String, String> map) throws Exception;
 
-	ResponseEntity<ResponseDto> like(String nickname);
+	List<Map<String, String>> like(String email) throws Exception;
 
 }

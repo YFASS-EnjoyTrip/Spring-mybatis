@@ -98,42 +98,17 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> editBio(Map<String, String> map) {
-		String msg;
-		log.info("Service : mypage-editBio = {}", map);
-		try {
-			mapper.updateMemberBio(map);
-			msg = "한줄소개 수정이 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
-		} catch (Exception e) {
-			msg = "서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+	public void editBio(Map<String, String> map) throws Exception {
+		mapper.updateMemberBio(map);
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) throws SQLException {
-		String msg;
+	public void editProfileImg(Map<String, String> map) throws Exception {
 		mapper.updateMemberProfileImg(map);
-		log.info("Service : mypage-editProfileImg = {}", map);
-		msg = "프로필 사진 변경 정상적으로 수행";
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> like(String nickname) {
-		String msg;
-		log.info("Service : mypage-like = {}", nickname);
-		try {
-			List<Map<String, String>> map = mapper.selectLike(nickname);
-			msg = "좋아요한 목록 조회가 정상적으로 이루어졌습니다.";
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, map));
-		} catch (Exception e) {
-			e.printStackTrace();
-			msg = "서버에 문제가 발생했습니다.";
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), msg, null));
-		}
+	public List<Map<String, String>> like(String email) throws Exception{
+		return mapper.selectLike(email);
 	}
 }
