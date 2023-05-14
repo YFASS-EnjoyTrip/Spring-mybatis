@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PlanMapper {
-    void createPlan(Map<String, String> param) throws SQLException;
+    List<Map<String, String>> createPlan(Map<String, Object> param) throws SQLException;
 
     void createPlanDays(Map<String, Object> param) throws SQLException;
 

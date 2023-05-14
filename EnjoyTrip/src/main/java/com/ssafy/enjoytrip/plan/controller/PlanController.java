@@ -35,13 +35,14 @@ public class PlanController {
      * 여행 플래너 랜덤 생성
      */
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, String> param, HttpServletRequest request) throws Exception {
+    public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
         param.put("email", email);
 
-        planService.createPlan(param);
+        List<Map<String, String>> result = planService.createPlan(param);
 
-        return null;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));
     }
 
     /**

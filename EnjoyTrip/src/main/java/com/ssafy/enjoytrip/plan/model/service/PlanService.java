@@ -28,5 +28,5 @@ public interface PlanService {
 
     void updatePlanDetail(Map<String, Object> form) throws Exception;
 
-    List<DayForm> createPlan(Map<String, String> param) throws Exception;
+    List<Map<String, String>> createPlan(Map<String, Object> param) throws Exception;
 }

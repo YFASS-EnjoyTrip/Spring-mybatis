@@ -79,31 +79,21 @@ public class PlanServiceImpl implements PlanService {
         planMapper.insertPlanDay(form);
     }
 
-    /**
-     *
-     * 1개의 아이템
-     * - 이름
-     * - 컨텐츠 타입
-     * - 상세설명
-     * - 좋아요, 별점
-     * - 댓글
-     */
     @Override
-    public List<DayForm> createPlan(Map<String, String> param) throws Exception {
-        LocalDate startDate = LocalDate.parse(param.get("startDate"));
-        LocalDate endDate = LocalDate.parse(param.get("endDate"));
+    public List<Map<String ,String>> createPlan(Map<String, Object> param) throws Exception {
+        LocalDate startDate = LocalDate.parse((CharSequence) param.get("startDate"));
+        LocalDate endDate = LocalDate.parse((CharSequence) param.get("endDate"));
 
         String days = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate));
-        param.put("days", days);
-
+        param.put("day1", days);
+        param.put("day2", Integer.parseInt(days) * 2);
         // 1. days 만큼 관광지2, 밥2, 숙소1 뽑기, 마지막 날은 밥2, 관광지2
-        // 서브쿼리로 짜봅ㅂ시다
-
+        List<Map<String, String>> plan = planMapper.createPlan(param);
+        return plan;
         // 2. List<DayForm> 배치 해주기
 
         // 3. 화면에 출력 전, DB PUSH 후 return 해주기
 
 //        planMapper.createPlan(param);
-        return null;
     }
 }
