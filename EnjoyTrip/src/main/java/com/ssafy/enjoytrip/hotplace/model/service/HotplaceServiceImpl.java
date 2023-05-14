@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.enjoytrip.global.dto.FileDto;
 import com.ssafy.enjoytrip.global.mapper.FileMapper;
 import com.ssafy.enjoytrip.global.mapper.LikeMapper;
-import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.hotplace.model.mapper.HotplaceMapper;
 import com.ssafy.enjoytrip.response.ResponseDto;
 
@@ -43,7 +43,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	public ResponseEntity<ResponseDto> list() {
 		String msg;
 		try {
-			List<HotplaceDto> list = hotplaceMapper.selectAllHotplace();
+			List<HotPlaceDto> list = hotplaceMapper.selectAllHotplace();
 			log.info("service : list = {}", list);
 			msg = "핫플레이스 목록 조회 정상적으로 수행";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, list));
@@ -59,7 +59,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 		String msg;
 		try {
 			hotplaceMapper.updateViewCount(id);
-			HotplaceDto h = hotplaceMapper.selectDetail(id);
+			HotPlaceDto h = hotplaceMapper.selectDetail(id);
 			log.info("service : detail = {}", h);
 			msg = "핫플레이스 상세 조회 정상적으로 수행";
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, h));
@@ -71,7 +71,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> write(HotplaceDto hotplace, MultipartFile[] files) {
+	public ResponseEntity<ResponseDto> write(HotPlaceDto hotplace, MultipartFile[] files) {
 		String msg;
 		log.info("MultipartFile.isEmpty : {}", files[0].isEmpty());
 		try {
@@ -135,7 +135,7 @@ public class HotplaceServiceImpl implements HotplaceService {
 	}
 
 	@Override
-	public ResponseEntity<ResponseDto> edit(HotplaceDto hotplace) {
+	public ResponseEntity<ResponseDto> edit(HotPlaceDto hotplace) {
 		String msg;
 		try {
 			log.info("service : edit = {}", hotplace);

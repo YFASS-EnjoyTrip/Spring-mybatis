@@ -10,7 +10,7 @@ import lombok.ToString;
 // id, member_id, place_title, place_content, content_img, created_at
 @Getter
 @ToString
-public class HotplaceDto {
+public class HotPlaceDto {
 	private String id;
 	private String memberId;
 	private String nickname;

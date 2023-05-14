@@ -5,12 +5,12 @@
 <mapper
 	namespace="com.ssafy.enjoytrip.member.model.mapper.MemberMapper">
 	<select id="findMemberByEmail" parameterType="memberDto" resultType="memberDto">
-		SELECT *
+		SELECT email, password, nickname, gender, profile_img, bio
 		  FROM member
 		 WHERE email = #{email}
 	</select>
 	<select id="selectMemberByCheck" parameterType="string"
-		resultType="memberDto">
+		resultType="memberInfoDto">
 		SELECT *
 		  FROM member
 		 WHERE email=#{check}
@@ -40,21 +40,16 @@
 		)
 	</insert>
 	<delete id="deleteMember" parameterType="memberDto">
-		DELETE FROM
-		member
-		WHERE
-		nickname=#{nickname}
+		DELETE
+		  FROM member
+		 WHERE email = #{email}
 	</delete>
-	<select id="selectHotplaceByNickname" parameterType="string"
-		resultType="hotplaceDto">
-		SELECT
-		h.*, m.nickname
-		FROM
-		hot_place_board h, member m
-		WHERE
-		h.member_id=m.member_id
-		AND
-		m.nickname=#{nickname}
+	<select id="selectHotPlaceByEmail" parameterType="string"
+		resultType="hotPlaceDto">
+		SELECT h.*, m.nickname
+		  FROM hot_place_board h, member m
+		 WHERE h.member_id=m.member_id
+		   AND m.email=#{email}
 	</select>
 	<update id="updateMemberPassword" parameterType="map">
 		UPDATE member
@@ -63,13 +58,13 @@
 	</update>
 	<update id="updateMemberBio" parameterType="map">
 		UPDATE member
-		SET bio
-		= #{bio}
-		WHERE nickname = #{nickname}
+		   SET bio = #{bio}
+		 WHERE email = #{email}
 	</update>
+
 	<update id="updateMemberProfileImg" parameterType="map">
 		UPDATE member
-		SET profile_img = #{image}
-		WHERE nickname = #{nickname}
+		   SET profile_img = #{image}
+		 WHERE email = #{email}
 	</update>
 </mapper>

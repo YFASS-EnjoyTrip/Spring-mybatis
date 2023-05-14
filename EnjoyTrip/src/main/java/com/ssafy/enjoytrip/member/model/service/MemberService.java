@@ -1,10 +1,13 @@
 package com.ssafy.enjoytrip.member.model.service;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
 import org.springframework.http.ResponseEntity;
 
 import com.ssafy.enjoytrip.member.dto.MemberDto;
@@ -12,7 +15,7 @@ import com.ssafy.enjoytrip.response.ResponseDto;
 
 public interface MemberService {
 
-	MemberDto login(MemberDto member) throws Exception;
+	Map<String, String> login(MemberDto member) throws Exception;
 
 	ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception;
 
@@ -20,18 +23,18 @@ public interface MemberService {
 
 	void check(String check) throws Exception;
 
-	ResponseEntity<ResponseDto> secession(MemberDto member);
+	void secession(MemberDto member) throws Exception;
 
-	ResponseEntity<ResponseDto> info(String nickname);
+	MemberInfoDto info(String email) throws Exception;
 
-	ResponseEntity<ResponseDto> hotplace(String nickname);
+	List<HotPlaceDto> getHotPlace(String email) throws Exception;
 
-	ResponseEntity<ResponseDto> editPassword(Map<String, String> map);
+	void editPassword(Map<String, String> map) throws Exception;
 
-	ResponseEntity<ResponseDto> editBio(Map<String, String> map);
+	void editBio(Map<String, String> map) throws Exception;
 
-	ResponseEntity<ResponseDto> editProfileImg(Map<String, String> map) throws SQLException;
+	void editProfileImg(Map<String, String> map) throws Exception;
 
-	ResponseEntity<ResponseDto> like(String nickname);
+	List<Map<String, String>> like(String email) throws Exception;
 
 }

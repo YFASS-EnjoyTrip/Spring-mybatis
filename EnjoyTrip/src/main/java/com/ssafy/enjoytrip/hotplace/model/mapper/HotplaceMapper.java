@@ -7,18 +7,18 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.enjoytrip.hotplace.dto.HotplaceDto;
+import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 
 @Mapper
 public interface HotplaceMapper {
 
-	List<HotplaceDto> selectAllHotplace() throws SQLException;
+	List<HotPlaceDto> selectAllHotplace() throws SQLException;
 
-	HotplaceDto selectDetail(String id) throws SQLException;
+	HotPlaceDto selectDetail(String id) throws SQLException;
 
-	void insertHotplace(HotplaceDto hotplace) throws SQLException;
+	void insertHotplace(HotPlaceDto hotplace) throws SQLException;
 
-	void updateHotplace(HotplaceDto hotplace) throws SQLException;
+	void updateHotplace(HotPlaceDto hotplace) throws SQLException;
 
 	void deleteHotplace(String id) throws SQLException;
 
