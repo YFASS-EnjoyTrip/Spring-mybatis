@@ -2,6 +2,8 @@ package com.ssafy.enjoytrip.plan.controller;
 
 import com.ssafy.enjoytrip.global.service.FileService;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
+import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
 import com.ssafy.enjoytrip.plan.model.service.PlanService;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class PlanController {
 
     private final PlanService planService;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtService;
     private final FileService fileService;
 
@@ -37,9 +40,10 @@ public class PlanController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        param.put("email", email);
+        Integer memberId = memberService.findMemberIdByEmail(email);
+        param.put("memberId", memberId);
 
-        List<Map<String, String>> result = planService.createPlan(param);
+        List<Map<String, Object>> result = planService.createPlan(param);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));

@@ -4,6 +4,13 @@
 
 <mapper
 	namespace="com.ssafy.enjoytrip.member.model.mapper.MemberMapper">
+
+	<select id="selectMemberIdByEmail" parameterType="string" resultType="int">
+		SELECT member_id
+		  FROM member
+         WHERE email = #{email};
+	</select>
+
 	<select id="findMemberByEmail" parameterType="memberDto" resultType="memberDto">
 		SELECT email, password, nickname, gender, profile_img, bio
 		  FROM member

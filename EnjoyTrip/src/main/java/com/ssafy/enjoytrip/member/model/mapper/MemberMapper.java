@@ -32,4 +32,6 @@ public interface MemberMapper {
 	List<Map<String, String>> selectLike(String email) throws SQLException;
 
 	MemberDto findMemberByEmail(String email) throws SQLException;
+
+    Integer selectMemberIdByEmail(String email) throws SQLException;
 }
