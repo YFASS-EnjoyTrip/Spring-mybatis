@@ -42,8 +42,8 @@ public class PlanController {
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
         int memberId = memberService.findMemberIdByEmail(email);
-        param.put("memberId", memberId);
 
+        param.put("memberId", memberId);
         List<Map<String, Object>> result = planService.createPlan(param);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -79,18 +79,12 @@ public class PlanController {
 //    }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDto> getPlans() {
+    public ResponseEntity<ResponseDto> getPlans() throws Exception {
         // JWT 토큰 받았다 치고 회원ID 1로 테스트
         int memberId = 4;
-        try {
-            List<PlanForm> result = planService.findPlans(memberId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        List<PlanForm> result = planService.findPlans(memberId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
     }
 
     /**
@@ -112,19 +106,15 @@ public class PlanController {
      * 여행 상세 일정 조회
      */
     @GetMapping("/list/{planId}")
-    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) {
+    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) throws Exception {
         //회원권한 검사 했다 치고
         Map<String, Object> result = new LinkedHashMap<>();
-        try {
-            result.put("planInfo", planService.findPlanInfo(planId));
-            result.put("dayInfo", planService.findPlanDetail(planId));
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        result.put("planInfo", planService.findPlanInfo(planId));
+        result.put("dayInfo", planService.findPlanDetail(planId));
 
-        return null;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));
+
     }
 
     //TODO

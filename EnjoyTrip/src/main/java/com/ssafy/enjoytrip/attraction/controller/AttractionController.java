@@ -3,23 +3,29 @@ package com.ssafy.enjoytrip.attraction.controller;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
+import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
+import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import com.ssafy.enjoytrip.response.ResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/locations")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @CrossOrigin
 public class AttractionController {
     private final AttractionService service;
-
+    private final JwtTokenProvider jwtService;
+    private final MemberService memberService;
+    private String AUTH_HEADER = "Authorization";
     /**
      * Default 조회, "서울" 을 기준으로 모든 여행지 조회
      * @return
@@ -66,9 +72,12 @@ public class AttractionController {
         return service.locationReviews(contentId);
     }
 
-    @PostMapping("/{contentId}/{memberId}/like")
+    @PostMapping("/{contentId}/like")
     public ResponseEntity<ResponseDto> addLocationLike(@PathVariable String contentId,
-                                                       @PathVariable String memberId) throws Exception {
+                                                       HttpServletRequest request) throws Exception {
+        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+        String memberId = String.valueOf(memberService.findMemberIdByEmail(email));
+
         Map<String, String> param = new HashMap<>();
         param.put("contentId", contentId);
         param.put("type", "A");

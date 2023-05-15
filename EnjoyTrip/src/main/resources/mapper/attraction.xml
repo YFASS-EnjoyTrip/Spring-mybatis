@@ -40,9 +40,9 @@
     <select id="searchLocations" resultMap="Locations">
         SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info
-         WHERE title like CONCAT(#{keyword}, '%')
+         WHERE title like CONCAT('%', #{keyword}, '%')
         <if test="sido != null">
-            AND sido_code = #{sido}r
+            AND sido_code = #{sido}
         </if>
         <if test="gugun != null">
             AND gugun_code = #{gugun}

@@ -87,11 +87,10 @@ public class PlanServiceImpl implements PlanService {
         param.put("day2", days * 2);
 
         // 1. 플랜 생성
-        // 1-1. member_id 를 갖고온다
-        // 1-2. travel_plan 테이블에 선 push, plan_id 갖고온다
         List<DayForm> plan = planMapper.createPlan(param);
         param.put("image", plan.get(0).getImage());
         param.put("title", param.get("sidoName") + "여행");
+
         // 2. List<DayForm> 배치 해주기
         List<Map<String, Object>> result = rearrangePlan(plan, days);
 
