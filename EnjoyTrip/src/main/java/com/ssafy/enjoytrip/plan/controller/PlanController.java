@@ -26,6 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/planner")
 @RequiredArgsConstructor
+@CrossOrigin
 public class PlanController {
 
     private final PlanService planService;
@@ -40,7 +41,7 @@ public class PlanController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        Integer memberId = memberService.findMemberIdByEmail(email);
+        int memberId = memberService.findMemberIdByEmail(email);
         param.put("memberId", memberId);
 
         List<Map<String, Object>> result = planService.createPlan(param);
@@ -80,7 +81,7 @@ public class PlanController {
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans() {
         // JWT 토큰 받았다 치고 회원ID 1로 테스트
-        int memberId = 1;
+        int memberId = 4;
         try {
             List<PlanForm> result = planService.findPlans(memberId);
             return ResponseEntity.status(HttpStatus.OK)
