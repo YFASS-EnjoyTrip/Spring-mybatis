@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PlanForm {
     private int planId;
-    private int memberId;
+    private String nickName;
     private String title;
     private String image;
     private String startDate;

@@ -41,7 +41,7 @@ public class PlanController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        int memberId = memberService.findMemberIdByEmail(email);
+        String memberId = memberService.findMemberIdByEmail(email);
 
         param.put("memberId", memberId);
         List<Map<String, Object>> result = planService.createPlan(param);
@@ -106,11 +106,22 @@ public class PlanController {
      * 여행 상세 일정 조회
      */
     @GetMapping("/list/{planId}")
-    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) throws Exception {
-        //회원권한 검사 했다 치고
+    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable String planId, HttpServletRequest request) throws Exception {
+        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+        String memberId = memberService.findMemberIdByEmail(email);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("memberId", memberId);
+        param.put("planId", planId);
+
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("planInfo", planService.findPlanInfo(planId));
-        result.put("dayInfo", planService.findPlanDetail(planId));
+        Map<String, String> planInfo = planService.findPlanInfo(param);
+        result.put("planInfo", planInfo);
+
+        param.put("startDate", planInfo.get("startDate"));
+        param.put("endDate", planInfo.get("endDate"));
+
+        result.put("dayInfo", planService.findPlanDetail(param));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));

@@ -9,6 +9,7 @@ import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import com.ssafy.enjoytrip.response.ResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,12 @@ public class AttractionController {
         return service.searchLocations(new SearchDto(keyword, sido, gugun, contentType));
     }
 
+    @GetMapping("/search/gugun")
+    public ResponseEntity<ResponseDto> searchGugunCode(@RequestParam String sido) throws Exception{
+        List<Map<String, String>> result = service.getGugunCode(sido);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "조회 완료 했습니다", result));
+    }
     /**
      * 여행지 상세조회
      */

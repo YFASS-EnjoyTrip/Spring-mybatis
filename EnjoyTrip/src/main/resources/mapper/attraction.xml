@@ -55,6 +55,12 @@
         </if>
     </select>
 
+    <select id="selectGugunCode" resultType="map">
+        SELECT gugun_code, gugun_name
+          FROM gugun
+         WHERE sido_code = #{sido}
+    </select>
+
     <select id="searchLocationDetail" resultMap="Locations">
         SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
           FROM attraction_info

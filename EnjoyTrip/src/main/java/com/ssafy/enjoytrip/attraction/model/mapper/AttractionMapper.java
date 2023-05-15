@@ -26,4 +26,6 @@ public interface AttractionMapper {
 
     @Transactional
     void updateLocationLike(Map<String, String> param) throws SQLException;
+
+    List<Map<String, String>> selectGugunCode(String sido) throws SQLException;
 }

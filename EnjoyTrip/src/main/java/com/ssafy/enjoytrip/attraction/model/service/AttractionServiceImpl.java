@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class AttractionServiceImpl implements AttractionService{
+public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionMapper mapper;
     private final LikeMapper likeMapper;
@@ -131,6 +131,11 @@ public class AttractionServiceImpl implements AttractionService{
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(res);
+    }
+
+    @Override
+    public List<Map<String, String>> getGugunCode(String sido) throws Exception {
+        return mapper.selectGugunCode(sido);
     }
 
     private void checkLike(Map<String, String> param) throws SQLException {

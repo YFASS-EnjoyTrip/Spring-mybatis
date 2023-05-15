@@ -113,7 +113,7 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Integer findMemberIdByEmail(String email) throws Exception {
+	public String findMemberIdByEmail(String email) throws Exception {
 		return mapper.selectMemberIdByEmail(email);
 	}
 }

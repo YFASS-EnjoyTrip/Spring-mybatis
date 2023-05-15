@@ -50,13 +50,14 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<Map<String, Object>> findPlanDetail(int planId) throws Exception {
-        return planMapper.selectPlanDetail(planId);
+    public List<Map<String, DayForm>> findPlanDetail(Map<String, String> param) throws Exception {
+        List<DayForm> result = planMapper.selectPlanDetail(param);
+        return null;
     }
 
     @Override
-    public Map<String, String> findPlanInfo(int planId) throws Exception {
-        return planMapper.selectPlanInfo(planId);
+    public Map<String, String> findPlanInfo(Map<String, String> param) throws Exception {
+        return planMapper.selectPlanInfo(param);
     }
 
     @Override
@@ -81,7 +82,6 @@ public class PlanServiceImpl implements PlanService {
     public List<Map<String, Object>> createPlan(Map<String, Object> param) throws Exception {
         LocalDate startDate = LocalDate.parse((CharSequence) param.get("startDate"));
         LocalDate endDate = LocalDate.parse((CharSequence) param.get("endDate"));
-
         int days = Integer.parseInt(String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1));
         param.put("day1", days);
         param.put("day2", days * 2);

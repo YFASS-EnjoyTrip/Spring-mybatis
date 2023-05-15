@@ -37,5 +37,5 @@ public interface MemberService {
 
 	List<Map<String, String>> like(String email) throws Exception;
 
-    Integer findMemberIdByEmail(String email) throws Exception;
+    String findMemberIdByEmail(String email) throws Exception;
 }

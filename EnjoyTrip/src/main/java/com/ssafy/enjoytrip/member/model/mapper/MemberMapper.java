@@ -33,5 +33,5 @@ public interface MemberMapper {
 
 	MemberDto findMemberByEmail(String email) throws SQLException;
 
-    Integer selectMemberIdByEmail(String email) throws SQLException;
+    String selectMemberIdByEmail(String email) throws SQLException;
 }

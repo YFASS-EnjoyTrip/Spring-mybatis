@@ -7,6 +7,7 @@ import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import com.ssafy.enjoytrip.response.ResponseDto;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AttractionService {
@@ -22,4 +23,6 @@ public interface AttractionService {
     ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review);
 
     ResponseEntity<ResponseDto> saveLocationLike(Map<String, String> param) ;
+
+    List<Map<String, String>> getGugunCode(String sido) throws Exception;
 }
