@@ -118,8 +118,8 @@ public class PlanController {
         Map<String, String> planInfo = planService.findPlanInfo(param);
         result.put("planInfo", planInfo);
 
-        param.put("startDate", planInfo.get("startDate"));
-        param.put("endDate", planInfo.get("endDate"));
+        param.put("startDate", String.valueOf(planInfo.get("startDate")));
+        param.put("endDate", String.valueOf(planInfo.get("endDate")));
 
         result.put("dayInfo", planService.findPlanDetail(param));
 

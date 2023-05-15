@@ -133,7 +133,7 @@
             ON t.content_id = ai.content_id
           JOIN attraction_description ad
             ON t.content_id = ad.content_id
-         WHERE t.travel_plan_id = #{planId}
+         WHERE t.travel_plan_id = #{planId} AND t.day = #{day}
     </select>
 
     <delete id="deletePlanDay" parameterType="map">

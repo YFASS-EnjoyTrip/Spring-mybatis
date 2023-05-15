@@ -50,9 +50,17 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<Map<String, DayForm>> findPlanDetail(Map<String, String> param) throws Exception {
-        List<DayForm> result = planMapper.selectPlanDetail(param);
-        return null;
+    public Map<String, List<DayForm>> findPlanDetail(Map<String, String> param) throws Exception {
+        int days = getDays(param.get("startDate"), param.get("endDate"));
+
+        Map<String, List<DayForm>> result = new HashMap<>();
+        for (int i = 1; i <= days; i++) {
+            param.put("day", String.valueOf(i));
+            List<DayForm> dayItems = planMapper.selectPlanDetail(param);
+            result.put(String.valueOf(i), dayItems);
+        }
+
+        return result;
     }
 
     @Override
@@ -80,16 +88,15 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<Map<String, Object>> createPlan(Map<String, Object> param) throws Exception {
-        LocalDate startDate = LocalDate.parse((CharSequence) param.get("startDate"));
-        LocalDate endDate = LocalDate.parse((CharSequence) param.get("endDate"));
-        int days = Integer.parseInt(String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1));
+        int days = getDays((String) param.get("startDate"), (String) param.get("endDate"));
+
         param.put("day1", days);
         param.put("day2", days * 2);
 
         // 1. 플랜 생성
         List<DayForm> plan = planMapper.createPlan(param);
         param.put("image", plan.get(0).getImage());
-        param.put("title", param.get("sidoName") + "여행");
+        param.put("title", param.get("sidoName"));
 
         // 2. List<DayForm> 배치 해주기
         List<Map<String, Object>> result = rearrangePlan(plan, days);
@@ -109,6 +116,16 @@ public class PlanServiceImpl implements PlanService {
 
 
         return result;
+    }
+
+    /**
+     *  출발날짜, 마지막날짜로 일 수 계산
+     */
+    private static int getDays(String startDate, String endDate) {
+        LocalDate start = LocalDate.parse(startDate);
+        LocalDate end = LocalDate.parse(endDate);
+        int days = Integer.parseInt(String.valueOf(ChronoUnit.DAYS.between(start, end) + 1));
+        return days;
     }
 
     public List<Map<String, Object>> rearrangePlan(List<DayForm> plan, int days) {
