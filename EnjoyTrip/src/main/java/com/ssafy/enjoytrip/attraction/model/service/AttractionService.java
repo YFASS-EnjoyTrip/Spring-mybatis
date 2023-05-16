@@ -12,7 +12,7 @@ import java.util.Map;
 
 public interface AttractionService {
 
-    ResponseEntity<ResponseDto> getLocations(String keyWord);
+    List<AttractionDto> getLocations(Map<String, Integer> param) throws Exception;
 
     ResponseEntity<ResponseDto> searchLocations(SearchDto searchDto) ;
 

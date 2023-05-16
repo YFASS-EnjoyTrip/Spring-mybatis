@@ -32,9 +32,10 @@
     </resultMap>
 
     <select id="getLocations" resultMap="Locations">
-        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
-          FROM attraction_info
-         WHERE title like #{keyWord}
+          SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
+            FROM attraction_info
+        ORDER BY content_id
+           LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="searchLocations" resultMap="Locations">

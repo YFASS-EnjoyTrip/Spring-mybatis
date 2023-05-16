@@ -25,21 +25,8 @@ public class AttractionServiceImpl implements AttractionService {
     private final LikeMapper likeMapper;
 
     @Override
-    public ResponseEntity<ResponseDto> getLocations(String keyWord) {
-        String message;
-        try {
-            List<AttractionDto> result = mapper.getLocations(keyWord);
-            message = "여행지 조회 요청 성공했습니다.";
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
-
-        } catch (Exception e) {
-
-            log.info("error={}", e);
-            message = "여행지 조회 요청에 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
-        }
+    public List<AttractionDto> getLocations(Map<String, Integer> param) throws Exception {
+            return mapper.getLocations(param);
     }
 
     @Override
