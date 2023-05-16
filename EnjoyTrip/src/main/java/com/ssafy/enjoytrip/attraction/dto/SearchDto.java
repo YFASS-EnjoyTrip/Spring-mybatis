@@ -12,5 +12,7 @@ public class SearchDto{
     private String keyword;
     private String sido;
     private String gugun;
+    private int pageSize;
+    private int offset;
     private List<Integer> contentType;
 }

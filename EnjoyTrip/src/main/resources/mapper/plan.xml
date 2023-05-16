@@ -15,13 +15,18 @@
         <result column="like_count" property="likeCount"/>
     </resultMap>
 
-    <resultMap id="planDetailMap" type="java.util.LinkedHashMap">
+    <resultMap id="planDetailMap" type="DayForm">
         <result column="content_id" property="contentId"/>
         <result column="content_type_id" property="type"/>
         <result column="title" property="title"/>
+        <result column="overview" property="overView"/>
         <result column="first_image" property="image"/>
         <result column="latitude" property="lat"/>
         <result column="longitude" property="lng"/>
+        <result column="like_count" property="likeCount"/>
+        <result column="rate" property="rate"/>
+        <result column="day" property="day"/>
+        <result column="content_order" property="order"/>
     </resultMap>
 
     <resultMap id="planRandomMap" type="DayForm">
@@ -36,7 +41,16 @@
         <result column="rate" property="rate"/>
     </resultMap>
 
-<!--    <insert id="createPlan" parameterType="PlanForm" keyProperty="planId" useGeneratedKeys="true">-->
+    <resultMap id="planInfoMap" type="map">
+        <result column="travel_plan_id" property="planId"/>
+        <result column="nickname" property="nickName"/>
+        <result column="title" property="title"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="view_count" property="viewCount"/>
+        <result column="like_count" property="likeCount"/>
+    </resultMap>
+    <!--    <insert id="createPlan" parameterType="PlanForm" keyProperty="planId" useGeneratedKeys="true">-->
 <!--        INSERT INTO travel_plan (-->
 <!--                    member_id, title, image, start_date, end_date-->
 <!--        )    VALUES (-->
@@ -113,11 +127,13 @@
          WHERE member_id = #{memberId}
     </select>
 
-    <select id="selectPlanDetail" parameterType="int" resultMap="planDetailMap">
-        SELECT a.content_id, a.content_type_id, a.first_image, a.title, a.latitude, a.longitude
-          FROM travel_plan_detail t INNER JOIN attraction_info a
-            ON t.content_id = a.content_id
-         WHERE t.travel_plan_id = #{planId}
+    <select id="selectPlanDetail" parameterType="map" resultMap="planDetailMap">
+        SELECT ai.content_id, ai.content_type_id, ai.first_image, ai.title, ad.overview, ai.latitude, ai.longitude, ai.like_count, ai.rate, t.day, t.content_order
+          FROM travel_plan_detail t JOIN attraction_info ai
+            ON t.content_id = ai.content_id
+          JOIN attraction_description ad
+            ON t.content_id = ad.content_id
+         WHERE t.travel_plan_id = #{planId} AND t.day = #{day}
     </select>
 
     <delete id="deletePlanDay" parameterType="map">
@@ -134,10 +150,10 @@
         )
     </insert>
 
-    <select id="selectPlanInfo" parameterType="int" resultType="java.util.LinkedHashMap">
-        SELECT p.travel_plan_id as planId, m.nickname as nickName, p.title as title, p.view_count as viewCount, p.like_count as likeCount
+    <select id="selectPlanInfo" parameterType="map" resultMap="planInfoMap">
+        SELECT p.travel_plan_id, m.nickname, p.title, p.start_date, p.end_date, p.view_count, p.like_count
           FROM travel_plan p INNER JOIN member m
             ON p.member_id = m.member_id
-         WHERE p.travel_plan_id = #{planId}
+         WHERE p.travel_plan_id = #{planId} and p.member_id = #{memberId}
     </select>
 </mapper>

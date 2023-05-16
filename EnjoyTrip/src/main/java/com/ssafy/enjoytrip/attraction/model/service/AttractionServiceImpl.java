@@ -19,45 +19,19 @@ import java.util.Map;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class AttractionServiceImpl implements AttractionService{
+public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionMapper mapper;
     private final LikeMapper likeMapper;
 
     @Override
-    public ResponseEntity<ResponseDto> getLocations(String keyWord) {
-        String message;
-        try {
-            List<AttractionDto> result = mapper.getLocations(keyWord);
-            message = "여행지 조회 요청 성공했습니다.";
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
-
-        } catch (Exception e) {
-
-            log.info("error={}", e);
-            message = "여행지 조회 요청에 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
-        }
+    public List<AttractionDto> getLocations(Map<String, Integer> param) throws Exception {
+            return mapper.getLocations(param);
     }
 
     @Override
-    public ResponseEntity<ResponseDto> searchLocations(SearchDto searchDto)  {
-        String message;
-        try {
-            List<AttractionDto> result = mapper.searchLocations(searchDto);
-
-            message = "여행지 검색 요청 성공했습니다.";
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
-        } catch (Exception e) {
-
-            log.info("error={}", e);
-            message = "여행지 검색 요청에 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
-        }
+    public List<AttractionDto> searchLocations(SearchDto searchDto) throws Exception{
+        return mapper.searchLocations(searchDto);
     }
 
     @Override
@@ -95,19 +69,9 @@ public class AttractionServiceImpl implements AttractionService{
     }
 
     @Override
-    public ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) {
-        String message;
-        try {
-            mapper.insertLocationReview(review);
-            return locationReviews(String.valueOf(review.getContentId()));
-
-        } catch (Exception e) {
-            log.info("error={}", e);
-            message = "여행지 리뷰 작성 요청에 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
-        }
-
+    public ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) throws Exception {
+        mapper.insertLocationReview(review);
+        return locationReviews(String.valueOf(review.getContentId()));
     }
 
     /**
@@ -131,6 +95,11 @@ public class AttractionServiceImpl implements AttractionService{
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(res);
+    }
+
+    @Override
+    public List<Map<String, String>> getGugunCode(String sido) throws Exception {
+        return mapper.selectGugunCode(sido);
     }
 
     private void checkLike(Map<String, String> param) throws SQLException {

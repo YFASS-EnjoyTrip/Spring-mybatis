@@ -14,7 +14,7 @@ import java.util.Map;
 @Mapper
 public interface AttractionMapper {
 
-    List<AttractionDto> getLocations(String keyWord) throws SQLException;
+    List<AttractionDto> getLocations(Map<String, Integer> param) throws SQLException;
 
     List<AttractionDto> searchLocations(SearchDto searchDto) throws SQLException;
 
@@ -26,4 +26,6 @@ public interface AttractionMapper {
 
     @Transactional
     void updateLocationLike(Map<String, String> param) throws SQLException;
+
+    List<Map<String, String>> selectGugunCode(String sido) throws SQLException;
 }

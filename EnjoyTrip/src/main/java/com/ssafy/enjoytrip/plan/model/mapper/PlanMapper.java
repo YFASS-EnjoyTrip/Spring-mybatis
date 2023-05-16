@@ -16,9 +16,9 @@ public interface PlanMapper {
 
     List<PlanForm> selectAllPlans(int memberId) throws SQLException;
 
-    List<Map<String, Object>> selectPlanDetail(int planId) throws SQLException;
+    List<DayForm> selectPlanDetail(Map<String, String> param) throws SQLException;
 
-    Map<String, String> selectPlanInfo(int planId) throws SQLException;
+    Map<String, String> selectPlanInfo(Map<String, String> param) throws SQLException;
 
     void updatePlan(PlanForm form) throws SQLException;
 

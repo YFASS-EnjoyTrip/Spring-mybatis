@@ -41,7 +41,7 @@ public class PlanController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        int memberId = memberService.findMemberIdByEmail(email);
+        String memberId = memberService.findMemberIdByEmail(email);
 
         param.put("memberId", memberId);
         List<Map<String, Object>> result = planService.createPlan(param);
@@ -49,34 +49,6 @@ public class PlanController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));
     }
-
-    /**
-     * 여행 플래너 생성
-     * 23.05.12 요구사항 변경으로 폐쇄
-     */
-//    @PostMapping("/write")
-//    public ResponseEntity<ResponseDto> addPlan(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
-//        try {
-//
-//            // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
-//            // 했다치고
-//            String imageUrl = fileService.uploadFile(file);
-//            log.info(imageUrl);
-//            form.setImage(imageUrl);
-//            planService.savePlan(form);
-//
-//            Map<String, Object> result = new HashMap<>();
-//            result.put("planId", form.getPlanId());
-//
-//            return ResponseEntity.status(HttpStatus.CREATED)
-//                    .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 완료", result));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
 
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans() throws Exception {
@@ -106,11 +78,22 @@ public class PlanController {
      * 여행 상세 일정 조회
      */
     @GetMapping("/list/{planId}")
-    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) throws Exception {
-        //회원권한 검사 했다 치고
+    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable String planId, HttpServletRequest request) throws Exception {
+        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+        String memberId = memberService.findMemberIdByEmail(email);
+
+        Map<String, String> param = new HashMap<>();
+        param.put("memberId", memberId);
+        param.put("planId", planId);
+
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("planInfo", planService.findPlanInfo(planId));
-        result.put("dayInfo", planService.findPlanDetail(planId));
+        Map<String, String> planInfo = planService.findPlanInfo(param);
+        result.put("planInfo", planInfo);
+
+        param.put("startDate", String.valueOf(planInfo.get("startDate")));
+        param.put("endDate", String.valueOf(planInfo.get("endDate")));
+
+        result.put("dayInfo", planService.findPlanDetail(param));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));

@@ -18,9 +18,9 @@ public interface PlanService {
 
     List<PlanForm> findPlans(int memberId) throws Exception;
 
-    List<Map<String, Object>> findPlanDetail(int planId) throws Exception;
+    Map<String, List<DayForm>> findPlanDetail(Map<String, String> param) throws Exception;
 
-    Map<String, String> findPlanInfo(int planId) throws Exception;
+    Map<String, String> findPlanInfo(Map<String, String> param) throws Exception;
 
     void updatePlan(PlanForm form) throws Exception;
 
