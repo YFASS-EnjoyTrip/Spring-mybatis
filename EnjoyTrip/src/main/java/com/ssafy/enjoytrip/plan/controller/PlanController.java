@@ -50,34 +50,6 @@ public class PlanController {
                 .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));
     }
 
-    /**
-     * 여행 플래너 생성
-     * 23.05.12 요구사항 변경으로 폐쇄
-     */
-//    @PostMapping("/write")
-//    public ResponseEntity<ResponseDto> addPlan(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
-//        try {
-//
-//            // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
-//            // 했다치고
-//            String imageUrl = fileService.uploadFile(file);
-//            log.info(imageUrl);
-//            form.setImage(imageUrl);
-//            planService.savePlan(form);
-//
-//            Map<String, Object> result = new HashMap<>();
-//            result.put("planId", form.getPlanId());
-//
-//            return ResponseEntity.status(HttpStatus.CREATED)
-//                    .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 완료", result));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
-//    }
-
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans() throws Exception {
         // JWT 토큰 받았다 치고 회원ID 1로 테스트

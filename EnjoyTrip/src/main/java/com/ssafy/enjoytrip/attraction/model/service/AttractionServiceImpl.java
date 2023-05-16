@@ -95,19 +95,9 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) {
-        String message;
-        try {
-            mapper.insertLocationReview(review);
-            return locationReviews(String.valueOf(review.getContentId()));
-
-        } catch (Exception e) {
-            log.info("error={}", e);
-            message = "여행지 리뷰 작성 요청에 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
-        }
-
+    public ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) throws Exception {
+        mapper.insertLocationReview(review);
+        return locationReviews(String.valueOf(review.getContentId()));
     }
 
     /**

@@ -20,7 +20,7 @@ public interface AttractionService {
 
     ResponseEntity<ResponseDto> locationReviews(String contentId) ;
 
-    ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review);
+    ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) throws Exception;
 
     ResponseEntity<ResponseDto> saveLocationLike(Map<String, String> param) ;
 

@@ -66,8 +66,12 @@ public class AttractionController {
     /**
      * 여행지 리뷰 작성
      */
-    @PostMapping("/detail/{contentId}/reviews")
-    public ResponseEntity<ResponseDto> addLocationReview(@RequestBody ReviewDto review) throws Exception {
+    @PostMapping("/detail/reviews")
+    public ResponseEntity<ResponseDto> addLocationReview(@RequestBody ReviewDto review, HttpServletRequest request) throws Exception {
+        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+        int memberId = Integer.parseInt(memberService.findMemberIdByEmail(email));
+        review.setMemberId(memberId);
+
         return service.saveLocationReview(review);
     }
 
