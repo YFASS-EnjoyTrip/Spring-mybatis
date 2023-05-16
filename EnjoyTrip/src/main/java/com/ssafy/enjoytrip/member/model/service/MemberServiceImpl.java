@@ -111,4 +111,9 @@ public class MemberServiceImpl implements MemberService {
 	public List<Map<String, String>> like(String email) throws Exception{
 		return mapper.selectLike(email);
 	}
+
+	@Override
+	public Integer findMemberIdByEmail(String email) throws Exception {
+		return mapper.selectMemberIdByEmail(email);
+	}
 }

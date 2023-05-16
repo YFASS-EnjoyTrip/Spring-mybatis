@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.plan.model.mapper;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
 
 import java.sql.SQLException;
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface PlanMapper {
-    void createPlan(Map<String, String> param) throws SQLException;
+    List<DayForm> createPlan(Map<String, Object> param) throws SQLException;
 
     void createPlanDays(Map<String, Object> param) throws SQLException;
 
@@ -26,4 +27,8 @@ public interface PlanMapper {
     void deletePlanDay(Map<String, Object> form) throws SQLException;
 
     void insertPlanDay(Map<String, Object> form) throws SQLException;
+
+    void insertPlan(Map<String, Object> param) throws SQLException;
+
+    void insertPlanDays (Map<String, Object> tmp) throws SQLException;
 }

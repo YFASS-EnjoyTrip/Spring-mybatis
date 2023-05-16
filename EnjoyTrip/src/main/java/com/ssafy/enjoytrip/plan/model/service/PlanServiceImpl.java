@@ -13,9 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,14 +34,14 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public void savePlanDays(DayForm form) throws Exception {
-        Map<String, Object> param = new HashMap<>();
-        param.put("planId", form.getPlanId());
-
-        for (DayDto item : form.getItems()) {
-            param.put("item", item);
-            log.info("day={}", item.getDay());
-            planMapper.createPlanDays(param);
-        }
+//        Map<String, Object> param = new HashMap<>();
+//        param.put("planId", form.getPlanId());
+//
+//        for (DayDto item : form.getItems()) {
+//            param.put("item", item);
+//            log.info("day={}", item.getDay());
+//            planMapper.createPlanDays(param);
+//        }
     }
 
     @Override
@@ -79,31 +77,69 @@ public class PlanServiceImpl implements PlanService {
         planMapper.insertPlanDay(form);
     }
 
-    /**
-     *
-     * 1개의 아이템
-     * - 이름
-     * - 컨텐츠 타입
-     * - 상세설명
-     * - 좋아요, 별점
-     * - 댓글
-     */
     @Override
-    public List<DayForm> createPlan(Map<String, String> param) throws Exception {
-        LocalDate startDate = LocalDate.parse(param.get("startDate"));
-        LocalDate endDate = LocalDate.parse(param.get("endDate"));
+    public List<Map<String, Object>> createPlan(Map<String, Object> param) throws Exception {
+        LocalDate startDate = LocalDate.parse((CharSequence) param.get("startDate"));
+        LocalDate endDate = LocalDate.parse((CharSequence) param.get("endDate"));
 
-        String days = String.valueOf(ChronoUnit.DAYS.between(startDate, endDate));
-        param.put("days", days);
+        int days = Integer.parseInt(String.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1));
+        param.put("day1", days);
+        param.put("day2", days * 2);
 
-        // 1. days 만큼 관광지2, 밥2, 숙소1 뽑기, 마지막 날은 밥2, 관광지2
-        // 서브쿼리로 짜봅ㅂ시다
+        // 1. 플랜 생성
+        List<DayForm> plan = planMapper.createPlan(param);
+        param.put("image", plan.get(0).getImage());
+        param.put("title", param.get("sidoName") + "여행");
 
         // 2. List<DayForm> 배치 해주기
+        List<Map<String, Object>> result = rearrangePlan(plan, days);
 
         // 3. 화면에 출력 전, DB PUSH 후 return 해주기
+        Map<String, Object> tmp = new HashMap<>();
+        planMapper.insertPlan(param); // plan 기본정보
+        tmp.put("planId", param.get("planId"));
+        for (Map<String, Object> items : result) {
+            List<DayForm> item = (List<DayForm>) items.get("items");
 
-//        planMapper.createPlan(param);
-        return null;
+            for (DayForm dayForm : item) {
+                tmp.put("item", dayForm);
+                planMapper.insertPlanDays(tmp);
+            }
+        }
+
+
+        return result;
     }
+
+    public List<Map<String, Object>> rearrangePlan(List<DayForm> plan, int days) {
+        List<Map<String, Object>> rearrangedPlan = new ArrayList<>();
+        int mealsPerDay = days * 2;  // 음식점은 하루에 두 번 방문합니다.
+        int accommodations = days;  // 숙소는 일수와 동일합니다.
+        int sitesStartIndex = mealsPerDay + accommodations; // 관광지의 시작 위치
+
+        for (int day = 0; day < days; day++) {
+            List<DayForm> items = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                DayForm tmp;
+                if (i == 4) {
+                    tmp = plan.get(mealsPerDay + day);
+                    accommodations--;  // 숙소를 하나 사용했습니다.
+                } else if (i % 2 == 0) {
+                    tmp = plan.get(sitesStartIndex + day * 2 + i / 2);
+                } else {
+                    tmp = plan.get(day * 2 + i / 2);
+                }
+                tmp.setOrder(i + 1);
+                tmp.setDay(day + 1);
+                items.add(tmp);
+            }
+            Map<String, Object> dayPlan = new HashMap<>();
+            dayPlan.put("Day", (day + 1));
+            dayPlan.put("items", items);
+            rearrangedPlan.add(dayPlan);
+        }
+
+        return rearrangedPlan;
+    }
+
 }

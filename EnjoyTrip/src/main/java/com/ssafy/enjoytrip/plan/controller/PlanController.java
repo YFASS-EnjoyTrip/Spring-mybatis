@@ -2,6 +2,8 @@ package com.ssafy.enjoytrip.plan.controller;
 
 import com.ssafy.enjoytrip.global.service.FileService;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
+import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
+import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
 import com.ssafy.enjoytrip.plan.model.service.PlanService;
@@ -24,9 +26,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/planner")
 @RequiredArgsConstructor
+@CrossOrigin
 public class PlanController {
 
     private final PlanService planService;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtService;
     private final FileService fileService;
 
@@ -35,13 +39,15 @@ public class PlanController {
      * 여행 플래너 랜덤 생성
      */
     @PostMapping("/create")
-    public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, String> param, HttpServletRequest request) throws Exception {
+    public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        param.put("email", email);
+        int memberId = memberService.findMemberIdByEmail(email);
 
-        planService.createPlan(param);
+        param.put("memberId", memberId);
+        List<Map<String, Object>> result = planService.createPlan(param);
 
-        return null;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));
     }
 
     /**
@@ -73,18 +79,12 @@ public class PlanController {
 //    }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDto> getPlans() {
+    public ResponseEntity<ResponseDto> getPlans() throws Exception {
         // JWT 토큰 받았다 치고 회원ID 1로 테스트
-        int memberId = 1;
-        try {
-            List<PlanForm> result = planService.findPlans(memberId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        int memberId = 4;
+        List<PlanForm> result = planService.findPlans(memberId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
     }
 
     /**
@@ -106,19 +106,15 @@ public class PlanController {
      * 여행 상세 일정 조회
      */
     @GetMapping("/list/{planId}")
-    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) {
+    public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable int planId) throws Exception {
         //회원권한 검사 했다 치고
         Map<String, Object> result = new LinkedHashMap<>();
-        try {
-            result.put("planInfo", planService.findPlanInfo(planId));
-            result.put("dayInfo", planService.findPlanDetail(planId));
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        result.put("planInfo", planService.findPlanInfo(planId));
+        result.put("dayInfo", planService.findPlanDetail(planId));
 
-        return null;
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "여행 상세 조회 완료", result));
+
     }
 
     //TODO

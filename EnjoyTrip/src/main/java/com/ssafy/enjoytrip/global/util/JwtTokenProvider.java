@@ -18,7 +18,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secretKey}")
     private String secretKey;
     private final MemberMapper mapper;
-    private final long validTime= 3600 * 1000; // 토큰 유효시간 (1시간)
+    private final long validTime= 3600 * 1000 * 24; // 토큰 유효시간 (1시간)
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject("user")
