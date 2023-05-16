@@ -30,21 +30,8 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> searchLocations(SearchDto searchDto)  {
-        String message;
-        try {
-            List<AttractionDto> result = mapper.searchLocations(searchDto);
-
-            message = "여행지 검색 요청 성공했습니다.";
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new ResponseDto(HttpStatus.OK.value(), message, result));
-        } catch (Exception e) {
-
-            log.info("error={}", e);
-            message = "여행지 검색 요청에 실패했습니다.";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
-        }
+    public List<AttractionDto> searchLocations(SearchDto searchDto) throws Exception{
+        return mapper.searchLocations(searchDto);
     }
 
     @Override

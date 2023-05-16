@@ -14,7 +14,7 @@ public interface AttractionService {
 
     List<AttractionDto> getLocations(Map<String, Integer> param) throws Exception;
 
-    ResponseEntity<ResponseDto> searchLocations(SearchDto searchDto) ;
+    List<AttractionDto> searchLocations(SearchDto searchDto) throws Exception;
 
     ResponseEntity<ResponseDto> searchLocationDetail(String contentId);
 

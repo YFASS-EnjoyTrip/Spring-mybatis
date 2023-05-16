@@ -52,11 +52,17 @@ public class AttractionController {
      * @return
      */
     @GetMapping("/search")
-    public ResponseEntity<ResponseDto> searchLocations(@RequestParam String keyword,
+    public ResponseEntity<ResponseDto> searchLocations(@RequestParam(required = false) String keyword,
                                                        @RequestParam(required = false) String sido,
                                                        @RequestParam(required = false) String gugun,
+                                                       @RequestParam int page,
+                                                       @RequestParam int pageSize,
                                                        @RequestParam(required = false) List<Integer> contentType) throws Exception {
-        return service.searchLocations(new SearchDto(keyword, sido, gugun, contentType));
+        int offset = (page - 1) * pageSize;
+        log.info("value={}", contentType);
+        List<AttractionDto> result = service.searchLocations(new SearchDto(keyword, sido, gugun, pageSize, offset, contentType));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "요청을 성공적으로 수행", result));
     }
 
     /**

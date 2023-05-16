@@ -40,12 +40,15 @@
 
     <select id="searchLocations" resultMap="Locations">
         SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
-          FROM attraction_info
-         WHERE title like CONCAT('%', #{keyword}, '%')
-        <if test="sido != null">
+        FROM attraction_info
+        WHERE 1=1
+        <if test="keyword != null">
+            AND title LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="sido != 0">
             AND sido_code = #{sido}
         </if>
-        <if test="gugun != null">
+        <if test="gugun != 0">
             AND gugun_code = #{gugun}
         </if>
         <if test="contentType != null">
@@ -54,10 +57,12 @@
                 #{type}
             </foreach>
         </if>
+        ORDER BY content_Id
+        LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="selectGugunCode" resultType="map">
-        SELECT gugun_code, gugun_name
+        SELECT gugun_code as value, gugun_name as text
           FROM gugun
          WHERE sido_code = #{sido}
     </select>
