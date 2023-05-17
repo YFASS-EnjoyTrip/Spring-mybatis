@@ -11,7 +11,7 @@
          WHERE email = #{email};
 	</select>
 
-	<select id="findMemberByEmail" parameterType="memberDto" resultType="memberDto">
+	<select id="findMemberByEmail" parameterType="string" resultType="memberDto">
 		SELECT member_id, email, password, nickname, profile_img, bio
 		  FROM member
 		 WHERE email = #{email}

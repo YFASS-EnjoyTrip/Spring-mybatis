@@ -34,6 +34,7 @@ public class MemberServiceImpl implements MemberService {
 		if (member.getEmail() == null || member.getPassword() == null) {
 			return null;
 		}
+
 		return mapper.findMemberByEmail(member.getEmail());
 	}
 

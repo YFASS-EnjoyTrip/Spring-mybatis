@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -62,44 +63,51 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpServletResponse response) throws Exception {
-		int status;
 		String message;
+		MemberDto loginMember;
 
 		try {
-			MemberDto loginMember = memberService.login(member);
+			loginMember = memberService.login(member);
 
 			if (loginMember == null) {
-				status = HttpStatus.ACCEPTED.value();
 				message = "이메일 또는 비밀번호를 확인해주세요.";
+				return ResponseEntity
+						.status(HttpStatus.UNAUTHORIZED)
+						.body(new ResponseDto(HttpStatus.UNAUTHORIZED.value(), message, null));
 			} else {
 				String accessToken = jwtService.createAccessToken("memberId", loginMember.getMemberId());
 				String refreshToken = jwtService.createRefreshToken("memberId", loginMember.getMemberId());
 
 				memberService.saveRefreshToken(member.getEmail(), refreshToken);
-				status = HttpStatus.ACCEPTED.value();
 				message = "로그인이 정상적으로 처리되었습니다.";
 
-				// AccessToken Header
-				response.setHeader(AUTH_HEADER, "Bearer " + accessToken);
+				HttpHeaders headers = new HttpHeaders();
+				headers.add(AUTH_HEADER, accessToken);
 
-				// RefreshToken Cookie
-				Cookie token = new Cookie("refreshToken", refreshToken);
-				token.setHttpOnly(true);
-				token.setMaxAge(7 * 24 * 60 * 60);
-				token.setSecure(true);
-				token.setPath("/");
+//				Cookie token = new Cookie("refreshToken", refreshToken);
+//				token.setHttpOnly(true);
+//				token.setMaxAge(7 * 24 * 60 * 60);
+//				token.setPath("/");
+//
+//				ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
+//						.maxAge(7 * 24 * 60 * 60)
+//						.path("/")
+//						.build();
+//
+//				headers.add(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
-				response.addCookie(token);
+				return ResponseEntity
+						.status(HttpStatus.OK)
+						.headers(headers)
+						.body(new ResponseDto(HttpStatus.OK.value(), message, refreshToken));
 			}
 
 		} catch (Exception e) {
 			message = e.getMessage();
-			status = HttpStatus.INTERNAL_SERVER_ERROR.value();
+			return ResponseEntity
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseDto(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null));
 		}
-
-		return ResponseEntity
-				.status(HttpStatus.ACCEPTED)
-				.body(new ResponseDto(status, message, null));
 	}
 
 
