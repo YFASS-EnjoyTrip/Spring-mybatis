@@ -8,6 +8,7 @@
         <result column="content_id" property="contentId"/>
         <result column="content_type_id" property="contentType"/>
         <result column="title" property="title"/>
+        <result column="overview" property="overview"/>
         <result column="addr1" property="addr1"/>
         <result column="addr2" property="addr2"/>
         <result column="zipcode" property="zipCode"/>
@@ -68,8 +69,10 @@
     </select>
 
     <select id="searchLocationDetail" resultMap="Locations">
-        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
-          FROM attraction_info
+        SELECT ai.content_id, ai.content_type_id, ai.title, ad.overview, ai.addr1, ai.addr2, ai.zipcode, ai.tel, ai.first_image, ai.view_count, ai.sido_code, ai.gugun_code, ai.latitude, ai.longitude, ai.like_count
+          FROM attraction_info ai
+          JOIN attraction_description ad
+            ON ai.content_id = ad.content_id
          WHERE content_id = #{contentId}
     </select>
 

@@ -16,6 +16,13 @@
 		  FROM member
 		 WHERE email = #{email}
 	</select>
+
+	<select id="findMemberById" parameterType="string" resultType="memberDto">
+		SELECT member_id, email, password, nickname, profile_img, bio
+		FROM member
+		WHERE member_id = #{memberId}
+	</select>
+
 	<select id="selectMemberByCheck" parameterType="string"
 		resultType="memberInfoDto">
 		SELECT *
@@ -73,5 +80,11 @@
 		UPDATE member
 		   SET profile_img = #{image}
 		 WHERE email = #{email}
+	</update>
+
+	<update id="saveRefreshToken" parameterType="map">
+		UPDATE member
+           SET token = #{token}
+    	 WHERE email = #{email}
 	</update>
 </mapper>

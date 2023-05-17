@@ -87,19 +87,15 @@ public class JwtTokenProvider {
         Map<String, Object> value = claims.getBody();
         return value;
     }
-    public String generateToken(String email) {
-        return Jwts.builder()
-                .setSubject("user")
-                .claim("email", email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_MINUTES))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-    }
+
+//    public String getMemberId() {
+//        return (String) this.get("member").get("memberId");
+//    }
 
     public MemberDto authenticate(String token) throws Exception {
-        String email = getEmail(token);
-        MemberDto member = mapper.findMemberByEmail(email);
+        String memberId = getMemberId(token);
+        MemberDto member = mapper.findMemberById(memberId);
+        log.info("member={}", member);
         if (member == null) {
             throw new Exception("USER NOT FOUND");
         }
@@ -113,5 +109,13 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token.replace("Bearer ", ""));
 
         return claims.getBody().get("email", String.class);
+    }
+
+    public String getMemberId(String token) throws Exception {
+        Jws<Claims> claims = Jwts.parser()
+                .setSigningKey(this.generateKey())
+                .parseClaimsJws(token.replace("Bearer ", ""));
+
+        return claims.getBody().get("memberId", String.class);
     }
 }

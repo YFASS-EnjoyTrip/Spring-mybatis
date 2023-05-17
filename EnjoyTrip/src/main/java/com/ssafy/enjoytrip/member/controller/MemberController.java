@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -60,31 +61,45 @@ public class MemberController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
-		ResponseDto result;
+	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpServletResponse response) throws Exception {
+		int status;
+		String message;
+
 		try {
 			MemberDto loginMember = memberService.login(member);
 
 			if (loginMember == null) {
+				status = HttpStatus.ACCEPTED.value();
+				message = "이메일 또는 비밀번호를 확인해주세요.";
+			} else {
+				String accessToken = jwtService.createAccessToken("memberId", loginMember.getMemberId());
+				String refreshToken = jwtService.createRefreshToken("memberId", loginMember.getMemberId());
+
+				memberService.saveRefreshToken(member.getEmail(), refreshToken);
+				status = HttpStatus.ACCEPTED.value();
+				message = "로그인이 정상적으로 처리되었습니다.";
+
+				// AccessToken Header
+				response.setHeader(AUTH_HEADER, "Bearer " + accessToken);
+
+				// RefreshToken Cookie
+				Cookie token = new Cookie("refreshToken", refreshToken);
+				token.setHttpOnly(true);
+				token.setMaxAge(7 * 24 * 60 * 60);
+				token.setSecure(true);
+				token.setPath("/");
+
+				response.addCookie(token);
 			}
 
 		} catch (Exception e) {
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR.value();
 		}
 
-		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(result);
-
-
-		// AccessToken Header
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(AUTH_HEADER, "Bearer " + jwtToken);
-
-		result.remove("token");
-
 		return ResponseEntity
-				.status(HttpStatus.OK)
-				.headers(headers)
-				.body(new ResponseDto(HttpStatus.OK.value(), "로그인 성공", result));
+				.status(HttpStatus.ACCEPTED)
+				.body(new ResponseDto(status, message, null));
 	}
 
 

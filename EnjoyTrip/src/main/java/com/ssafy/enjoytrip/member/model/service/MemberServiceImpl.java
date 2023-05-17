@@ -105,4 +105,12 @@ public class MemberServiceImpl implements MemberService {
 	public String findMemberIdByEmail(String email) throws Exception {
 		return mapper.selectMemberIdByEmail(email);
 	}
+
+	@Override
+	public void saveRefreshToken(String email, String refreshToken) throws Exception {
+		Map<String, String> param= new HashMap<>();
+		param.put("email", email);
+		param.put("token", refreshToken);
+		mapper.saveRefreshToken(param);
+	}
 }

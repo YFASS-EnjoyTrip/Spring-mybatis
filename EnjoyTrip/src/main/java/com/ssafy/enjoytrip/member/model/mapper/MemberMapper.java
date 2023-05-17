@@ -15,6 +15,8 @@ public interface MemberMapper {
 
 	MemberDto selectMember(MemberDto member) throws SQLException;
 
+	MemberDto findMemberById(String memberId) throws SQLException;
+
 	void insertMember(MemberDto member) throws SQLException;
 
 	MemberInfoDto selectMemberByCheck(String check) throws SQLException;
@@ -34,4 +36,7 @@ public interface MemberMapper {
 	MemberDto findMemberByEmail(String email) throws SQLException;
 
     String selectMemberIdByEmail(String email) throws SQLException;
+
+	void saveRefreshToken(Map<String, String> param) throws SQLException;
+
 }

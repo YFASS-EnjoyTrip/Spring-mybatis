@@ -40,8 +40,7 @@ public class PlanController {
      */
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
-        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        String memberId = memberService.findMemberIdByEmail(email);
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
         param.put("memberId", memberId);
         List<Map<String, Object>> result = planService.createPlan(param);
@@ -51,10 +50,10 @@ public class PlanController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDto> getPlans() throws Exception {
+    public ResponseEntity<ResponseDto> getPlans(HttpServletRequest request) throws Exception {
         // JWT 토큰 받았다 치고 회원ID 1로 테스트
-        int memberId = 4;
-        List<PlanForm> result = planService.findPlans(memberId);
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        List<PlanForm> result = planService.findPlans(Integer.parseInt(memberId));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
     }
@@ -79,8 +78,7 @@ public class PlanController {
      */
     @GetMapping("/list/{planId}")
     public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable String planId, HttpServletRequest request) throws Exception {
-        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        String memberId = memberService.findMemberIdByEmail(email);
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
         Map<String, String> param = new HashMap<>();
         param.put("memberId", memberId);
@@ -105,11 +103,11 @@ public class PlanController {
      * 플래너 기본정보 수정
      */
     @PutMapping("/update")
-    public ResponseEntity<ResponseDto> updatePlanInfo(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ResponseDto> updatePlanInfo(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
         try {
 
             // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
-            // 했다치고
+            String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
             // 파일 insert 후, file_id 가져오기
 
