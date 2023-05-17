@@ -15,7 +15,7 @@ import com.ssafy.enjoytrip.response.ResponseDto;
 
 public interface MemberService {
 
-	Map<String, String> login(MemberDto member) throws Exception;
+	MemberDto login(MemberDto member) throws Exception;
 
 	ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception;
 

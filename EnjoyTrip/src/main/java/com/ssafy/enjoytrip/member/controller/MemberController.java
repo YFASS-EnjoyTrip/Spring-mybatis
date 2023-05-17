@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.ws.Response;
 
 import com.ssafy.enjoytrip.global.service.FileService;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
@@ -17,15 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.enjoytrip.member.dto.MemberDto;
@@ -38,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@CrossOrigin
 public class MemberController {
 	private final MemberService memberService;
 	private final FileService fileService;
@@ -47,13 +41,19 @@ public class MemberController {
 	// Email / Nickname Check
 	@GetMapping("/check/{check}")
 	public ResponseEntity<ResponseDto> check(@PathVariable String check) throws Exception {
-		memberService.check(check);
+		try{
+			memberService.check(check);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseDto(HttpStatus.CONFLICT.value(), "이미 사용중입니다", null));
+		}
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto(HttpStatus.OK.value(), "사용 가능 합니다", null));
 	}
 
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseDto> signup(@RequestBody MemberDto member) throws Exception {
+		log.info("member={}", member);
 		memberService.signup(member);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ResponseDto(HttpStatus.CREATED.value(), "회원가입 성공", null));
@@ -61,8 +61,19 @@ public class MemberController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member) throws Exception {
-		Map<String, String> result = memberService.login(member);
-		String jwtToken = result.get("token");
+		ResponseDto result;
+		try {
+			MemberDto loginMember = memberService.login(member);
+
+			if (loginMember == null) {
+			}
+
+		} catch (Exception e) {
+		}
+
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(result);
+
 
 		// AccessToken Header
 		HttpHeaders headers = new HttpHeaders();
@@ -150,6 +161,7 @@ public class MemberController {
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto(HttpStatus.OK.value(), "프로필 사진이 정상적으로 변경 되었습니다", null));
 	}
+
 	@GetMapping("/mypage/like")
 	public ResponseEntity<ResponseDto> like(HttpServletRequest request) throws Exception {
 		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
