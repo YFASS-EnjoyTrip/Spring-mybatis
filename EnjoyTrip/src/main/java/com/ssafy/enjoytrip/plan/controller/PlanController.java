@@ -41,17 +41,15 @@ public class PlanController {
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
         String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
-
         param.put("memberId", memberId);
-        List<Map<String, Object>> result = planService.createPlan(param);
+        String result = planService.createPlan(param);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 성공", result));
     }
 
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans(HttpServletRequest request) throws Exception {
-        // JWT 토큰 받았다 치고 회원ID 1로 테스트
         String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
         List<PlanForm> result = planService.findPlans(Integer.parseInt(memberId));
         return ResponseEntity.status(HttpStatus.OK)

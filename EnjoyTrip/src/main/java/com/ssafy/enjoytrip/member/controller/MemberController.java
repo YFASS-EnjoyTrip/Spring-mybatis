@@ -39,6 +39,8 @@ public class MemberController {
 	private final FileService fileService;
 	private final JwtTokenProvider jwtService;
 	private String AUTH_HEADER = "Authorization";
+	private static final String SUCCESS = "success";
+	private static final String FAIL = "fail";
 
 	// Email / Nickname Check
 	@GetMapping("/check/{check}")
@@ -65,10 +67,8 @@ public class MemberController {
 	public ResponseEntity<ResponseDto> login(@RequestBody MemberDto member, HttpServletResponse response) throws Exception {
 		String message;
 		MemberDto loginMember;
-
 		try {
 			loginMember = memberService.login(member);
-
 			if (loginMember == null) {
 				message = "이메일 또는 비밀번호를 확인해주세요.";
 				return ResponseEntity
@@ -80,21 +80,23 @@ public class MemberController {
 
 				memberService.saveRefreshToken(member.getEmail(), refreshToken);
 				message = "로그인이 정상적으로 처리되었습니다.";
-
 				HttpHeaders headers = new HttpHeaders();
 				headers.add(AUTH_HEADER, accessToken);
 
-//				Cookie token = new Cookie("refreshToken", refreshToken);
-//				token.setHttpOnly(true);
-//				token.setMaxAge(7 * 24 * 60 * 60);
-//				token.setPath("/");
-//
-//				ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
-//						.maxAge(7 * 24 * 60 * 60)
-//						.path("/")
-//						.build();
-//
-//				headers.add(HttpHeaders.SET_COOKIE, responseCookie.toString());
+				Cookie token = new Cookie("refreshToken", refreshToken);
+				token.setHttpOnly(true);
+				token.setMaxAge(7 * 24 * 60 * 60);
+				token.setPath("/");
+
+				ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken)
+						.httpOnly(true)
+						.sameSite("None")
+						.secure(true)
+						.maxAge(7 * 24 * 60 * 60)
+						.path("/")
+						.build();
+
+				headers.add(HttpHeaders.SET_COOKIE, responseCookie.toString());
 
 				return ResponseEntity
 						.status(HttpStatus.OK)
@@ -110,6 +112,28 @@ public class MemberController {
 		}
 	}
 
+	@GetMapping("/info/{memberId}")
+	public ResponseEntity<ResponseDto> getInfo(@PathVariable String memberId, HttpServletRequest request) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		if (jwtService.checkToken(request.getHeader("access-token"))) {
+			try {
+				MemberInfoDto memberInfo = memberService.findMemberInfoById(memberId);
+				resultMap.put("memberInfo", memberInfo);
+				resultMap.put("message", SUCCESS);
+				status = HttpStatus.ACCEPTED;
+			} catch (Exception e) {
+				resultMap.put("message", e.getMessage());
+				status = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
+		} else {
+			resultMap.put("message", FAIL);
+			status = HttpStatus.UNAUTHORIZED;
+		}
+
+		return ResponseEntity.status(status)
+				.body(new ResponseDto(status.value(), null, resultMap));
+	}
 
 	@GetMapping("/logout")
 	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {

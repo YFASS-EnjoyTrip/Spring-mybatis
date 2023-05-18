@@ -28,7 +28,6 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberMapper mapper;
 	private final JwtTokenProvider jwtTokenProvider;
 
-	// TODO JWT 로직 추가 예정
 	@Override
 	public MemberDto login(MemberDto member) throws Exception {
 		if (member.getEmail() == null || member.getPassword() == null) {
@@ -108,10 +107,16 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
+	public MemberInfoDto findMemberInfoById(String memberId) throws Exception {
+		return mapper.findMemberInfoById(memberId);
+	}
+
+	@Override
 	public void saveRefreshToken(String email, String refreshToken) throws Exception {
 		Map<String, String> param= new HashMap<>();
 		param.put("email", email);
 		param.put("token", refreshToken);
 		mapper.saveRefreshToken(param);
 	}
+
 }

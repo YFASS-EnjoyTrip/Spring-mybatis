@@ -23,6 +23,12 @@
 		WHERE member_id = #{memberId}
 	</select>
 
+	<select id="findMemberInfoById" parameterType="string" resultType="memberInfoDto">
+		SELECT member_id, email, nickname, profile_img, bio
+		FROM member
+		WHERE member_id = #{memberId}
+	</select>
+
 	<select id="selectMemberByCheck" parameterType="string"
 		resultType="memberInfoDto">
 		SELECT *

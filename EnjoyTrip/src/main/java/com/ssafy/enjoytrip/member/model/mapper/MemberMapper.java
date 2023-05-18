@@ -39,4 +39,5 @@ public interface MemberMapper {
 
 	void saveRefreshToken(Map<String, String> param) throws SQLException;
 
+	MemberInfoDto findMemberInfoById(String memberId);
 }

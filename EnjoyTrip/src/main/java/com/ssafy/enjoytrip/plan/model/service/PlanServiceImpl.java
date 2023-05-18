@@ -87,7 +87,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<Map<String, Object>> createPlan(Map<String, Object> param) throws Exception {
+    public String createPlan(Map<String, Object> param) throws Exception {
         int days = getDays((String) param.get("startDate"), (String) param.get("endDate"));
 
         param.put("day1", days);
@@ -104,7 +104,10 @@ public class PlanServiceImpl implements PlanService {
         // 3. 화면에 출력 전, DB PUSH 후 return 해주기
         Map<String, Object> tmp = new HashMap<>();
         planMapper.insertPlan(param); // plan 기본정보
-        tmp.put("planId", param.get("planId"));
+
+        String planId = param.get("planId").toString();
+        tmp.put("planId", planId);
+
         for (Map<String, Object> items : result) {
             List<DayForm> item = (List<DayForm>) items.get("items");
 
@@ -114,8 +117,7 @@ public class PlanServiceImpl implements PlanService {
             }
         }
 
-
-        return result;
+        return planId;
     }
 
     /**

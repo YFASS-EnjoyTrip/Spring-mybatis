@@ -40,4 +40,6 @@ public interface MemberService {
     String findMemberIdByEmail(String email) throws Exception;
 
     void saveRefreshToken(String email, String refreshToken) throws Exception;
+
+	MemberInfoDto findMemberInfoById(String memberId) throws Exception;
 }
