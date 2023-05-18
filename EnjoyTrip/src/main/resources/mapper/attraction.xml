@@ -73,7 +73,7 @@
           FROM attraction_info ai
           JOIN attraction_description ad
             ON ai.content_id = ad.content_id
-         WHERE content_id = #{contentId}
+         WHERE ai.content_id = #{contentId}
     </select>
 
     <select id="getLocationReviews" resultMap="Reviews">

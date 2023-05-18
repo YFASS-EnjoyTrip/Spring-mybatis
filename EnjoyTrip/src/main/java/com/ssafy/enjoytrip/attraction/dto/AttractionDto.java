@@ -18,4 +18,5 @@ public class AttractionDto {
     private Double lat;
     private Double lng;
     private int likeCount;
+    private String overview;
 }
