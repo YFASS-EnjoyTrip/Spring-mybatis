@@ -8,13 +8,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.Response;
 
 import com.ssafy.enjoytrip.global.service.FileService;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
 import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
