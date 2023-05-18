@@ -97,6 +97,7 @@ public class AttractionController {
      */
     @GetMapping("/detail/{contentId}/reviews")
     public ResponseEntity<ResponseDto> locationReviews(@PathVariable String contentId) throws Exception {
+        log.info(contentId);
         return service.locationReviews(contentId);
     }
 

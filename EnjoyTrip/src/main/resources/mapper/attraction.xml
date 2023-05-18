@@ -8,7 +8,7 @@
         <result column="content_id" property="contentId"/>
         <result column="content_type_id" property="contentType"/>
         <result column="title" property="title"/>
-        <result column="overview" property="overview"/>
+        <result column="overview" property="overView"/>
         <result column="addr1" property="addr1"/>
         <result column="addr2" property="addr2"/>
         <result column="zipcode" property="zipCode"/>
@@ -73,7 +73,7 @@
           FROM attraction_info ai
           JOIN attraction_description ad
             ON ai.content_id = ad.content_id
-         WHERE content_id = #{contentId}
+         WHERE ai.content_id = #{contentId}
     </select>
 
     <select id="getLocationReviews" resultMap="Reviews">

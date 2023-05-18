@@ -56,7 +56,7 @@ public class AttractionServiceImpl implements AttractionService {
         String message;
         try {
             List<ReviewDto> result = mapper.getLocationReviews(contentId);
-
+            log.info("result={}", result);
             message = "여행지 리뷰 조회 요청 성공했습니다.";
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new ResponseDto(HttpStatus.OK.value(), message, result));
