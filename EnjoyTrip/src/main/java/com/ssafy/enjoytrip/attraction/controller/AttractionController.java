@@ -56,8 +56,6 @@ public class AttractionController {
                                                        @RequestParam int pageSize,
                                                        @RequestParam(required = false) List<Integer> contentType) throws Exception {
         int offset = (page - 1) * pageSize;
-        log.info("value={}", contentType);
-        log.info("keyword={}", keyword);
         List<AttractionDto> result = service.searchLocations(new SearchDto(keyword, sido, gugun, pageSize, offset, contentType));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "요청을 성공적으로 수행", result));

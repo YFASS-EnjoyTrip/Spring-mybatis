@@ -100,7 +100,7 @@ public class PlanController {
     /**
      * 플래너 기본정보 수정
      */
-    @PutMapping("/update")
+    @PutMapping("/update/planInfo")
     public ResponseEntity<ResponseDto> updatePlanInfo(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
         try {
 
@@ -142,14 +142,17 @@ public class PlanController {
     /**
      * 플랜너 상세 일정 수정
      */
-    @PutMapping("/update/day")
-    public ResponseEntity<ResponseDto> updatePlanDetail(@RequestBody Map<String, Object> form) {
-        try {
-            log.info("form={}", form.toString());
-//            planService.updatePlanDetail(form);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @PutMapping("/update/{planId}")
+    public ResponseEntity<ResponseDto> updatePlanDetail(@PathVariable String planId,
+                                                        @RequestBody Map<String, List<List<DayForm>>> form,
+                                                        HttpServletRequest request) throws Exception
+    {
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        Map<String, Object> param = new HashMap<>();
+        param.put("memberId", memberId);
+        param.put("planId", planId);
+
+        planService.updatePlanDetail(param, form);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "일정 수정 완료", null));

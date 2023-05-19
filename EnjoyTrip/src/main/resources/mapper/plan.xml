@@ -107,6 +107,14 @@
          WHERE travel_plan_id = #{planId}
     </update>
 
+    <insert id="updatePlanDetail" parameterType="map">
+        INSERT INTO travel_plan_detail (
+            travel_plan_id, day, content_id, content_order
+        )    VALUES (
+            #{planId}, #{item.day}, #{item.contentId}, #{item.order}
+        )
+    </insert>
+
     <delete id="deletePlan" parameterType="int">
         DELETE
           FROM travel_plan
@@ -136,10 +144,10 @@
          WHERE t.travel_plan_id = #{planId} AND t.day = #{day}
     </select>
 
-    <delete id="deletePlanDay" parameterType="map">
+    <delete id="deletePlanDetail" parameterType="string">
         DELETE
           FROM travel_plan_detail
-         WHERE planId = #{plandId} and day = #{day}
+         WHERE travel_plan_Id = #{plandId}
     </delete>
 
     <insert id="insertPlanDay" parameterType="map">

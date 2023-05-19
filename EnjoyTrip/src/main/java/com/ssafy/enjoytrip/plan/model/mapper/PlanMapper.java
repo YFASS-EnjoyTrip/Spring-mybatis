@@ -3,6 +3,7 @@ package com.ssafy.enjoytrip.plan.model.mapper;
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
 import com.ssafy.enjoytrip.plan.dto.DayForm;
 import com.ssafy.enjoytrip.plan.dto.PlanForm;
+import org.apache.ibatis.jdbc.SQL;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -24,11 +25,13 @@ public interface PlanMapper {
 
     void deletePlan(int planId) throws SQLException;
 
-    void deletePlanDay(Map<String, Object> form) throws SQLException;
+    void deletePlanDetail(String planId) throws SQLException;
 
     void insertPlanDay(Map<String, Object> form) throws SQLException;
 
     void insertPlan(Map<String, Object> param) throws SQLException;
 
     void insertPlanDays (Map<String, Object> tmp) throws SQLException;
+
+    void updatePlanDetail(Map<String, Object> param) throws SQLException;
 }

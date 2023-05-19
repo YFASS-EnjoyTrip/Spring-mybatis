@@ -81,9 +81,25 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void updatePlanDetail(Map<String, Object> form) throws Exception {
-        planMapper.deletePlanDay(form);
-        planMapper.insertPlanDay(form);
+    public void updatePlanDetail(Map<String, Object> param, Map<String, List<List<DayForm>>> form) throws Exception {
+        // 1. 기존 여행지 삭제
+        planMapper.deletePlanDetail((String) param.get("planId"));
+
+        // 2. 새로윤 여행지 insert
+        int day = 1, order = 1;
+        List<List<DayForm>> plans = form.get("data");
+        for (List<DayForm> plan : plans) {
+            order = 1;
+            for (DayForm item : plan) {
+                item.setDay(day);
+                item.setOrder(order);
+                param.put("item", item);
+                planMapper.updatePlanDetail(param);
+                order++;
+            }
+
+            day++;
+        }
     }
 
     @Override
@@ -119,6 +135,8 @@ public class PlanServiceImpl implements PlanService {
 
         return planId;
     }
+
+
 
     /**
      *  출발날짜, 마지막날짜로 일 수 계산

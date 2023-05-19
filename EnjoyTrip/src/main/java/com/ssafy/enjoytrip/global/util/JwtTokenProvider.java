@@ -25,7 +25,7 @@ public class JwtTokenProvider {
     private String secretKey;
     private final MemberMapper mapper;
     private static final String AUTH_HEADER = "Authorization";
-    private static final int ACCESS_TOKEN_EXPIRE_MINUTES = 1000 * 60 * 30; // 30분
+    private static final int ACCESS_TOKEN_EXPIRE_MINUTES = 1000 * 60 * 30 * 10; // 300분
     private static final int REFRESH_TOKEN_EXPIRE_MINUTES = 1000 * 60 * 60 * 24 * 7; // 일주일
 
     private byte[] generateKey() {
