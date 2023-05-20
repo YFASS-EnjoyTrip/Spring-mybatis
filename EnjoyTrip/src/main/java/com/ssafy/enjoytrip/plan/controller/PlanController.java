@@ -51,6 +51,7 @@ public class PlanController {
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans(HttpServletRequest request) throws Exception {
         String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        log.info("memberId={}", memberId);
         List<PlanForm> result = planService.findPlans(Integer.parseInt(memberId));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));

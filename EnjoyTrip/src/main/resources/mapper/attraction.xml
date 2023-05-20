@@ -35,7 +35,7 @@
     <select id="getLocations" resultMap="Locations">
           SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
             FROM attraction_info
-        ORDER BY content_id
+        ORDER BY view_count DESC
            LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
@@ -58,7 +58,7 @@
                 #{type}
             </foreach>
         </if>
-        ORDER BY content_Id
+        ORDER BY title
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 

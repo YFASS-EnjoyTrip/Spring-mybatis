@@ -6,7 +6,6 @@
 
     <resultMap id="planMap" type="PlanForm">
         <result column="travel_plan_id" property="planId"/>
-        <result column="member_id" property="memberId"/>
         <result column="image" property="image"/>
         <result column="title" property="title"/>
         <result column="start_date" property="startDate"/>

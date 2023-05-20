@@ -34,7 +34,8 @@ public class AttractionController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<ResponseDto> locations(@RequestParam int page, @RequestParam int pageSize) throws Exception {
+    public ResponseEntity<ResponseDto> locations(@RequestParam int page,
+                                                 @RequestParam int pageSize) throws Exception {
         Map<String, Integer> param = new HashMap<>();
         param.put("pageSize", pageSize);
         param.put("offset", (page - 1) * pageSize);
