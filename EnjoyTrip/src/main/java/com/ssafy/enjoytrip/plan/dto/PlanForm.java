@@ -6,6 +6,7 @@ import lombok.Data;
 public class PlanForm {
     private int planId;
     private String title;
+    private String sidoCode;
     private String image;
     private String startDate;
     private String endDate;

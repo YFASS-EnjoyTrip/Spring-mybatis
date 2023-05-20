@@ -46,10 +46,10 @@
         <if test="keyword != null">
             AND title LIKE CONCAT('%', #{keyword}, '%')
         </if>
-        <if test="sido != 0">
+        <if test="sido != 0 and sido != null">
             AND sido_code = #{sido}
         </if>
-        <if test="gugun != 0">
+        <if test="gugun != 0 and gugun != null">
             AND gugun_code = #{gugun}
         </if>
         <if test="contentType != null">
