@@ -117,6 +117,7 @@ public class MemberController {
 		if (jwtService.checkToken(request.getHeader("access-token"))) {
 			try {
 				MemberInfoDto memberInfo = memberService.findMemberInfoById(memberId);
+				log.info("memberInfo={}", memberInfo);
 				resultMap.put("memberInfo", memberInfo);
 				resultMap.put("message", SUCCESS);
 				status = HttpStatus.ACCEPTED;
@@ -178,42 +179,51 @@ public class MemberController {
 	}
 
 	@PutMapping("/mypage/edit/bio")
-	public ResponseEntity<ResponseDto> editBio(@RequestBody Map<String, String> bio, HttpServletRequest request) throws Exception {
-		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+	public ResponseEntity<ResponseDto> editBio(@RequestBody Map<String ,String> body, HttpServletRequest request) throws Exception {
+		String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
-		Map<String, String> map = new HashMap<>();
-		map.put("email", email);
-		map.put("bio", bio.get("bio"));
+		Map<String, String> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("bio", body.get("bio"));
 
-		memberService.editBio(map);
+		memberService.editBio(param);
 
 		return ResponseEntity.status(HttpStatus.OK)
 				.body(new ResponseDto(HttpStatus.OK.value(), "자기소개가 정상적으로 변경 되었습니다.", null));
 	}
 
-	@PutMapping("/mypage/edit/profile-img")
+	@PutMapping("/mypage/edit/profileimg")
 	public ResponseEntity<ResponseDto> editProfileImg(@RequestPart(value = "file") MultipartFile file, HttpServletRequest request) throws Exception {
-		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
+		String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
 		Map<String, String> map = new HashMap<>();
 		String imageUrl = fileService.uploadFile(file);
 
+		log.info("imageUrl={}", imageUrl);
 		map.put("image", imageUrl);
-		map.put("email", email);
+		map.put("memberId", memberId);
 
 		memberService.editProfileImg(map);
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseDto(HttpStatus.OK.value(), "프로필 사진이 정상적으로 변경 되었습니다", null));
+				.body(new ResponseDto(HttpStatus.OK.value(), "프로필 사진이 정상적으로 변경 되었습니다", imageUrl));
 	}
 
 	@GetMapping("/mypage/like")
-	public ResponseEntity<ResponseDto> like(HttpServletRequest request) throws Exception {
-		String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-		memberService.like(email);
+	public ResponseEntity<ResponseDto> like(@RequestParam(required = false) String sido,
+											@RequestParam(required = false) String gugun,
+											HttpServletRequest request) throws Exception {
+		String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+
+		Map<String, String> param = new HashMap<>();
+		param.put("memberId", memberId);
+		param.put("sido", sido);
+		param.put("gugun", gugun);
+
+		List<Map<String, String>> result = memberService.like(param);
 
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(new ResponseDto(HttpStatus.OK.value(), "정상적으로 불러왔습니다", null));
+				.body(new ResponseDto(HttpStatus.OK.value(), "정상적으로 불러왔습니다", result));
 	}
 
 }

@@ -2,9 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper
-	namespace="com.ssafy.enjoytrip.member.model.mapper.MemberMapper">
-
+<mapper namespace="com.ssafy.enjoytrip.member.model.mapper.MemberMapper">
+	<resultMap id="likeMap" type="map">
+		<result column="item_id" property="contentId"/>
+		<result column="title" property="title"/>
+		<result column="first_image" property="image"/>
+		<result column="like_count" property="likeCount"/>
+		<result column="rate" property="rate"/>
+	</resultMap>
 	<select id="selectMemberIdByEmail" parameterType="string" resultType="string">
 		SELECT member_id
 		  FROM member
@@ -25,8 +30,8 @@
 
 	<select id="findMemberInfoById" parameterType="string" resultType="memberInfoDto">
 		SELECT member_id, email, nickname, profile_img, bio
-		FROM member
-		WHERE member_id = #{memberId}
+		  FROM member
+		 WHERE member_id = #{memberId}
 	</select>
 
 	<select id="selectMemberByCheck" parameterType="string"
@@ -36,20 +41,18 @@
 		 WHERE email=#{check}
 		    OR nickname=#{check}
 	</select>
-	<select id="selectLike" parameterType="String"
-		resultType="HashMap">
-		    SELECT l.type, m.nickname,
-		      CASE
-		      WHEN l.type = 'H' THEN h.place_title
-		      WHEN l.type = 'A' THEN a.title
-		      WHEN l.type = 'P' THEN p.title
-	        END AS title
-		      FROM tb_like l
-	    INNER JOIN member m ON l.member_id = m.member_id
-		 LEFT JOIN hot_place_board h ON l.type = 'H' AND l.item_id = h.id
-		 LEFT JOIN attraction_info a ON l.type = 'A' AND l.item_id = a.content_id
-		 LEFT JOIN travel_plan p ON l.type = 'P' AND l.item_id = p.travle_plan_id
-		     WHERE m.nickname = #{nickname}
+	<select id="selectLike" parameterType="map" resultMap="likeMap">
+		SELECT tl.item_id, ai.title, ai.first_image, ai.like_count, ai.rate
+		  FROM tb_like tl
+		  JOIN attraction_info ai
+		    ON tl.item_id = ai.content_id
+		 WHERE tl.member_id = #{memberId}
+		<if test="sido != null and sido != 0">
+			AND ai.sido_code = #{sido}
+		</if>
+		<if test="gugun != null and gugun != 0">
+			AND ai.gugun_code = #{gugun}
+		</if>
 	</select>
 
 	<insert id="insertMember" parameterType="memberDto">
@@ -79,7 +82,7 @@
 	<update id="updateMemberBio" parameterType="map">
 		UPDATE member
 		   SET bio = #{bio}
-		 WHERE email = #{email}
+		 WHERE member_id = #{memberId}
 	</update>
 
 	<update id="updateMemberProfileImg" parameterType="map">

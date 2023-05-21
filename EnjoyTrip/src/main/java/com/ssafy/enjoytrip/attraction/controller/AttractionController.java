@@ -88,7 +88,9 @@ public class AttractionController {
         int memberId = Integer.parseInt(jwtService.getMemberId(request.getHeader(AUTH_HEADER)));
         review.setMemberId(memberId);
 
-        return service.saveLocationReview(review);
+        List<ReviewDto> result = service.saveLocationReview(review);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto(HttpStatus.CREATED.value(), "SUCCESS", result));
     }
 
     /**
@@ -96,10 +98,15 @@ public class AttractionController {
      */
     @GetMapping("/detail/{contentId}/reviews")
     public ResponseEntity<ResponseDto> locationReviews(@PathVariable String contentId) throws Exception {
-        log.info(contentId);
-        return service.locationReviews(contentId);
+        List<ReviewDto> result = service.locationReviews(contentId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "SUCCESS", result));
     }
 
+    /**
+     * 여행지 좋아요 클릭
+     */
     @PostMapping("/{contentId}/like")
     public ResponseEntity<ResponseDto> addLocationLike(@PathVariable String contentId,
                                                        HttpServletRequest request) throws Exception {
@@ -109,6 +116,10 @@ public class AttractionController {
         param.put("contentId", contentId);
         param.put("type", "A");
         param.put("memberId", memberId);
-        return service.saveLocationLike(param);
+
+        int result = service.saveLocationLike(param);
+        log.info("result={}", result);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "SUCCESS", result));
     }
 }

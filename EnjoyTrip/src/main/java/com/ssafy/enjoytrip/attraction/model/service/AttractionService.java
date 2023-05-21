@@ -18,11 +18,11 @@ public interface AttractionService {
 
     ResponseEntity<ResponseDto> searchLocationDetail(String contentId);
 
-    ResponseEntity<ResponseDto> locationReviews(String contentId) ;
+    List<ReviewDto> locationReviews(String contentId) throws Exception ;
 
-    ResponseEntity<ResponseDto> saveLocationReview(ReviewDto review) throws Exception;
+    List<ReviewDto> saveLocationReview(ReviewDto review) throws Exception;
 
-    ResponseEntity<ResponseDto> saveLocationLike(Map<String, String> param) ;
+    int saveLocationLike(Map<String, String> param) throws Exception;
 
     List<Map<String, String>> getGugunCode(String sido) throws Exception;
 }

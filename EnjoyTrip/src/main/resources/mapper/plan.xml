@@ -115,7 +115,7 @@
         )
     </insert>
 
-    <delete id="deletePlan" parameterType="int">
+    <delete id="deletePlan" parameterType="string">
         DELETE
           FROM travel_plan
          WHERE travel_plan_id = #{planId}

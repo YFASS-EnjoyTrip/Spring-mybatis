@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class MemberInfoDto {
+    private String memberId;
     private String email;
     private String nickname;
     private String profileImg;

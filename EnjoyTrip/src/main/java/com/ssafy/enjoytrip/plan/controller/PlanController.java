@@ -128,10 +128,15 @@ public class PlanController {
     /**
      * 플래너 삭제
      */
-    @DeleteMapping("/delete/{planId}")
-    public ResponseEntity<ResponseDto> removePlan(@PathVariable int planId) {
+    @DeleteMapping("/{planId}")
+    public ResponseEntity<ResponseDto> removePlan(@PathVariable String planId, HttpServletRequest request) throws Exception {
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        Map<String, String> param = new HashMap<>();
+
         try {
-            planService.deletePlan(planId);
+            param.put("memberId", memberId);
+            param.put("planId", planId);
+            planService.deletePlan(param);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -23,7 +23,7 @@ public interface PlanMapper {
 
     void updatePlan(PlanForm form) throws SQLException;
 
-    void deletePlan(int planId) throws SQLException;
+    void deletePlan(String planId) throws SQLException;
 
     void deletePlanDetail(String planId) throws SQLException;
 

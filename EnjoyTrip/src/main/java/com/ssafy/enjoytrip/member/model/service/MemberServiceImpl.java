@@ -26,7 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper mapper;
-	private final JwtTokenProvider jwtTokenProvider;
 
 	@Override
 	public MemberDto login(MemberDto member) throws Exception {
@@ -97,8 +96,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<Map<String, String>> like(String email) throws Exception{
-		return mapper.selectLike(email);
+	public List<Map<String, String>> like(Map<String, String> param) throws Exception {
+		return mapper.selectLike(param);
 	}
 
 	@Override

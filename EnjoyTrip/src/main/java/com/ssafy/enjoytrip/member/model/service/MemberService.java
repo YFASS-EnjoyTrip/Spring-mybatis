@@ -35,7 +35,7 @@ public interface MemberService {
 
 	void editProfileImg(Map<String, String> map) throws Exception;
 
-	List<Map<String, String>> like(String email) throws Exception;
+	List<Map<String, String>> like(Map<String, String> param) throws Exception;
 
     String findMemberIdByEmail(String email) throws Exception;
 

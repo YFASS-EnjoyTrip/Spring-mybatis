@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberDto;
+import org.apache.ibatis.jdbc.SQL;
 
 @Mapper
 public interface MemberMapper {
@@ -31,7 +32,7 @@ public interface MemberMapper {
 
 	void updateMemberProfileImg(Map<String, String> map) throws SQLException;
 
-	List<Map<String, String>> selectLike(String email) throws SQLException;
+	List<Map<String, String>> selectLike(Map<String, String> param) throws SQLException;
 
 	MemberDto findMemberByEmail(String email) throws SQLException;
 
@@ -39,5 +40,5 @@ public interface MemberMapper {
 
 	void saveRefreshToken(Map<String, String> param) throws SQLException;
 
-	MemberInfoDto findMemberInfoById(String memberId);
+	MemberInfoDto findMemberInfoById(String memberId) throws SQLException;
 }

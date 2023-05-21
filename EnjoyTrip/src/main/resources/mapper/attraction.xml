@@ -20,6 +20,8 @@
         <result column="latitude" property="lat"/>
         <result column="longitude" property="lng"/>
         <result column="like_count" property="likeCount"/>
+        <result column="rate" property="rate"/>
+        <result column="total_count" property="totalCount"/>
     </resultMap>
 
     <resultMap id="Reviews" type="ReviewDto">
@@ -33,14 +35,14 @@
     </resultMap>
 
     <select id="getLocations" resultMap="Locations">
-          SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
+          SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count, rate, total_count
             FROM attraction_info
         ORDER BY view_count DESC
            LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
     <select id="searchLocations" resultMap="Locations">
-        SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
+        SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count, rate, total_count
         FROM attraction_info
         WHERE 1=1
         <if test="keyword != null">
@@ -68,8 +70,9 @@
          WHERE sido_code = #{sido}
     </select>
 
-    <select id="searchLocationDetail" resultMap="Locations">
-        SELECT ai.content_id, ai.content_type_id, ai.title, ad.overview, ai.addr1, ai.addr2, ai.zipcode, ai.tel, ai.first_image, ai.view_count, ai.sido_code, ai.gugun_code, ai.latitude, ai.longitude, ai.like_count
+    <select id="searchLocationDetail" parameterType="string" resultMap="Locations">
+        SELECT ai.content_id, ai.content_type_id, ai.title, ad.overview, ai.addr1, ai.addr2, ai.zipcode, ai.tel, ai.first_image,
+               ai.view_count, ai.sido_code, ai.gugun_code, ai.latitude, ai.longitude, ai.like_count, ai.rate, ai.total_count
           FROM attraction_info ai
           JOIN attraction_description ad
             ON ai.content_id = ad.content_id

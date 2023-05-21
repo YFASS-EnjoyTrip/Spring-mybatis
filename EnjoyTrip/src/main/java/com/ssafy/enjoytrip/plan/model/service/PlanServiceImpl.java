@@ -73,11 +73,10 @@ public class PlanServiceImpl implements PlanService {
         planMapper.updatePlan(form);
     }
 
-    // TODO DELETE 시 file_info 테이블의 image도 삭제해야합니다
     @Override
-    public void deletePlan(int planId) throws Exception {
-        planMapper.deletePlan(planId);
-//        fileMapper.deletePlanImage(planId);
+    public void deletePlan(Map<String, String> param) throws Exception {
+        planMapper.deletePlanDetail(param.get("planId"));
+        planMapper.deletePlan(param.get("planId"));
     }
 
     @Override
