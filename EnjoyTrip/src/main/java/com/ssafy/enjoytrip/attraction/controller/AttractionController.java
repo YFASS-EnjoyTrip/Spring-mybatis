@@ -5,10 +5,8 @@ import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
-import com.ssafy.enjoytrip.member.model.service.MemberService;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import com.ssafy.enjoytrip.response.ResponseDto;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +26,6 @@ import java.util.Map;
 public class AttractionController {
     private final AttractionService service;
     private final JwtTokenProvider jwtService;
-    private final MemberService memberService;
     private String AUTH_HEADER = "Authorization";
 
 
@@ -37,7 +34,8 @@ public class AttractionController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<ResponseDto> locations(@RequestParam int page, @RequestParam int pageSize) throws Exception {
+    public ResponseEntity<ResponseDto> locations(@RequestParam int page,
+                                                 @RequestParam int pageSize) throws Exception {
         Map<String, Integer> param = new HashMap<>();
         param.put("pageSize", pageSize);
         param.put("offset", (page - 1) * pageSize);
@@ -59,7 +57,6 @@ public class AttractionController {
                                                        @RequestParam int pageSize,
                                                        @RequestParam(required = false) List<Integer> contentType) throws Exception {
         int offset = (page - 1) * pageSize;
-        log.info("value={}", contentType);
         List<AttractionDto> result = service.searchLocations(new SearchDto(keyword, sido, gugun, pageSize, offset, contentType));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "요청을 성공적으로 수행", result));
@@ -88,8 +85,7 @@ public class AttractionController {
      */
     @PostMapping("/detail/reviews")
     public ResponseEntity<ResponseDto> addLocationReview(@RequestBody ReviewDto review, HttpServletRequest request) throws Exception {
-        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        int memberId = Integer.parseInt(memberService.findMemberIdByEmail(email));
+        int memberId = Integer.parseInt(jwtService.getMemberId(request.getHeader(AUTH_HEADER)));
         review.setMemberId(memberId);
 
         return service.saveLocationReview(review);
@@ -100,14 +96,14 @@ public class AttractionController {
      */
     @GetMapping("/detail/{contentId}/reviews")
     public ResponseEntity<ResponseDto> locationReviews(@PathVariable String contentId) throws Exception {
+        log.info(contentId);
         return service.locationReviews(contentId);
     }
 
     @PostMapping("/{contentId}/like")
     public ResponseEntity<ResponseDto> addLocationLike(@PathVariable String contentId,
                                                        HttpServletRequest request) throws Exception {
-        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        String memberId = String.valueOf(memberService.findMemberIdByEmail(email));
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
         Map<String, String> param = new HashMap<>();
         param.put("contentId", contentId);

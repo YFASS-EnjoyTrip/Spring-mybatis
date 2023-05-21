@@ -7,6 +7,7 @@ public class AttractionDto {
     private int contentId;
     private int contentType;
     private String title;
+    private String overView;
     private String addr1;
     private String addr2;
     private String zipCode;
@@ -18,4 +19,5 @@ public class AttractionDto {
     private Double lat;
     private Double lng;
     private int likeCount;
+    private String overview;
 }

@@ -4,17 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.Email;
+
 @Getter
 @ToString
 public class MemberDto {
 	private String memberId;
+
 	@Setter
+	@Email
 	private String email;
 	@Setter
 	private String password;
-	@Setter	
+	@Setter
 	private String nickname;
-	private String gender;
 	@Setter
 	private String profileImg;
 	@Setter

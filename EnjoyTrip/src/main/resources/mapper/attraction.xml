@@ -8,6 +8,7 @@
         <result column="content_id" property="contentId"/>
         <result column="content_type_id" property="contentType"/>
         <result column="title" property="title"/>
+        <result column="overview" property="overView"/>
         <result column="addr1" property="addr1"/>
         <result column="addr2" property="addr2"/>
         <result column="zipcode" property="zipCode"/>
@@ -34,7 +35,7 @@
     <select id="getLocations" resultMap="Locations">
           SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
             FROM attraction_info
-        ORDER BY content_id
+        ORDER BY view_count DESC
            LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
@@ -45,10 +46,10 @@
         <if test="keyword != null">
             AND title LIKE CONCAT('%', #{keyword}, '%')
         </if>
-        <if test="sido != 0">
+        <if test="sido != 0 and sido != null">
             AND sido_code = #{sido}
         </if>
-        <if test="gugun != 0">
+        <if test="gugun != 0 and gugun != null">
             AND gugun_code = #{gugun}
         </if>
         <if test="contentType != null">
@@ -57,7 +58,7 @@
                 #{type}
             </foreach>
         </if>
-        ORDER BY content_Id
+        ORDER BY title
         LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
@@ -68,9 +69,11 @@
     </select>
 
     <select id="searchLocationDetail" resultMap="Locations">
-        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count
-          FROM attraction_info
-         WHERE content_id = #{contentId}
+        SELECT ai.content_id, ai.content_type_id, ai.title, ad.overview, ai.addr1, ai.addr2, ai.zipcode, ai.tel, ai.first_image, ai.view_count, ai.sido_code, ai.gugun_code, ai.latitude, ai.longitude, ai.like_count
+          FROM attraction_info ai
+          JOIN attraction_description ad
+            ON ai.content_id = ad.content_id
+         WHERE ai.content_id = #{contentId}
     </select>
 
     <select id="getLocationReviews" resultMap="Reviews">

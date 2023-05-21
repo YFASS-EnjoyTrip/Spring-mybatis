@@ -15,7 +15,7 @@ import com.ssafy.enjoytrip.response.ResponseDto;
 
 public interface MemberService {
 
-	Map<String, String> login(MemberDto member) throws Exception;
+	MemberDto login(MemberDto member) throws Exception;
 
 	ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception;
 
@@ -38,4 +38,8 @@ public interface MemberService {
 	List<Map<String, String>> like(String email) throws Exception;
 
     String findMemberIdByEmail(String email) throws Exception;
+
+    void saveRefreshToken(String email, String refreshToken) throws Exception;
+
+	MemberInfoDto findMemberInfoById(String memberId) throws Exception;
 }

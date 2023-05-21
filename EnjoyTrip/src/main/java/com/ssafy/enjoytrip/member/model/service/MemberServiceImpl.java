@@ -28,24 +28,13 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberMapper mapper;
 	private final JwtTokenProvider jwtTokenProvider;
 
-	// TODO JWT 로직 추가 예정
 	@Override
-	public Map<String, String> login(MemberDto member) throws Exception {
-		MemberDto m = mapper.findMemberByEmail(member.getEmail());
-		if (m == null || !BCrypt.checkpw(member.getPassword(), m.getPassword())) {
-			throw new IllegalArgumentException("이메일, 비밀번호를 확인 해주세요.");
+	public MemberDto login(MemberDto member) throws Exception {
+		if (member.getEmail() == null || member.getPassword() == null) {
+			return null;
 		}
 
-		// JWT 토큰 로직이 들어올 자리
-		String token = jwtTokenProvider.generateToken(m.getEmail());
-		log.info("token={}", token);
-		Map<String, String> result = new HashMap<>();
-
-		result.put("token", token);
-		result.put("nickName", m.getNickname());
-		result.put("profileImg", m.getProfileImg());
-
-		return result;
+		return mapper.findMemberByEmail(member.getEmail());
 	}
 
 	// TODO JWT 도입 시, 수정
@@ -116,4 +105,18 @@ public class MemberServiceImpl implements MemberService {
 	public String findMemberIdByEmail(String email) throws Exception {
 		return mapper.selectMemberIdByEmail(email);
 	}
+
+	@Override
+	public MemberInfoDto findMemberInfoById(String memberId) throws Exception {
+		return mapper.findMemberInfoById(memberId);
+	}
+
+	@Override
+	public void saveRefreshToken(String email, String refreshToken) throws Exception {
+		Map<String, String> param= new HashMap<>();
+		param.put("email", email);
+		param.put("token", refreshToken);
+		mapper.saveRefreshToken(param);
+	}
+
 }

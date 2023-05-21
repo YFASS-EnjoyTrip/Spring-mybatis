@@ -40,21 +40,19 @@ public class PlanController {
      */
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> addPlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
-        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        String memberId = memberService.findMemberIdByEmail(email);
-
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
         param.put("memberId", memberId);
-        List<Map<String, Object>> result = planService.createPlan(param);
+        String result = planService.createPlan(param);
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseDto(HttpStatus.OK.value(), "플랜 생성 성공", result));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 성공", result));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ResponseDto> getPlans() throws Exception {
-        // JWT 토큰 받았다 치고 회원ID 1로 테스트
-        int memberId = 4;
-        List<PlanForm> result = planService.findPlans(memberId);
+    public ResponseEntity<ResponseDto> getPlans(HttpServletRequest request) throws Exception {
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        log.info("memberId={}", memberId);
+        List<PlanForm> result = planService.findPlans(Integer.parseInt(memberId));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "여행 플래너 조회 완료", result));
     }
@@ -79,8 +77,7 @@ public class PlanController {
      */
     @GetMapping("/list/{planId}")
     public ResponseEntity<ResponseDto> getPlanDetail(@PathVariable String planId, HttpServletRequest request) throws Exception {
-        String email = jwtService.getEmail(request.getHeader(AUTH_HEADER));
-        String memberId = memberService.findMemberIdByEmail(email);
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
         Map<String, String> param = new HashMap<>();
         param.put("memberId", memberId);
@@ -104,12 +101,12 @@ public class PlanController {
     /**
      * 플래너 기본정보 수정
      */
-    @PutMapping("/update")
-    public ResponseEntity<ResponseDto> updatePlanInfo(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file) {
+    @PutMapping("/update/planInfo")
+    public ResponseEntity<ResponseDto> updatePlanInfo(@RequestPart("data") PlanForm form, @RequestParam("file") MultipartFile file, HttpServletRequest request) {
         try {
 
             // JWT 토큰 도입 시, memberId 뽑아내는 로직 필요
-            // 했다치고
+            String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
 
             // 파일 insert 후, file_id 가져오기
 
@@ -146,14 +143,17 @@ public class PlanController {
     /**
      * 플랜너 상세 일정 수정
      */
-    @PutMapping("/update/day")
-    public ResponseEntity<ResponseDto> updatePlanDetail(@RequestBody Map<String, Object> form) {
-        try {
-            log.info("form={}", form.toString());
-//            planService.updatePlanDetail(form);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @PutMapping("/update/{planId}")
+    public ResponseEntity<ResponseDto> updatePlanDetail(@PathVariable String planId,
+                                                        @RequestBody Map<String, List<List<DayForm>>> form,
+                                                        HttpServletRequest request) throws Exception
+    {
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        Map<String, Object> param = new HashMap<>();
+        param.put("memberId", memberId);
+        param.put("planId", planId);
+
+        planService.updatePlanDetail(param, form);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "일정 수정 완료", null));

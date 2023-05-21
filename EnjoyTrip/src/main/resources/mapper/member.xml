@@ -11,11 +11,24 @@
          WHERE email = #{email};
 	</select>
 
-	<select id="findMemberByEmail" parameterType="memberDto" resultType="memberDto">
-		SELECT email, password, nickname, gender, profile_img, bio
+	<select id="findMemberByEmail" parameterType="string" resultType="memberDto">
+		SELECT member_id, email, password, nickname, profile_img, bio
 		  FROM member
 		 WHERE email = #{email}
 	</select>
+
+	<select id="findMemberById" parameterType="string" resultType="memberDto">
+		SELECT member_id, email, password, nickname, profile_img, bio
+		FROM member
+		WHERE member_id = #{memberId}
+	</select>
+
+	<select id="findMemberInfoById" parameterType="string" resultType="memberInfoDto">
+		SELECT member_id, email, nickname, profile_img, bio
+		FROM member
+		WHERE member_id = #{memberId}
+	</select>
+
 	<select id="selectMemberByCheck" parameterType="string"
 		resultType="memberInfoDto">
 		SELECT *
@@ -41,9 +54,9 @@
 
 	<insert id="insertMember" parameterType="memberDto">
 		INSERT INTO member(
-		    		`email`, `password`, `nickname`, `gender`
+		    		`email`, `password`, `nickname`
 		)    VALUES (
-		             #{email}, #{password}, #{nickname}, #{gender}
+		             #{email}, #{password}, #{nickname}
 		)
 	</insert>
 	<delete id="deleteMember" parameterType="memberDto">
@@ -73,5 +86,11 @@
 		UPDATE member
 		   SET profile_img = #{image}
 		 WHERE email = #{email}
+	</update>
+
+	<update id="saveRefreshToken" parameterType="map">
+		UPDATE member
+           SET token = #{token}
+    	 WHERE email = #{email}
 	</update>
 </mapper>

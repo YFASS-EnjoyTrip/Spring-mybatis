@@ -81,13 +81,29 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void updatePlanDetail(Map<String, Object> form) throws Exception {
-        planMapper.deletePlanDay(form);
-        planMapper.insertPlanDay(form);
+    public void updatePlanDetail(Map<String, Object> param, Map<String, List<List<DayForm>>> form) throws Exception {
+        // 1. 기존 여행지 삭제
+        planMapper.deletePlanDetail((String) param.get("planId"));
+
+        // 2. 새로윤 여행지 insert
+        int day = 1, order = 1;
+        List<List<DayForm>> plans = form.get("data");
+        for (List<DayForm> plan : plans) {
+            order = 1;
+            for (DayForm item : plan) {
+                item.setDay(day);
+                item.setOrder(order);
+                param.put("item", item);
+                planMapper.updatePlanDetail(param);
+                order++;
+            }
+
+            day++;
+        }
     }
 
     @Override
-    public List<Map<String, Object>> createPlan(Map<String, Object> param) throws Exception {
+    public String createPlan(Map<String, Object> param) throws Exception {
         int days = getDays((String) param.get("startDate"), (String) param.get("endDate"));
 
         param.put("day1", days);
@@ -104,7 +120,10 @@ public class PlanServiceImpl implements PlanService {
         // 3. 화면에 출력 전, DB PUSH 후 return 해주기
         Map<String, Object> tmp = new HashMap<>();
         planMapper.insertPlan(param); // plan 기본정보
-        tmp.put("planId", param.get("planId"));
+
+        String planId = param.get("planId").toString();
+        tmp.put("planId", planId);
+
         for (Map<String, Object> items : result) {
             List<DayForm> item = (List<DayForm>) items.get("items");
 
@@ -114,9 +133,10 @@ public class PlanServiceImpl implements PlanService {
             }
         }
 
-
-        return result;
+        return planId;
     }
+
+
 
     /**
      *  출발날짜, 마지막날짜로 일 수 계산
