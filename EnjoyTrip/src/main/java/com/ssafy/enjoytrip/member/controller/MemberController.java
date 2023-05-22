@@ -117,7 +117,6 @@ public class MemberController {
 		if (jwtService.checkToken(request.getHeader("access-token"))) {
 			try {
 				MemberInfoDto memberInfo = memberService.findMemberInfoById(memberId);
-				log.info("memberInfo={}", memberInfo);
 				resultMap.put("memberInfo", memberInfo);
 				resultMap.put("message", SUCCESS);
 				status = HttpStatus.ACCEPTED;

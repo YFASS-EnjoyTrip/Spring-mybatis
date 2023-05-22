@@ -25,4 +25,6 @@ public interface AttractionService {
     int saveLocationLike(Map<String, String> param) throws Exception;
 
     List<Map<String, String>> getGugunCode(String sido) throws Exception;
+
+    void removeLocationReview(Map<String, String> param) throws Exception;
 }

@@ -106,4 +106,22 @@
         </if>
         WHERE content_id = #{contentId}
     </update>
+
+    <update id="updateLocationRate" parameterType="ReviewDto">
+        UPDATE attraction_info
+           SET rate = rate + #{rate}, total_count = total_count + 1
+         WHERE content_id = #{contentId}
+    </update>
+
+    <update id="deleteLocationRate" parameterType="map">
+        UPDATE attraction_info
+        SET rate = rate - #{rate}, total_count = total_count - 1
+        WHERE content_id = #{contentId}
+    </update>
+
+    <delete id="deleteLocationReview" parameterType="map">
+        DELETE
+          FROM attraction_review
+         WHERE member_id = #{memberId} AND review_id = #{reviewId}
+    </delete>
 </mapper>

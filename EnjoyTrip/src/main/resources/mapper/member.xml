@@ -88,7 +88,7 @@
 	<update id="updateMemberProfileImg" parameterType="map">
 		UPDATE member
 		   SET profile_img = #{image}
-		 WHERE email = #{email}
+		 WHERE member_id = #{memberId}
 	</update>
 
 	<update id="saveRefreshToken" parameterType="map">

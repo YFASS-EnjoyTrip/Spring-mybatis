@@ -5,7 +5,6 @@ import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
-import com.ssafy.enjoytrip.response.AttractionResponseDto;
 import com.ssafy.enjoytrip.response.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,6 +90,28 @@ public class AttractionController {
         List<ReviewDto> result = service.saveLocationReview(review);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDto(HttpStatus.CREATED.value(), "SUCCESS", result));
+    }
+
+    /**
+     * 여행지 리뷰 삭제
+     */
+    @DeleteMapping("/detail/reviews")
+    public ResponseEntity<ResponseDto> deleteLocationReview(@RequestParam String contentId,
+                                                            @RequestParam String reviewId,
+                                                            @RequestParam String rate,
+                                                            HttpServletRequest request) throws Exception {
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+
+        Map<String, String> param = new HashMap<>();
+
+        param.put("reviewId", reviewId);
+        param.put("contentId", contentId);
+        param.put("rate", rate);
+        param.put("memberId", memberId);
+        log.info("param={}", param);
+        service.removeLocationReview(param);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "SUCCESS", null));
     }
 
     /**

@@ -58,9 +58,13 @@ public class AttractionServiceImpl implements AttractionService {
            return mapper.getLocationReviews(contentId);
     }
 
+    /**
+     * 여행지 리뷰 작성
+     */
     @Override
     public List<ReviewDto> saveLocationReview(ReviewDto review) throws Exception {
-        mapper.insertLocationReview(review);
+        mapper.insertLocationReview(review); // 리뷰작성
+        mapper.updateLocationRate(review); // 별점 갱신
         return locationReviews(String.valueOf(review.getContentId()));
     }
 
@@ -76,6 +80,12 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public List<Map<String, String>> getGugunCode(String sido) throws Exception {
         return mapper.selectGugunCode(sido);
+    }
+
+    @Override
+    public void removeLocationReview(Map<String, String> param) throws Exception {
+        mapper.deleteLocationReview(param); // 리뷰 삭제
+        mapper.deleteLocationRate(param); // 리뷰 점수 차감
     }
 
     private void checkLike(Map<String, String> param) throws SQLException {
