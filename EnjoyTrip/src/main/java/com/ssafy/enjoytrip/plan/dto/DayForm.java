@@ -16,6 +16,7 @@ public class DayForm {
     private String lng;
     private String rate;
     private String likeCount;
+    private String totalCount;
 
     private int day;
     private int order;

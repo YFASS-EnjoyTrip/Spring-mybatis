@@ -14,10 +14,7 @@ import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
 import com.ssafy.enjoytrip.hotplace.dto.HotPlaceDto;
 import com.ssafy.enjoytrip.member.dto.MemberInfoDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -133,9 +130,24 @@ public class MemberController {
 				.body(new ResponseDto(status.value(), null, resultMap));
 	}
 
+	/**
+	 * 로그아웃
+	 */
 	@GetMapping("/logout")
-	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
-		return memberService.logout(session);
+	public ResponseEntity<ResponseDto> logout(HttpServletRequest request) throws Exception {
+		String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+
+		HttpStatus status = HttpStatus.OK;
+		String message = SUCCESS;
+		try {
+			memberService.deleRefreshToken(memberId);
+		} catch (Exception e) {
+			message = e.getMessage();
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseDto(status.value(), message, null));
 	}
 
 	@DeleteMapping("/secession")

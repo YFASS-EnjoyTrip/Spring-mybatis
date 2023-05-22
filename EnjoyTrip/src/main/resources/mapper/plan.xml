@@ -136,7 +136,7 @@
     </select>
 
     <select id="selectPlanDetail" parameterType="map" resultMap="planDetailMap">
-        SELECT ai.content_id, ai.content_type_id, ai.first_image, ai.title, ad.overview, ai.latitude, ai.longitude, ai.like_count, ai.rate, t.day, t.content_order
+        SELECT ai.content_id, ai.content_type_id, ai.first_image, ai.title, ad.overview, ai.latitude, ai.longitude, ai.like_count, ai.rate, ai.total_count, t.day, t.content_order
           FROM travel_plan_detail t JOIN attraction_info ai
             ON t.content_id = ai.content_id
           JOIN attraction_description ad

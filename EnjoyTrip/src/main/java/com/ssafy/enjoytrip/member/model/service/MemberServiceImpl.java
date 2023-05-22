@@ -61,6 +61,13 @@ public class MemberServiceImpl implements MemberService {
 			throw new IllegalArgumentException("이미 존재 하는 이메일 입니다");
 		}
 	}
+	@Override
+	public void deleRefreshToken(String memberId) throws Exception {
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("memberId", memberId);
+		param.put("token", null);
+		mapper.deleteRefreshToken(param);
+	}
 
 	@Override
 	public void secession(MemberDto member) throws Exception {
@@ -109,6 +116,7 @@ public class MemberServiceImpl implements MemberService {
 	public MemberInfoDto findMemberInfoById(String memberId) throws Exception {
 		return mapper.findMemberInfoById(memberId);
 	}
+
 
 	@Override
 	public void saveRefreshToken(String email, String refreshToken) throws Exception {

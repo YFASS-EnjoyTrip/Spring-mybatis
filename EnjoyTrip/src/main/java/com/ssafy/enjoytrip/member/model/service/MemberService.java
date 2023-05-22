@@ -42,4 +42,6 @@ public interface MemberService {
     void saveRefreshToken(String email, String refreshToken) throws Exception;
 
 	MemberInfoDto findMemberInfoById(String memberId) throws Exception;
+
+	void deleRefreshToken(String memberId) throws Exception;
 }
