@@ -34,4 +34,6 @@ public interface PlanMapper {
     void insertPlanDays (Map<String, Object> tmp) throws SQLException;
 
     void updatePlanDetail(Map<String, Object> param) throws SQLException;
+
+    void updatePlanInfo(Map<String, Object> param) throws SQLException;
 }

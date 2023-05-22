@@ -48,6 +48,18 @@ public class PlanController {
                 .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 성공", result));
     }
 
+
+    @PostMapping("/reroll")
+    public ResponseEntity<ResponseDto> reCreatePlan(@RequestBody Map<String, Object> param, HttpServletRequest request) throws Exception {
+        String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+        param.put("memberId", memberId);
+
+        String result = planService.reCreatePlan(param);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ResponseDto(HttpStatus.CREATED.value(), "플랜 생성 성공", result));
+    }
+
     @GetMapping("/list")
     public ResponseEntity<ResponseDto> getPlans(HttpServletRequest request) throws Exception {
         String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
@@ -87,6 +99,7 @@ public class PlanController {
         Map<String, String> planInfo = planService.findPlanInfo(param);
         result.put("planInfo", planInfo);
 
+        log.info("result={}", result);
         param.put("startDate", String.valueOf(planInfo.get("startDate")));
         param.put("endDate", String.valueOf(planInfo.get("endDate")));
 

@@ -135,7 +135,40 @@ public class PlanServiceImpl implements PlanService {
         return planId;
     }
 
+    @Override
+    public String reCreatePlan(Map<String, Object> param) throws Exception {
+        // 1. 기존 플랜 Detail을 삭제한다
+        String planId = param.get("planId").toString();
+        planMapper.deletePlanDetail(planId);
 
+        int days = getDays((String) param.get("startDate"), (String) param.get("endDate"));
+
+        param.put("day1", days);
+        param.put("day2", days * 2);
+
+        // 2. 플랜 생성
+        List<DayForm> plan = planMapper.createPlan(param);
+        param.put("image", plan.get(0).getImage());
+
+        // 3. List<DayForm> 배치 해주기
+        List<Map<String, Object>> result = rearrangePlan(plan, days);
+
+        // 4. 화면에 출력 전, DB PUSH 후 return 해주기
+        Map<String, Object> tmp = new HashMap<>();
+        planMapper.updatePlanInfo(param); // plan 기본정보
+        tmp.put("planId", planId);
+
+        for (Map<String, Object> items : result) {
+            List<DayForm> item = (List<DayForm>) items.get("items");
+
+            for (DayForm dayForm : item) {
+                tmp.put("item", dayForm);
+                planMapper.insertPlanDays(tmp);
+            }
+        }
+
+        return planId;
+    }
 
     /**
      *  출발날짜, 마지막날짜로 일 수 계산

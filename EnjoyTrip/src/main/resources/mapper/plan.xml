@@ -49,6 +49,7 @@
         <result column="end_date" property="endDate"/>
         <result column="view_count" property="viewCount"/>
         <result column="like_count" property="likeCount"/>
+        <result column="reroll_count" property="rerollCount"/>
     </resultMap>
     <!--    <insert id="createPlan" parameterType="PlanForm" keyProperty="planId" useGeneratedKeys="true">-->
 <!--        INSERT INTO travel_plan (-->
@@ -107,6 +108,13 @@
          WHERE travel_plan_id = #{planId}
     </update>
 
+    <update id="updatePlanInfo" parameterType="map">
+        UPDATE  travel_plan
+           SET
+               image = #{image},
+               reroll_count = reroll_count + 1
+         WHERE travel_plan_id = #{planId}
+    </update>
     <insert id="updatePlanDetail" parameterType="map">
         INSERT INTO travel_plan_detail (
             travel_plan_id, day, content_id, content_order
@@ -159,7 +167,7 @@
     </insert>
 
     <select id="selectPlanInfo" parameterType="map" resultMap="planInfoMap">
-        SELECT p.travel_plan_id, m.nickname, p.sido_code, p.title, p.start_date, p.end_date, p.view_count, p.like_count
+        SELECT p.travel_plan_id, m.nickname, p.sido_code, p.title, p.start_date, p.end_date, p.view_count, p.like_count, p.reroll_count
           FROM travel_plan p INNER JOIN member m
             ON p.member_id = m.member_id
          WHERE p.travel_plan_id = #{planId} and p.member_id = #{memberId}
