@@ -17,8 +17,6 @@ public interface MemberService {
 
 	MemberDto login(MemberDto member) throws Exception;
 
-	ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception;
-
 	void signup(MemberDto member) throws Exception;
 
 	void check(String check) throws Exception;

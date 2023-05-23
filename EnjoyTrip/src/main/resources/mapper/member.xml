@@ -98,7 +98,7 @@
 	</update>
 
 	<delete id="deleteRefreshToken" parameterType="map">
-		UPDATE ssafy_member
+		UPDATE member
 		   SET token = #{token, jdbcType=VARCHAR}
 		 WHERE member_id = #{memberId}
 	</delete>

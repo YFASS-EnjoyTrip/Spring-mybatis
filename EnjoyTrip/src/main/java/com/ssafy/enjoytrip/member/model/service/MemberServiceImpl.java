@@ -3,6 +3,7 @@ package com.ssafy.enjoytrip.member.model.service;
 import java.sql.SQLException;
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.ssafy.enjoytrip.global.util.JwtTokenProvider;
@@ -34,14 +35,6 @@ public class MemberServiceImpl implements MemberService {
 		}
 
 		return mapper.findMemberByEmail(member.getEmail());
-	}
-
-	// TODO JWT 도입 시, 수정
-	@Override
-	public ResponseEntity<ResponseDto> logout(HttpSession session) throws Exception {
-		String msg = "로그아웃 정상적으로 수행";
-		session.invalidate();
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(HttpStatus.OK.value(), msg, null));
 	}
 
 	@Override

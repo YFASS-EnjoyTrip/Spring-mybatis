@@ -133,9 +133,8 @@ public class MemberController {
 	/**
 	 * 로그아웃
 	 */
-	@GetMapping("/logout")
-	public ResponseEntity<ResponseDto> logout(HttpServletRequest request) throws Exception {
-		String memberId = jwtService.getMemberId(request.getHeader(AUTH_HEADER));
+	@GetMapping("/logout/{memberId}")
+	public ResponseEntity<ResponseDto> logout(@PathVariable String memberId) throws Exception {
 
 		HttpStatus status = HttpStatus.OK;
 		String message = SUCCESS;
