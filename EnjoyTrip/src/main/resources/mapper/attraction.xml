@@ -41,6 +41,13 @@
            LIMIT #{pageSize} OFFSET #{offset}
     </select>
 
+    <select id="selectBoundLocation" parameterType="map" resultMap="Locations">
+        SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count, rate, total_count
+          FROM attraction_info
+         WHERE latitude BETWEEN #{swLat} AND #{neLat}
+           AND longitude BETWEEN #{swLng} AND #{neLng}
+    </select>
+
     <select id="searchLocations" resultMap="Locations">
         SELECT content_Id, content_type_id, title, addr1, zipcode, tel, first_image, view_count, sido_code, gugun_code, latitude, longitude, like_count, rate, total_count
         FROM attraction_info

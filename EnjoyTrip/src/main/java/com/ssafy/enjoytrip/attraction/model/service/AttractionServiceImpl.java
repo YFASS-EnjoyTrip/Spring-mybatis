@@ -88,6 +88,13 @@ public class AttractionServiceImpl implements AttractionService {
         mapper.deleteLocationRate(param); // 리뷰 점수 차감
     }
 
+    @Override
+    public List<AttractionDto> findBoundLocation(Map<String, String> param) throws Exception {
+        List<AttractionDto> attractionDtos = mapper.selectBoundLocation(param);
+        log.info("service={}", attractionDtos);
+        return attractionDtos;
+    }
+
     private void checkLike(Map<String, String> param) throws SQLException {
         int result = likeMapper.selectLike(param);
 

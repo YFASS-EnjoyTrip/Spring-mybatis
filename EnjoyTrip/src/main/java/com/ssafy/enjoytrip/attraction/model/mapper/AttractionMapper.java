@@ -33,4 +33,6 @@ public interface AttractionMapper {
     void deleteLocationReview(Map<String, String> param) throws SQLException;
 
     void deleteLocationRate(Map<String, String> param) throws SQLException;
+
+    List<AttractionDto> selectBoundLocation(Map<String, String> param) throws SQLException;
 }

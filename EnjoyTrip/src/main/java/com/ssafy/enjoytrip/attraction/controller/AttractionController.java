@@ -61,6 +61,23 @@ public class AttractionController {
                 .body(new ResponseDto(HttpStatus.OK.value(), "요청을 성공적으로 수행", result));
     }
 
+    @GetMapping("/search/bounds")
+    public ResponseEntity<ResponseDto> searchBoundsLocation(@RequestParam String northEastLat,
+                                                            @RequestParam String northEastLng,
+                                                            @RequestParam String southWestLat,
+                                                            @RequestParam String southWestLng) throws Exception {
+        Map<String, String> param = new HashMap<>();
+        param.put("neLat", northEastLat);
+        param.put("neLng", northEastLng);
+        param.put("swLat", southWestLat);
+        param.put("swLng", southWestLng);
+
+        List<AttractionDto> result = service.findBoundLocation(param);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ResponseDto(HttpStatus.OK.value(), "SUCCESS", result));
+    }
+
     /**
      * sido 코드로 gugun 코드 전체 return
      */

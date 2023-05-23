@@ -27,4 +27,6 @@ public interface AttractionService {
     List<Map<String, String>> getGugunCode(String sido) throws Exception;
 
     void removeLocationReview(Map<String, String> param) throws Exception;
+
+    List<AttractionDto> findBoundLocation(Map<String, String> param) throws Exception;
 }
