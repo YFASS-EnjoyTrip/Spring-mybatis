@@ -141,6 +141,7 @@
         SELECT *
           FROM travel_plan
          WHERE member_id = #{memberId}
+      ORDER BY start_date DESC
     </select>
 
     <select id="selectPlanDetail" parameterType="map" resultMap="planDetailMap">

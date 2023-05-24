@@ -34,7 +34,14 @@ public class MemberServiceImpl implements MemberService {
 			return null;
 		}
 
-		return mapper.findMemberByEmail(member.getEmail());
+		MemberDto storedMember = mapper.findMemberByEmail(member.getEmail());
+
+		// 이메일이 없거나, 비밀번호가 틀리면 null
+		if(storedMember == null || !BCrypt.checkpw(member.getPassword(), storedMember.getPassword())) {
+			return null;
+		}
+
+		return storedMember;
 	}
 
 	@Override
