@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.model.mapper;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.BoundSearchDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import org.apache.ibatis.annotations.Mapper;
@@ -34,5 +35,5 @@ public interface AttractionMapper {
 
     void deleteLocationRate(Map<String, String> param) throws SQLException;
 
-    List<AttractionDto> selectBoundLocation(Map<String, String> param) throws SQLException;
+    List<AttractionDto> selectBoundLocation(BoundSearchDto boundSearchDto) throws SQLException;
 }

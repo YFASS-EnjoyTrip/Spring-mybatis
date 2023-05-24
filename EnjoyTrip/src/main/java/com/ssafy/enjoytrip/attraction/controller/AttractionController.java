@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.controller;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.BoundSearchDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.service.AttractionService;
@@ -65,14 +66,11 @@ public class AttractionController {
     public ResponseEntity<ResponseDto> searchBoundsLocation(@RequestParam String northEastLat,
                                                             @RequestParam String northEastLng,
                                                             @RequestParam String southWestLat,
-                                                            @RequestParam String southWestLng) throws Exception {
-        Map<String, String> param = new HashMap<>();
-        param.put("neLat", northEastLat);
-        param.put("neLng", northEastLng);
-        param.put("swLat", southWestLat);
-        param.put("swLng", southWestLng);
+                                                            @RequestParam String southWestLng,
+                                                            @RequestParam(required = false) List<Integer> contentType) throws Exception {
 
-        List<AttractionDto> result = service.findBoundLocation(param);
+
+        List<AttractionDto> result = service.findBoundLocation(new BoundSearchDto(northEastLat, northEastLng, southWestLat, southWestLng, contentType));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ResponseDto(HttpStatus.OK.value(), "SUCCESS", result));

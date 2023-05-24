@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.model.service;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.BoundSearchDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.response.AttractionResponseDto;
@@ -28,5 +29,5 @@ public interface AttractionService {
 
     void removeLocationReview(Map<String, String> param) throws Exception;
 
-    List<AttractionDto> findBoundLocation(Map<String, String> param) throws Exception;
+    List<AttractionDto> findBoundLocation(BoundSearchDto boundSearchDto) throws Exception;
 }

@@ -1,6 +1,7 @@
 package com.ssafy.enjoytrip.attraction.model.service;
 
 import com.ssafy.enjoytrip.attraction.dto.AttractionDto;
+import com.ssafy.enjoytrip.attraction.dto.BoundSearchDto;
 import com.ssafy.enjoytrip.attraction.dto.ReviewDto;
 import com.ssafy.enjoytrip.attraction.dto.SearchDto;
 import com.ssafy.enjoytrip.attraction.model.mapper.AttractionMapper;
@@ -89,10 +90,9 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public List<AttractionDto> findBoundLocation(Map<String, String> param) throws Exception {
-        List<AttractionDto> attractionDtos = mapper.selectBoundLocation(param);
-        log.info("service={}", attractionDtos);
-        return attractionDtos;
+    public List<AttractionDto> findBoundLocation(BoundSearchDto boundSearchDto) throws Exception {
+        List<AttractionDto> attractionDto = mapper.selectBoundLocation(boundSearchDto);
+        return attractionDto;
     }
 
     private void checkLike(Map<String, String> param) throws SQLException {

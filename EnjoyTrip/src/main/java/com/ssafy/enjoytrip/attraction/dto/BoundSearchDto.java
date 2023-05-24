@@ -7,11 +7,10 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class SearchDto{
-    private String keyword;
-    private String sido;
-    private String gugun;
-    private int pageSize;
-    private int offset;
+public class BoundSearchDto {
+    private String neLat;
+    private String neLng;
+    private String swLat;
+    private String swLng;
     private List<Integer> contentType;
 }
