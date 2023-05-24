@@ -63,6 +63,7 @@ public class MemberController {
 		String message;
 		MemberDto loginMember;
 		try {
+			log.info("member={}", member);
 			loginMember = memberService.login(member);
 			if (loginMember == null) {
 				message = "이메일 또는 비밀번호를 확인해주세요.";

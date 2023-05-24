@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.global.mapper.EventMapper">
+    <select id="lockTable">
+        LOCK TABLES item_tb WRITE;
+    </select>
+
+    <select id="getRandom" resultType="Item">
+        SELECT * FROM item_tb ORDER BY RAND() LIMIT 1;
+    </select>
+
+    <delete id="removeItem" parameterType="int">
+        DELETE FROM item_tb WHERE id = #{id};
+    </delete>
+
+    <select id="unlockTable">
+        UNLOCK TABLES;
+    </select>
+</mapper>
