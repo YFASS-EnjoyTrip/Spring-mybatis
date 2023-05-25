@@ -9,6 +9,7 @@
 		<result column="first_image" property="image"/>
 		<result column="like_count" property="likeCount"/>
 		<result column="rate" property="rate"/>
+		<result column="total_count" property="totalCount"/>
 	</resultMap>
 	<select id="selectMemberIdByEmail" parameterType="string" resultType="string">
 		SELECT member_id
@@ -42,7 +43,7 @@
 		    OR nickname=#{check}
 	</select>
 	<select id="selectLike" parameterType="map" resultMap="likeMap">
-		SELECT tl.item_id, ai.title, ai.first_image, ai.like_count, ai.rate
+		SELECT tl.item_id, ai.title, ai.first_image, ai.like_count, ai.rate, ai.total_count
 		  FROM tb_like tl
 		  JOIN attraction_info ai
 		    ON tl.item_id = ai.content_id
